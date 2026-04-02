@@ -30,14 +30,13 @@ $pay_method_label = match ((string) ($order['pay_method'] ?? '')) {
     default => (string) ($order['pay_method'] !== '' ? $order['pay_method'] : '未记录'),
 };
 
-$status_label = match ((string) ($order['status'] ?? '')) {
-    'pending' => '待支付',
-    'paid', '已支付，待发货' => '待发货',
-    'shipped', '已发货' => '已发货',
-    'completed', '已完成' => '已完成',
-    'cancelled', '已取消' => '已取消',
-    default => (string) ($order['status'] ?? '未知状态'),
-};
+$order_status_options = shop_order_status_options();
+$status_key = shop_normalize_order_status((string) ($order['status'] ?? ''));
+$status_meta = $order_status_options[$status_key] ?? [
+    'label' => (string) ($order['status'] ?? '未知状态'),
+    'badge_background' => '#e2e8f0',
+    'badge_color' => '#475569',
+];
 
 $pageTitle = '订单详情';
 $currentPage = 'orders';
@@ -52,7 +51,7 @@ include __DIR__ . '/header.php';
                 <h1 style="margin: 8px 0 0; font-size: 30px;">订单号 <?php echo shop_e((string) $order['order_no']); ?></h1>
             </div>
             <div style="text-align: right;">
-                <div style="display: inline-block; padding: 6px 12px; border-radius: 999px; background: #eff6ff; color: #2563eb;"><?php echo shop_e($status_label); ?></div>
+                <div style="display: inline-block; padding: 6px 12px; border-radius: 999px; background: <?php echo shop_e((string) $status_meta['badge_background']); ?>; color: <?php echo shop_e((string) $status_meta['badge_color']); ?>;"><?php echo shop_e((string) $status_meta['label']); ?></div>
                 <div style="margin-top: 10px; font-size: 28px; font-weight: 700; color: #dc2626;"><?php echo shop_format_price((float) $order['total']); ?></div>
             </div>
         </div>

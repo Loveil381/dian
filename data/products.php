@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/order_status.php';
 
 function shop_log_exception(string $context, Throwable $exception): void
 {
@@ -756,6 +757,7 @@ function shop_order_items_quantity(array $items): int
 function shop_normalize_order(array $order): array
 {
     $items_data = shop_decode_order_items($order['items'] ?? []);
+    $status = shop_normalize_order_status((string) ($order['status'] ?? ''));
 
     return [
         'id' => max(0, (int) ($order['id'] ?? 0)),
@@ -764,7 +766,7 @@ function shop_normalize_order(array $order): array
         'customer' => trim((string) ($order['customer'] ?? '')),
         'phone' => trim((string) ($order['phone'] ?? '')),
         'address' => trim((string) ($order['address'] ?? '')),
-        'status' => trim((string) ($order['status'] ?? '')),
+        'status' => $status,
         'pay_method' => trim((string) ($order['pay_method'] ?? '')),
         'express_company' => trim((string) ($order['express_company'] ?? '')),
         'tracking_numbers' => trim((string) ($order['tracking_numbers'] ?? '')),
