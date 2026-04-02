@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 session_start();
 
@@ -10,6 +11,7 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
     $pdo = get_db_connection();
     if (!$pdo) {
         $error = '数据库连接失败';
@@ -118,6 +120,7 @@ include __DIR__ . '/header.php';
 
         <?php if ($action === 'login'): ?>
             <form method="post" action="index.php?page=auth&action=login" style="display: flex; flex-direction: column; gap: 15px;">
+                <?php echo csrf_field(); ?>
                 <div>
                     <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">ID 或 用户名</label>
                     <input type="text" name="login_id" required placeholder="请输入您的 ID 或用户名" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
@@ -133,6 +136,7 @@ include __DIR__ . '/header.php';
             </form>
         <?php else: ?>
             <form method="post" action="index.php?page=auth&action=register" style="display: flex; flex-direction: column; gap: 15px;">
+                <?php echo csrf_field(); ?>
                 <div>
                     <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">用户名</label>
                     <input type="text" name="username" required placeholder="用于登录的唯一英文/数字名" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
