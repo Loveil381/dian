@@ -1,6 +1,5 @@
+<?php declare(strict_types=1);
 
-<!-- templates/header.php -->
-<?php
 $currentPage = $currentPage ?? 'home';
 $currentKeyword = (string) ($_GET['keyword'] ?? '');
 $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum, $item) => $sum + ($item['quantity'] ?? 0), 0) : 0;
@@ -12,6 +11,7 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? '魔女小店'; ?></title>
     <link rel="stylesheet" href="assets/css/site.css">
+    <link rel="stylesheet" href="assets/css/mobile.css">
     <style>
         :root {
             --nav-bg: #ffffff;
@@ -109,7 +109,7 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
 <header>
     <div class="nav-container">
         <div class="nav-left">
-            <button class="icon-btn" aria-label="打开菜单" id="menuBtn" type="button">
+            <button class="icon-btn" aria-label="打开菜单" aria-expanded="false" aria-controls="siteNav" id="menuBtn" type="button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -144,7 +144,7 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
         </div>
     </div>
 
-    <nav class="page-nav" aria-label="站点主导航">
+    <nav class="page-nav" id="siteNav" aria-label="站点主导航">
         <a class="page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>
         <a class="page-link <?php echo $currentPage === 'products' ? 'active' : ''; ?>" href="index.php?page=products">商品页</a>
         <a class="page-link <?php echo $currentPage === 'orders' ? 'active' : ''; ?>" href="index.php?page=orders">订单</a>

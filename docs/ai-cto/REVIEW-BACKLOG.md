@@ -1,5 +1,5 @@
 # 评审问题 Backlog
-> 最后更新: 2026-04-02 | 当前轮次: #8
+> 最后更新: 2026-04-02 | 当前轮次: #9
 
 ## Critical
 | # | 位置 | 问题 | 状态 |
@@ -22,6 +22,7 @@
 | C-4 | `create_order.php` / `checkout.php` | 存在两条下单路径 | ✅ 已修复 |
 | I-7 | `footer.php` | 页脚内联脚本未迁移 | ✅ 已修复 |
 | Q-6.1 | `templates/product_detail.php` | 缩略图 inline onclick 存在注入风险 | ✅ 已修复 |
+| Q-8.6 | `admin/views/products.php` | SKU 编辑仍依赖内联脚本初始化 | ✅ 已修复 |
 
 ## Minor
 | # | 位置 | 问题 | 状态 |

@@ -240,10 +240,22 @@ function shopBindFooterEvents() {
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
     const cartBtn = document.getElementById('cartBtn');
+    const closeMobileNav = () => {
+        document.body.classList.remove('mobile-nav-open');
+
+        if (menuBtn) {
+            menuBtn.setAttribute('aria-expanded', 'false');
+        }
+    };
 
     if (menuBtn) {
         menuBtn.addEventListener('click', () => {
-            alert('菜单功能正在完善中。');
+            if (window.innerWidth > 768) {
+                return;
+            }
+
+            const isOpen = document.body.classList.toggle('mobile-nav-open');
+            menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
     }
 
@@ -265,9 +277,18 @@ function shopBindFooterEvents() {
         });
     }
 
+    document.querySelectorAll('.page-nav .page-link').forEach((link) => {
+        link.addEventListener('click', closeMobileNav);
+    });
+
     window.addEventListener('resize', () => {
         document.body.dataset.viewport = String(window.innerWidth);
+        if (window.innerWidth > 768) {
+            closeMobileNav();
+        }
     });
+
+    document.body.dataset.viewport = String(window.innerWidth);
 }
 
 function shopBindProductGallery() {

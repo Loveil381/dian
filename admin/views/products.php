@@ -47,7 +47,7 @@
                 
                 <div class="field field-full">
                     <span class="label">商品规格 (SKU)</span>
-                    <div id="sku-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div id="sku-container" data-next-index="<?php echo count($skus); ?>" style="display: flex; flex-direction: column; gap: 10px;">
                         <?php 
                         $skus = [];
                         if (!empty($selectedProduct['sku'])) {
@@ -67,10 +67,6 @@
                         <?php endforeach; ?>
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm" style="align-self: flex-start; margin-top: 10px;" onclick="addSkuItem()">+ 添加规格</button>
-                    <script>
-                        let skuIndex = <?php echo count($skus); ?>;
-
-                    </script>
                 </div>
                 
                 <label class="field field-full">
