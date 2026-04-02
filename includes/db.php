@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/logger.php';
+
 /**
  * 获取数据库连接。
  */
@@ -44,13 +46,13 @@ function get_db_connection(): ?PDO
 
         return $pdo;
     } catch (PDOException $exception) {
-        error_log('[shop] 数据库连接失败: ' . $exception->getMessage());
+        shop_log('error', '数据库连接失败', ['message' => $exception->getMessage()]);
         return null;
     }
 }
 
 /**
- * 获取表前缀。
+ * 获取数据库表前缀。
  */
 function get_db_prefix(): string
 {
@@ -64,7 +66,7 @@ function get_db_prefix(): string
 }
 
 /**
- * 写入数据库配置文件。
+ * 更新数据库配置文件。
  */
 function update_db_config(string $host, int $port, string $name, string $user, string $password, string $prefix = ''): bool
 {

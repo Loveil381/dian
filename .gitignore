@@ -5,6 +5,7 @@ assets/uploads/*
 !assets/uploads/.gitkeep
 
 storage/
+logs/*.log
 *.log
 
 .idea/

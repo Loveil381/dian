@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/logger.php';
 
 /**
- * 发送邮件，优先使用 SMTP，未配置时降级到 mail()。
+ * 发送邮件，优先使用 SMTP，未配置时回退到 mail()。
  */
 function shop_send_mail(string $to, string $subject, string $body): bool
 {
@@ -38,7 +41,10 @@ function shop_send_mail_via_smtp(string $to, string $subject, string $body): boo
 
     $socket = @stream_socket_client('tcp://' . $host . ':' . $port, $errno, $errstr, 10);
     if (!is_resource($socket)) {
-        error_log('[shop] SMTP 连接失败: ' . $errstr . ' (' . $errno . ')');
+        shop_log('error', 'SMTP 连接失败', [
+            'message' => $errstr,
+            'code' => $errno,
+        ]);
         return false;
     }
 
@@ -73,14 +79,14 @@ function shop_send_mail_via_smtp(string $to, string $subject, string $body): boo
 
         return true;
     } catch (RuntimeException $exception) {
-        error_log('[shop] SMTP 发送失败: ' . $exception->getMessage());
+        shop_log('error', 'SMTP 发送失败', ['message' => $exception->getMessage()]);
         fclose($socket);
         return false;
     }
 }
 
 /**
- * 向 SMTP 服务器发送命令并校验响应码。
+ * 发送 SMTP 指令并校验返回码。
  *
  * @param int[] $expected_codes
  */

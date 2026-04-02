@@ -1,5 +1,5 @@
 function shopFormatSitePrice(price) {
-    return '¥' + Number(price).toLocaleString('zh-CN', {
+    return '￥' + Number(price).toLocaleString('zh-CN', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -12,14 +12,16 @@ function shopUpdateProductActionState(stock, price) {
     if (stock <= 0) {
         if (buyBtn) {
             buyBtn.disabled = true;
-            buyBtn.style.background = '#94a3b8';
-            buyBtn.innerText = '暂时缺货';
+            buyBtn.classList.add('btn--disabled');
+            buyBtn.classList.remove('btn--active');
+            buyBtn.innerText = '库存不足';
         }
 
         if (cartBtn) {
             cartBtn.disabled = true;
-            cartBtn.style.background = '#94a3b8';
-            cartBtn.innerText = '暂时缺货';
+            cartBtn.classList.add('btn--disabled');
+            cartBtn.classList.remove('btn--active');
+            cartBtn.innerText = '库存不足';
         }
 
         return;
@@ -27,13 +29,15 @@ function shopUpdateProductActionState(stock, price) {
 
     if (buyBtn) {
         buyBtn.disabled = false;
-        buyBtn.style.background = '#2563eb';
+        buyBtn.classList.remove('btn--disabled');
+        buyBtn.classList.add('btn--active');
         buyBtn.innerText = '立即购买 ' + shopFormatSitePrice(price);
     }
 
     if (cartBtn) {
         cartBtn.disabled = false;
-        cartBtn.style.background = '#f59e0b';
+        cartBtn.classList.remove('btn--disabled');
+        cartBtn.classList.remove('btn--active');
         cartBtn.innerText = '加入购物车';
     }
 }
@@ -111,12 +115,12 @@ function hideAlert() {
 
 function showPaymentPopup() {
     if (typeof hasPayment !== 'undefined' && !hasPayment) {
-        showAlert('商品尚未配置收款码，请稍后再试。');
+        showAlert('商品暂未配置支付方式，请稍后再试。');
         return;
     }
 
     if (typeof requireAddress !== 'undefined' && requireAddress && typeof hasUserInfo !== 'undefined' && !hasUserInfo) {
-        showAlert('请先完善姓名、手机号和收货地址后再继续购买。');
+        showAlert('请先完善收货信息，再进行下单。');
         return;
     }
 
@@ -203,7 +207,7 @@ function submitOrder() {
     }
 
     if (!payMethodInput.value) {
-        alert('请选择你计划使用的支付方式。');
+        alert('请选择支付方式后再提交。');
         return;
     }
 
@@ -212,7 +216,7 @@ function submitOrder() {
         return;
     }
 
-    if (confirm('确认已完成付款，并准备提交订单吗？')) {
+    if (confirm('确认已完成支付并提交订单吗？')) {
         form.submit();
     }
 }
@@ -337,7 +341,7 @@ function shopBindFooterEvents() {
             }
 
             event.preventDefault();
-            alert('请先输入搜索关键词。');
+            alert('请输入搜索关键词。');
         });
     }
 

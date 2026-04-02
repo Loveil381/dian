@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/error_handler.php';
+require_once __DIR__ . '/../includes/logger.php';
 require_once __DIR__ . '/../data/products.php';
 
 $id = (int) ($_GET['id'] ?? 0);
@@ -18,7 +19,7 @@ if ($product === null) {
 }
 
 $pageTitle = '商品详情 - ' . (string) ($product['name'] ?? '');
-$pageDescription = '查看商品详情、规格、库存与支付方式：' . (string) ($product['name'] ?? '商品详情');
+$pageDescription = '查看商品详情、规格与价格，支持直接下单。';
 $ogType = 'product';
 $display_image = trim((string) ($product['cover_image'] ?? ''));
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -55,10 +56,10 @@ $user_address = '';
 $user_name = (string) ($_SESSION['user_name'] ?? '');
 $is_logged_in = isset($_SESSION['user_id']);
 
-if ($pdo) {
+if ($pdo instanceof PDO) {
     try {
         $stmt = $pdo->query("SELECT `key`, `value` FROM `{$prefix}settings` WHERE `key` IN ('wechat_qr', 'alipay_qr', 'require_address')");
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if (($row['key'] ?? '') === 'wechat_qr') {
                 $wechat_qr = (string) ($row['value'] ?? '');
             }
@@ -73,7 +74,7 @@ if ($pdo) {
         if ($is_logged_in) {
             $stmt_user = $pdo->prepare("SELECT phone, address FROM `{$prefix}users` WHERE id = ?");
             $stmt_user->execute([$_SESSION['user_id']]);
-            $user_data = $stmt_user->fetch();
+            $user_data = $stmt_user->fetch(PDO::FETCH_ASSOC);
             if (is_array($user_data)) {
                 $user_phone = trim((string) ($user_data['phone'] ?? ''));
                 $user_address = trim((string) ($user_data['address'] ?? ''));
@@ -81,7 +82,7 @@ if ($pdo) {
         }
     } catch (PDOException $exception) {
         $_SESSION['flash_message'] = '支付配置读取失败，请稍后再试。';
-        error_log('[shop] 商品详情读取支付配置失败: ' . $exception->getMessage());
+        shop_log('error', '商品详情读取支付配置失败', ['message' => $exception->getMessage()]);
     }
 }
 
@@ -138,7 +139,7 @@ include __DIR__ . '/header.php';
 
             <div class="product-detail-price-row">
                 <span id="mainPriceDisplay" class="product-detail-price"><?php echo shop_format_price((float) ($default_sku['price'] ?? 0)); ?></span>
-                <span id="soldOutBadge" class="product-detail-soldout" style="display: <?php echo (int) ($default_sku['stock'] ?? 0) <= 0 ? 'inline-flex' : 'none'; ?>;">暂时缺货</span>
+                <span id="soldOutBadge" class="product-detail-soldout" style="display: <?php echo (int) ($default_sku['stock'] ?? 0) <= 0 ? 'inline-flex' : 'none'; ?>;">库存不足</span>
             </div>
 
             <div class="product-detail-sku">
@@ -213,7 +214,7 @@ include __DIR__ . '/header.php';
         <p id="alertMsg" class="popup-text"></p>
         <div class="popup-actions">
             <button type="button" data-action="hide-alert" class="popup-secondary-btn">关闭</button>
-            <a href="index.php?page=profile" class="popup-primary-link">去完善资料</a>
+            <a href="index.php?page=profile" class="popup-primary-link">前往个人资料</a>
         </div>
     </div>
 </div>
@@ -224,7 +225,7 @@ include __DIR__ . '/header.php';
         <h2 class="popup-title">选择支付方式</h2>
 
         <?php if (!$has_payment): ?>
-            <p class="popup-text popup-text--top-space">商品尚未配置收款码，请稍后再试。</p>
+            <p class="popup-text popup-text--top-space">商品暂未配置支付方式，请稍后再试。</p>
         <?php else: ?>
             <div class="popup-pay-options">
                 <?php if ($wechat_qr !== ''): ?>
@@ -239,10 +240,10 @@ include __DIR__ . '/header.php';
                 <p id="popupPriceDisplay" class="popup-price"></p>
 
                 <div id="wechatQR" class="popup-qr-box" style="display: none;">
-                    <img src="<?php echo shop_e($wechat_qr); ?>" alt="微信支付收款码" class="popup-qr-image">
+                    <img src="<?php echo shop_e($wechat_qr); ?>" alt="微信支付二维码" class="popup-qr-image">
                 </div>
                 <div id="alipayQR" class="popup-qr-box" style="display: none;">
-                    <img src="<?php echo shop_e($alipay_qr); ?>" alt="支付宝收款码" class="popup-qr-image">
+                    <img src="<?php echo shop_e($alipay_qr); ?>" alt="支付宝二维码" class="popup-qr-image">
                 </div>
             </div>
 
@@ -255,7 +256,7 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="sku_name" id="selectedSkuInput" value="<?php echo shop_e((string) ($default_sku['name'] ?? '默认规格')); ?>">
                 <input type="hidden" name="sku_price" id="selectedPriceInput" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
                 <input type="hidden" name="pay_method" id="payMethodInput" value="">
-                <button type="submit" class="popup-submit-btn">已付款，提交订单</button>
+                <button type="submit" class="popup-submit-btn">已支付，提交订单</button>
             </form>
         <?php endif; ?>
     </div>
