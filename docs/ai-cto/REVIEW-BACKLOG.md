@@ -34,3 +34,8 @@
 | Q-9.2 | `admin/views/*.php` | 后台视图残留多处内联事件属性 | ✅ 已修复 |
 | Q-9.3 | `templates/header.php` | header 仍保留内联样式块 | ✅ 已修复 |
 | Q-9.5 | `assets/js/site.js` / `assets/css/mobile.css` | 移动端菜单显隐联动需最终收口 | ✅ 已修复 |
+| Q-10.2 | `assets/js/admin.js` | `updateQrPreview()` 使用 `innerHTML` 渲染预览 | ✅ 已修复 |
+| Q-10.3 | `assets/js/site.js` | `cartBtn` 冗余点击监听可移除 | ✅ 已修复 |
+| A-11.1 | `admin/views/orders.php` / `admin/index.php` | 订单列表缺少状态筛选 | ✅ 已修复 |
+| A-11.2 | `admin/views/products.php` / `admin/index.php` | 商品列表缺少分类与状态筛选 | ✅ 已修复 |
+| A-11.3 | `admin/views/products.php` / `admin/controllers/actions.php` | 商品缺少批量上下架与批量删除 | ✅ 已修复 |

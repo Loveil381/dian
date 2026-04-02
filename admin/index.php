@@ -143,6 +143,22 @@ $perPage = 20;
 $productsPage = max(1, (int) ($_GET['products_page'] ?? 1));
 $ordersPage = max(1, (int) ($_GET['orders_page'] ?? 1));
 $usersPage = max(1, (int) ($_GET['users_page'] ?? 1));
+$orderStatusFilter = shop_normalize_order_status(trim((string) ($_GET['order_status'] ?? '')));
+$productCategoryFilter = trim((string) ($_GET['product_category'] ?? ''));
+$productStatusFilter = trim((string) ($_GET['product_status'] ?? ''));
+
+if ($productCategoryFilter !== '' && !in_array($productCategoryFilter, $categoryChoices, true)) {
+    $productCategoryFilter = '';
+}
+
+if (!in_array($productStatusFilter, ['', 'on_sale', 'off_sale'], true)) {
+    $productStatusFilter = '';
+}
+
+$orderStatusOptions = shop_order_status_options();
+if ($orderStatusFilter !== '' && !isset($orderStatusOptions[$orderStatusFilter])) {
+    $orderStatusFilter = '';
+}
 
 if ($pdo) {
     try {
@@ -157,20 +173,49 @@ if ($pdo) {
 
 $productRows = $products;
 $productPagination = shop_paginate(count($products), $perPage, $productsPage);
-$productPaginationUrl = $adminUrl . '&tab=products&products_page=';
+$productPaginationBase = $adminUrl . '&tab=products';
+if ($productCategoryFilter !== '') {
+    $productPaginationBase .= '&product_category=' . urlencode($productCategoryFilter);
+}
+if ($productStatusFilter !== '') {
+    $productPaginationBase .= '&product_status=' . urlencode($productStatusFilter);
+}
+$productPaginationUrl = $productPaginationBase . '&products_page=';
 $userPagination = shop_paginate(count($users), $perPage, $usersPage);
 $userPaginationUrl = $adminUrl . '&tab=users&users_page=';
 $orderPagination = shop_paginate(0, $perPage, $ordersPage);
-$orderPaginationUrl = $adminUrl . '&tab=orders&orders_page=';
+$orderPaginationBase = $adminUrl . '&tab=orders';
+if ($orderStatusFilter !== '') {
+    $orderPaginationBase .= '&order_status=' . urlencode($orderStatusFilter);
+}
+$orderPaginationUrl = $orderPaginationBase . '&orders_page=';
 $pagedOrderRows = [];
 
 if ($pdo) {
     try {
-        $productTotal = (int) $pdo->query("SELECT COUNT(*) FROM `{$prefix}products`")->fetchColumn();
+        $productWhere = [];
+        $productParams = [];
+        if ($productCategoryFilter !== '') {
+            $productWhere[] = 'category = ?';
+            $productParams[] = $productCategoryFilter;
+        }
+        if ($productStatusFilter !== '') {
+            $productWhere[] = 'status = ?';
+            $productParams[] = $productStatusFilter;
+        }
+        $productWhereSql = $productWhere === [] ? '' : ' WHERE ' . implode(' AND ', $productWhere);
+        $productCountStmt = $pdo->prepare("SELECT COUNT(*) FROM `{$prefix}products`" . $productWhereSql);
+        $productCountStmt->execute($productParams);
+        $productTotal = (int) $productCountStmt->fetchColumn();
         $productPagination = shop_paginate($productTotal, $perPage, $productsPage);
-        $productStmt = $pdo->prepare("SELECT * FROM `{$prefix}products` ORDER BY id ASC LIMIT ? OFFSET ?");
-        $productStmt->bindValue(1, (int) $productPagination['limit'], PDO::PARAM_INT);
-        $productStmt->bindValue(2, (int) $productPagination['offset'], PDO::PARAM_INT);
+        $productStmt = $pdo->prepare("SELECT * FROM `{$prefix}products`" . $productWhereSql . " ORDER BY id ASC LIMIT ? OFFSET ?");
+        $productBindIndex = 1;
+        foreach ($productParams as $productParam) {
+            $productStmt->bindValue($productBindIndex, $productParam, PDO::PARAM_STR);
+            $productBindIndex++;
+        }
+        $productStmt->bindValue($productBindIndex, (int) $productPagination['limit'], PDO::PARAM_INT);
+        $productStmt->bindValue($productBindIndex + 1, (int) $productPagination['offset'], PDO::PARAM_INT);
         $productStmt->execute();
         $productRows = array_map(
             static fn (array $row): array => shop_normalize_product($row, (int) ($row['id'] ?? 0)),
@@ -189,24 +234,64 @@ if ($pdo) {
             return $normalized;
         }, $userStmt->fetchAll());
 
-        $orderTotal = (int) $pdo->query("SELECT COUNT(*) FROM `{$prefix}orders`")->fetchColumn();
+        $orderWhere = [];
+        $orderParams = [];
+        if ($orderStatusFilter !== '') {
+            $orderWhere[] = 'status = ?';
+            $orderParams[] = $orderStatusFilter;
+        }
+        $orderWhereSql = $orderWhere === [] ? '' : ' WHERE ' . implode(' AND ', $orderWhere);
+        $orderCountStmt = $pdo->prepare("SELECT COUNT(*) FROM `{$prefix}orders`" . $orderWhereSql);
+        $orderCountStmt->execute($orderParams);
+        $orderTotal = (int) $orderCountStmt->fetchColumn();
         $orderPagination = shop_paginate($orderTotal, $perPage, $ordersPage);
-        $orderStmt = $pdo->prepare("SELECT * FROM `{$prefix}orders` ORDER BY id DESC LIMIT ? OFFSET ?");
-        $orderStmt->bindValue(1, (int) $orderPagination['limit'], PDO::PARAM_INT);
-        $orderStmt->bindValue(2, (int) $orderPagination['offset'], PDO::PARAM_INT);
+        $orderStmt = $pdo->prepare("SELECT * FROM `{$prefix}orders`" . $orderWhereSql . " ORDER BY id DESC LIMIT ? OFFSET ?");
+        $orderBindIndex = 1;
+        foreach ($orderParams as $orderParam) {
+            $orderStmt->bindValue($orderBindIndex, $orderParam, PDO::PARAM_STR);
+            $orderBindIndex++;
+        }
+        $orderStmt->bindValue($orderBindIndex, (int) $orderPagination['limit'], PDO::PARAM_INT);
+        $orderStmt->bindValue($orderBindIndex + 1, (int) $orderPagination['offset'], PDO::PARAM_INT);
         $orderStmt->execute();
         $pagedOrderRows = array_map('shop_normalize_order', $orderStmt->fetchAll());
         $orderRows = $pagedOrderRows;
     } catch (PDOException $exception) {
         shop_log_exception('后台分页查询失败', $exception);
         $productPagination = shop_paginate(count($products), $perPage, $productsPage);
-        $productRows = array_slice($products, (int) $productPagination['offset'], (int) $productPagination['limit']);
+        $productRows = array_values(array_filter($products, static function (array $product) use ($productCategoryFilter, $productStatusFilter): bool {
+            if ($productCategoryFilter !== '' && (string) ($product['category'] ?? '') !== $productCategoryFilter) {
+                return false;
+            }
+            if ($productStatusFilter !== '' && (string) ($product['status'] ?? '') !== $productStatusFilter) {
+                return false;
+            }
+
+            return true;
+        }));
+        $productPagination = shop_paginate(count($productRows), $perPage, $productsPage);
+        $productRows = array_slice($productRows, (int) $productPagination['offset'], (int) $productPagination['limit']);
         $userPagination = shop_paginate(count($users), $perPage, $usersPage);
         $userRows = array_slice($users, (int) $userPagination['offset'], (int) $userPagination['limit']);
-        $orderPagination = shop_paginate(0, $perPage, $ordersPage);
+        $fallbackOrders = array_values(array_filter(shop_get_orders(), static function (array $order) use ($orderStatusFilter): bool {
+            return $orderStatusFilter === '' || (string) ($order['status'] ?? '') === $orderStatusFilter;
+        }));
+        $orderPagination = shop_paginate(count($fallbackOrders), $perPage, $ordersPage);
+        $orderRows = array_slice($fallbackOrders, (int) $orderPagination['offset'], (int) $orderPagination['limit']);
     }
 } else {
-    $productRows = array_slice($products, (int) $productPagination['offset'], (int) $productPagination['limit']);
+    $productRows = array_values(array_filter($products, static function (array $product) use ($productCategoryFilter, $productStatusFilter): bool {
+        if ($productCategoryFilter !== '' && (string) ($product['category'] ?? '') !== $productCategoryFilter) {
+            return false;
+        }
+        if ($productStatusFilter !== '' && (string) ($product['status'] ?? '') !== $productStatusFilter) {
+            return false;
+        }
+
+        return true;
+    }));
+    $productPagination = shop_paginate(count($productRows), $perPage, $productsPage);
+    $productRows = array_slice($productRows, (int) $productPagination['offset'], (int) $productPagination['limit']);
     $userRows = array_slice($users, (int) $userPagination['offset'], (int) $userPagination['limit']);
 }
 
@@ -272,6 +357,9 @@ foreach ($dbOrders as $order) {
 if ($pdo && $pagedOrderRows !== []) {
     $orderRows = $pagedOrderRows;
 } else {
+    $orderRows = array_values(array_filter($orderRows, static function (array $order) use ($orderStatusFilter): bool {
+        return $orderStatusFilter === '' || (string) ($order['status'] ?? '') === $orderStatusFilter;
+    }));
     $orderPagination = shop_paginate(count($orderRows), $perPage, $ordersPage);
     $orderRows = array_slice($orderRows, (int) $orderPagination['offset'], (int) $orderPagination['limit']);
 }

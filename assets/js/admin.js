@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bindAdminFileInputs();
     bindAdminSkuEvents();
     bindAdminPaymentInputs();
+    bindAdminProductSelection();
 
     if (document.getElementById('imagesTextarea')) {
         setTimeout(syncGallery, 500);
@@ -144,6 +145,35 @@ function bindAdminPaymentInputs() {
     });
 }
 
+function bindAdminProductSelection() {
+    const selectAllCheckbox = document.getElementById('selectAllProducts');
+    const productCheckboxes = Array.from(document.querySelectorAll('[data-product-checkbox]'));
+
+    if (!(selectAllCheckbox instanceof HTMLInputElement) || productCheckboxes.length === 0) {
+        return;
+    }
+
+    selectAllCheckbox.addEventListener('change', () => {
+        productCheckboxes.forEach((checkbox) => {
+            if (checkbox instanceof HTMLInputElement) {
+                checkbox.checked = selectAllCheckbox.checked;
+            }
+        });
+    });
+
+    productCheckboxes.forEach((checkbox) => {
+        if (!(checkbox instanceof HTMLInputElement)) {
+            return;
+        }
+
+        checkbox.addEventListener('change', () => {
+            const checkedCount = productCheckboxes.filter((item) => item instanceof HTMLInputElement && item.checked).length;
+            selectAllCheckbox.checked = checkedCount === productCheckboxes.length;
+            selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < productCheckboxes.length;
+        });
+    });
+}
+
 // 商品编辑相关函数。
 function addSkuItem() {
     const container = document.getElementById('sku-container');
@@ -211,7 +241,7 @@ function syncGallery() {
     }
 
     const currentCover = coverInput.value.trim();
-    gallery.innerHTML = '';
+    gallery.replaceChildren();
 
     textarea.value
         .split('\n')
@@ -249,12 +279,24 @@ function updateQrPreview(type) {
     }
 
     const url = input.value.trim();
+    preview.replaceChildren();
+
     if (url) {
-        preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: contain;" alt="收款码">`;
+        const image = document.createElement('img');
+        image.src = url;
+        image.alt = '收款码';
+        image.style.width = '100%';
+        image.style.height = '100%';
+        image.style.objectFit = 'contain';
+        preview.appendChild(image);
         return;
     }
 
-    preview.innerHTML = `<span style="color: #94a3b8; font-size: 12px;">暂未配置收款码</span>`;
+    const emptyText = document.createElement('span');
+    emptyText.style.color = '#94a3b8';
+    emptyText.style.fontSize = '12px';
+    emptyText.innerText = '暂未配置收款码';
+    preview.appendChild(emptyText);
 }
 
 function uploadPaymentQr(event, type) {

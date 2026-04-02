@@ -6,6 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../../includes/order_status.php';
     csrf_verify();
     $reqTab = $_POST['tab'] ?? '';
+    $reqProductsPage = max(1, (int) ($_POST['products_page'] ?? 1));
+    $reqOrdersPage = max(1, (int) ($_POST['orders_page'] ?? 1));
+    $reqUsersPage = max(1, (int) ($_POST['users_page'] ?? 1));
+    $reqOrderStatus = shop_normalize_order_status(trim((string) ($_POST['order_status'] ?? '')));
+    $reqProductCategory = trim((string) ($_POST['product_category'] ?? ''));
+    $reqProductStatus = trim((string) ($_POST['product_status'] ?? ''));
     $action = (string) ($_POST['admin_action'] ?? '');
     $message = '操作完成';
     $messageType = 'success';
@@ -169,6 +175,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message = '商品已删除。';
             } else {
                 $message = '删除失败。';
+                $messageType = 'error';
+            }
+            break;
+
+        case 'batch_product_action':
+            $ids = array_values(array_unique(array_filter(array_map('intval', (array) ($_POST['ids'] ?? [])), static fn (int $id): bool => $id > 0)));
+            $batchAction = trim((string) ($_POST['batch_action'] ?? ''));
+
+            if ($ids === []) {
+                $message = '请先选择要操作的商品。';
+                $messageType = 'error';
+                break;
+            }
+
+            if (!in_array($batchAction, ['on_sale', 'off_sale', 'delete'], true)) {
+                $message = '不支持的批量操作。';
+                $messageType = 'error';
+                break;
+            }
+
+            if ($batchAction === 'delete') {
+                $products = array_values(array_filter($products, static fn (array $product): bool => !in_array((int) ($product['id'] ?? 0), $ids, true)));
+                if (shop_save_products($products)) {
+                    $message = '已批量删除选中商品。';
+                } else {
+                    $message = '批量删除失败。';
+                    $messageType = 'error';
+                }
+                break;
+            }
+
+            foreach ($products as $index => $product) {
+                if (in_array((int) ($product['id'] ?? 0), $ids, true)) {
+                    $products[$index]['status'] = $batchAction;
+                }
+            }
+
+            if (shop_save_products($products)) {
+                $message = $batchAction === 'on_sale' ? '已批量上架选中商品。' : '已批量下架选中商品。';
+            } else {
+                $message = '批量更新商品状态失败。';
                 $messageType = 'error';
             }
             break;
@@ -479,6 +526,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     shop_admin_flash($message, $messageType);
-    header('Location: ' . $adminUrl . ($reqTab !== '' ? '&tab=' . urlencode($reqTab) : ''));
+    $redirectUrl = $adminUrl . ($reqTab !== '' ? '&tab=' . urlencode($reqTab) : '');
+    if ($reqTab === 'products') {
+        $redirectUrl .= '&products_page=' . $reqProductsPage;
+        if ($reqProductCategory !== '') {
+            $redirectUrl .= '&product_category=' . urlencode($reqProductCategory);
+        }
+        if ($reqProductStatus !== '') {
+            $redirectUrl .= '&product_status=' . urlencode($reqProductStatus);
+        }
+    } elseif ($reqTab === 'orders') {
+        $redirectUrl .= '&orders_page=' . $reqOrdersPage;
+        if ($reqOrderStatus !== '') {
+            $redirectUrl .= '&order_status=' . urlencode($reqOrderStatus);
+        }
+    } elseif ($reqTab === 'users') {
+        $redirectUrl .= '&users_page=' . $reqUsersPage;
+    }
+    header('Location: ' . $redirectUrl);
     exit;
 }
