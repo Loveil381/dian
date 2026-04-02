@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../../includes/csrf.php';
+    require_once __DIR__ . '/../../includes/order_status.php';
     csrf_verify();
     $reqTab = $_POST['tab'] ?? '';
     $action = (string) ($_POST['admin_action'] ?? '');
@@ -315,12 +316,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = shop_admin_post_int('id');
             $tracking = shop_admin_post_string('tracking_numbers');
             $expressCompany = shop_admin_post_string('express_company');
-            $status = shop_admin_post_string('status');
+            $status = shop_normalize_order_status(shop_admin_post_string('status'));
             
             $pdo = get_db_connection();
             $prefix = get_db_prefix();
             if ($pdo) {
                 try {
+                    $status_options = shop_order_status_options();
+                    if (!isset($status_options[$status])) {
+                        $message = '不允许的订单状态。';
+                        $messageType = 'error';
+                        break;
+                    }
+
+                    $status_stmt = $pdo->prepare("SELECT status FROM `{$prefix}orders` WHERE id = ? LIMIT 1");
+                    $status_stmt->execute([$id]);
+                    $current_status = $status_stmt->fetchColumn();
+
+                    if ($current_status === false) {
+                        $message = '未找到对应订单。';
+                        $messageType = 'error';
+                        break;
+                    }
+
+                    $current_status = shop_normalize_order_status((string) $current_status);
+                    if (!shop_can_transition($current_status, $status)) {
+                        $from_label = (string) ($status_options[$current_status]['label'] ?? '未知状态');
+                        $to_label = (string) ($status_options[$status]['label'] ?? '未知状态');
+                        $message = '订单状态不能从“' . $from_label . '”变更为“' . $to_label . '”。';
+                        $messageType = 'error';
+                        break;
+                    }
+
                     $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET tracking_numbers = ?, express_company = ?, status = ? WHERE id = ?");
                     $stmt->execute([$tracking, $expressCompany, $status, $id]);
                     $message = '订单已更新。';
@@ -336,9 +363,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'update_order_status':
             $id = shop_admin_post_int('id');
-            $status = shop_admin_post_string('status');
-            $allowed_status = ['已支付 待确认 未发货', '已支付 已确认 待发货', '已支付 已确认 已发货', 'pending', 'paid', 'shipped', 'completed', 'cancelled'];
-            if (!in_array($status, $allowed_status, true)) {
+            $status = shop_normalize_order_status(shop_admin_post_string('status'));
+            $status_options = shop_order_status_options();
+            if (!isset($status_options[$status])) {
                 $message = '不允许的订单状态。';
                 $messageType = 'error';
                 break;
@@ -347,6 +374,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $prefix = get_db_prefix();
             if ($pdo) {
                 try {
+                    $status_stmt = $pdo->prepare("SELECT status FROM `{$prefix}orders` WHERE id = ? LIMIT 1");
+                    $status_stmt->execute([$id]);
+                    $current_status = $status_stmt->fetchColumn();
+
+                    if ($current_status === false) {
+                        $message = '未找到对应订单。';
+                        $messageType = 'error';
+                        break;
+                    }
+
+                    $current_status = shop_normalize_order_status((string) $current_status);
+                    if (!shop_can_transition($current_status, $status)) {
+                        $from_label = (string) ($status_options[$current_status]['label'] ?? '未知状态');
+                        $to_label = (string) ($status_options[$status]['label'] ?? '未知状态');
+                        $message = '订单状态不能从“' . $from_label . '”变更为“' . $to_label . '”。';
+                        $messageType = 'error';
+                        break;
+                    }
+
                     $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET status = ? WHERE id = ?");
                     $stmt->execute([$status, $id]);
                     $message = '订单状态已更新。';

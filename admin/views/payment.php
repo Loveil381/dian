@@ -22,9 +22,9 @@
                 <label class="field field-full">
                     <span class="label">微信支付 (可填图片URL，也可点击上传)</span>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="wechat_qr" name="wechat_qr" value="<?php echo shop_e($wechatQr); ?>" placeholder="微信收款码地址 / 链接" style="flex: 1;" oninput="updateQrPreview('wechat')">
-                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('wechat_upload').click()">上传截图</button>
-                        <input type="file" id="wechat_upload" accept="image/*" style="display: none;" onchange="uploadPaymentQr(event, 'wechat')">
+                        <input type="text" id="wechat_qr" data-qr-input="wechat" name="wechat_qr" value="<?php echo shop_e($wechatQr); ?>" placeholder="微信收款码地址 / 链接" style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" data-trigger-click="wechat_upload">上传截图</button>
+                        <input type="file" id="wechat_upload" data-payment-upload="wechat" accept="image/*" style="display: none;">
                     </div>
                     <div id="wechat_preview" style="margin-top: 10px; width: 150px; height: 150px; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                         <?php if ($wechatQr): ?>
@@ -38,9 +38,9 @@
                 <label class="field field-full">
                     <span class="label">支付宝支付 (可填图片URL，也可点击上传)</span>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="alipay_qr" name="alipay_qr" value="<?php echo shop_e($alipayQr); ?>" placeholder="支付宝收款码地址 / 链接" style="flex: 1;" oninput="updateQrPreview('alipay')">
-                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('alipay_upload').click()">上传截图</button>
-                        <input type="file" id="alipay_upload" accept="image/*" style="display: none;" onchange="uploadPaymentQr(event, 'alipay')">
+                        <input type="text" id="alipay_qr" data-qr-input="alipay" name="alipay_qr" value="<?php echo shop_e($alipayQr); ?>" placeholder="支付宝收款码地址 / 链接" style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" data-trigger-click="alipay_upload">上传截图</button>
+                        <input type="file" id="alipay_upload" data-payment-upload="alipay" accept="image/*" style="display: none;">
                     </div>
                     <div id="alipay_preview" style="margin-top: 10px; width: 150px; height: 150px; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                         <?php if ($alipayQr): ?>

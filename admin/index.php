@@ -284,32 +284,13 @@ $orderStats = [
 ];
 
 foreach ($orders as $order) {
-    $status = (string) ($order['status'] ?? '');
+    $status = shop_normalize_order_status((string) ($order['status'] ?? ''));
 
-    if ($status === '已支付 待确认 未发货') {
+    if ($status === 'paid') {
         $orderStats['pending_confirm']++;
-    } elseif ($status === '已支付 已确认 待发货') {
+    } elseif ($status === 'shipped') {
         $orderStats['pending_ship']++;
-    } elseif ($status === '已支付 已确认 已发货') {
-        $orderStats['done']++;
-    }
-}
-
-$orderStats = [
-    'pending_confirm' => 0,
-    'pending_ship' => 0,
-    'done' => 0,
-    'total' => count($orders),
-];
-
-foreach ($orders as $order) {
-    $status = (string) ($order['status'] ?? '');
-
-    if ($status === 'paid' || $status === '已支付，待发货') {
-        $orderStats['pending_confirm']++;
-    } elseif ($status === 'shipped' || $status === '已发货') {
-        $orderStats['pending_ship']++;
-    } elseif ($status === 'completed' || $status === '已完成') {
+    } elseif ($status === 'completed') {
         $orderStats['done']++;
     }
 }

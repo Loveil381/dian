@@ -1,6 +1,5 @@
+<?php declare(strict_types=1);
 
-<!-- templates/header.php -->
-<?php
 $currentPage = $currentPage ?? 'home';
 $currentKeyword = (string) ($_GET['keyword'] ?? '');
 $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum, $item) => $sum + ($item['quantity'] ?? 0), 0) : 0;
@@ -12,104 +11,14 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? '魔女小店'; ?></title>
     <link rel="stylesheet" href="assets/css/site.css">
-    <style>
-        :root {
-            --nav-bg: #ffffff;
-            --icon-color: #333333;
-            --icon-hover: #000000;
-            --divider-color: rgba(230, 233, 238, 0.9);
-            --badge-bg: #ff4d4f;
-            --badge-text: #ffffff;
-            --link-color: #666666;
-            --link-active-bg: #f0f2f5;
-            --link-hover-bg: #f5f6f8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #fafafa;
-        }
-
-        header {
-            background-color: var(--nav-bg);
-            padding: 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 1px 8px rgba(20, 20, 20, 0.04);
-        }
-
-        .page-nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 12px 16px;
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 8px;
-        }
-
-        .page-link {
-            text-align: center;
-            text-decoration: none;
-            color: var(--link-color);
-            padding: 12px 6px;
-            font-size: 14px;
-            border-radius: 12px;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        .page-link:hover {
-            color: #111;
-            background-color: var(--link-hover-bg);
-        }
-
-        .page-link.active {
-            color: #111;
-            font-weight: 600;
-            background-color: var(--link-active-bg);
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 0;
-            }
-
-            .page-nav {
-                padding: 10px 12px;
-                gap: 6px;
-            }
-
-            .page-link {
-                font-size: 13px;
-                padding: 10px 3px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/mobile.css">
 </head>
 <body>
 
 <header>
     <div class="nav-container">
         <div class="nav-left">
-            <button class="icon-btn" aria-label="打开菜单" id="menuBtn" type="button">
+            <button class="icon-btn" aria-label="打开菜单" aria-expanded="false" aria-controls="siteNav" id="menuBtn" type="button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -144,7 +53,7 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
         </div>
     </div>
 
-    <nav class="page-nav" aria-label="站点主导航">
+    <nav class="page-nav" id="siteNav" aria-label="站点主导航">
         <a class="page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>
         <a class="page-link <?php echo $currentPage === 'products' ? 'active' : ''; ?>" href="index.php?page=products">商品页</a>
         <a class="page-link <?php echo $currentPage === 'orders' ? 'active' : ''; ?>" href="index.php?page=orders">订单</a>

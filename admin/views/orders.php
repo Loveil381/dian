@@ -1,5 +1,6 @@
 <section class="grid">
     <div class="panel section" id="admin-orders">
+        <?php $order_status_options = shop_order_status_options(); ?>
         <div class="section-head">
             <div>
                 <h2 class="section-title">订单管理</h2>
@@ -55,9 +56,10 @@
                                     <div class="meta"><?php echo shop_e((string) ($order['express_company'] ?? '')); ?></div>
                                 </td>
                                 <td>
+                                    <?php $status_meta = shop_order_status_meta((string) ($order['status'] ?? 'pending')); ?>
                                     <div class="name"><?php echo shop_format_price((float) ($order['total'] ?? 0)); ?></div>
-                                    <span class="status-pill" style="margin-top: 4px; display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
-                                        <?php echo shop_e(shop_admin_order_status_label((string) ($order['status'] ?? 'pending'))); ?>
+                                    <span class="status-pill" style="margin-top: 4px; display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: <?php echo shop_e((string) $status_meta['badge_background']); ?>; color: <?php echo shop_e((string) $status_meta['badge_color']); ?>; border: 1px solid <?php echo shop_e((string) $status_meta['badge_background']); ?>;">
+                                        <?php echo shop_e((string) $status_meta['label']); ?>
                                     </span>
                                 </td>
                                 <td>
@@ -67,15 +69,14 @@
                                         <input type="hidden" name="admin_action" value="update_order_status">
                                         <input type="hidden" name="id" value="<?php echo (int) ($order['id'] ?? 0); ?>">
                                         <select name="status" style="width: 100px; padding: 4px; font-size: 12px;">
-                                            <option value="pending" <?php echo in_array((string) ($order['status'] ?? ''), ['pending', '待支付'], true) ? 'selected' : ''; ?>>待支付</option>
-                                            <option value="paid" <?php echo in_array((string) ($order['status'] ?? ''), ['paid', '已支付，待发货'], true) ? 'selected' : ''; ?>>已支付</option>
-                                            <option value="shipped" <?php echo in_array((string) ($order['status'] ?? ''), ['shipped', '已发货'], true) ? 'selected' : ''; ?>>已发货</option>
-                                            <option value="completed" <?php echo in_array((string) ($order['status'] ?? ''), ['completed', '已完成'], true) ? 'selected' : ''; ?>>已完成</option>
-                                            <option value="cancelled" <?php echo in_array((string) ($order['status'] ?? ''), ['cancelled', '已取消'], true) ? 'selected' : ''; ?>>已取消</option>
+                                            <?php $current_status = shop_normalize_order_status((string) ($order['status'] ?? 'pending')); ?>
+                                            <?php foreach ($order_status_options as $status_key => $status_option): ?>
+                                                <option value="<?php echo shop_e($status_key); ?>" <?php echo $current_status === $status_key ? 'selected' : ''; ?>><?php echo shop_e((string) $status_option['label']); ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                         <button class="btn btn-soft btn-sm" type="submit" style="padding: 4px 8px; font-size: 12px; border-radius: 4px;">更新状态</button>
                                     </form>
-                                    <form method="post" onsubmit="return confirm('确认永久删除这笔订单吗？');" style="margin-top: 8px;">
+                                    <form method="post" data-confirm="确认永久删除这笔订单吗？" style="margin-top: 8px;">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                         <input type="hidden" name="admin_action" value="delete_order">

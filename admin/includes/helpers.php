@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+require_once __DIR__ . '/../../includes/order_status.php';
+
 function shop_admin_flash(string $message, string $type = 'success'): void
 {
     $_SESSION['admin_flash'] = [
@@ -20,26 +22,12 @@ function shop_admin_status_class(string $status): string
 
 function shop_admin_order_status_label(string $status): string
 {
-    return match ($status) {
-        'pending' => '待支付',
-        'paid', '已支付，待发货' => '待发货',
-        'shipped', '已发货' => '已发货',
-        'completed', '已完成' => '已完成',
-        'cancelled', '已取消' => '已取消',
-        default => $status !== '' ? $status : '未知',
-    };
+    return (string) (shop_order_status_meta($status)['label'] ?? '未知状态');
 }
 
 function shop_admin_order_status_class(string $status): string
 {
-    return match ($status) {
-        'pending' => 'warning',
-        'paid', '已支付，待发货' => 'info',
-        'shipped', '已发货' => 'success',
-        'completed', '已完成' => 'success',
-        'cancelled', '已取消' => 'danger',
-        default => 'muted',
-    };
+    return (string) (shop_order_status_meta($status)['admin_class'] ?? 'muted');
 }
 
 function shop_admin_user_status_label(string $lastLogin): string

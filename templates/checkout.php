@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $customer_name,
             $customer_phone,
             $customer_address,
-            '已支付，待发货',
+            'paid',
             $pay_method,
             $total,
             shop_encode_order_items($order_items),

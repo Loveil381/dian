@@ -1,5 +1,5 @@
 # 评审问题 Backlog
-> 最后更新: 2026-04-02 | 当前轮次: #8
+> 最后更新: 2026-04-02 | 当前轮次: #10
 
 ## Critical
 | # | 位置 | 问题 | 状态 |
@@ -22,6 +22,7 @@
 | C-4 | `create_order.php` / `checkout.php` | 存在两条下单路径 | ✅ 已修复 |
 | I-7 | `footer.php` | 页脚内联脚本未迁移 | ✅ 已修复 |
 | Q-6.1 | `templates/product_detail.php` | 缩略图 inline onclick 存在注入风险 | ✅ 已修复 |
+| Q-8.6 | `admin/views/products.php` | SKU 编辑仍依赖内联脚本初始化 | ✅ 已修复 |
 
 ## Minor
 | # | 位置 | 问题 | 状态 |
@@ -29,3 +30,7 @@
 | F-2 | `header.php` | 搜索交互仍较轻量 | ⏳ 待优化 |
 | UX-2 | 找回密码 | 尚未接入邮件服务 | ⏳ 技术债 |
 | P-1 | 后台列表 | 缺少分页 | ✅ 已修复 |
+| Q-9.1 | `admin/controllers/actions.php` | `update_order` 缺少状态流转校验 | ✅ 已修复 |
+| Q-9.2 | `admin/views/*.php` | 后台视图残留多处内联事件属性 | ✅ 已修复 |
+| Q-9.3 | `templates/header.php` | header 仍保留内联样式块 | ✅ 已修复 |
+| Q-9.5 | `assets/js/site.js` / `assets/css/mobile.css` | 移动端菜单显隐联动需最终收口 | ✅ 已修复 |

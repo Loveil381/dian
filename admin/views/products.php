@@ -47,7 +47,7 @@
                 
                 <div class="field field-full">
                     <span class="label">商品规格 (SKU)</span>
-                    <div id="sku-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div id="sku-container" data-next-index="<?php echo count($skus); ?>" style="display: flex; flex-direction: column; gap: 10px;">
                         <?php 
                         $skus = [];
                         if (!empty($selectedProduct['sku'])) {
@@ -62,24 +62,20 @@
                             <input type="text" name="sku[<?php echo $index; ?>][name]" value="<?php echo shop_e($sku['name'] ?? ''); ?>" placeholder="规格名 (如: 红色)" style="flex: 2;">
                             <input type="number" name="sku[<?php echo $index; ?>][stock]" value="<?php echo (int)($sku['stock'] ?? 0); ?>" placeholder="库存" style="flex: 1;" min="0">
                             <input type="number" name="sku[<?php echo $index; ?>][price]" value="<?php echo (float)($sku['price'] ?? 0); ?>" placeholder="价格" style="flex: 1;" step="0.01" min="0">
-                            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">删除</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-sku-remove>删除</button>
                         </div>
                         <?php endforeach; ?>
                     </div>
-                    <button type="button" class="btn btn-secondary btn-sm" style="align-self: flex-start; margin-top: 10px;" onclick="addSkuItem()">+ 添加规格</button>
-                    <script>
-                        let skuIndex = <?php echo count($skus); ?>;
-
-                    </script>
+                    <button type="button" class="btn btn-secondary btn-sm" data-add-sku style="align-self: flex-start; margin-top: 10px;">+ 添加规格</button>
                 </div>
                 
                 <label class="field field-full">
                     <span class="label">商品多图 (一行一张图片链接，也可直接上传)</span>
                     <textarea id="imagesTextarea" name="images" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"><?php echo shop_e(implode("\n", $selectedProduct['images'] ?? [])); ?></textarea>
-                    <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                    <input type="file" id="imageUpload" data-image-upload multiple accept="image/*" style="display: none;">
                     <div style="display: flex; gap: 10px; margin-top: 5px;">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('imageUpload').click()">上传文件</button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="syncGallery()">刷新图库预览</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-trigger-click="imageUpload">上传文件</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-sync-gallery>刷新图库预览</button>
                     </div>
                     
                     <div id="galleryPreview" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
@@ -218,7 +214,7 @@
                             <td>
                                 <div class="row-actions">
                                     <a class="btn btn-secondary btn-sm" href="index.php?page=admin&tab=products&edit=<?php echo (int) ($product['id'] ?? 0); ?>">编辑</a>
-                                    <form method="post" onsubmit="return confirm('确定删除该商品？');">
+                                    <form method="post" data-confirm="确定删除该商品？">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                         <input type="hidden" name="admin_action" value="delete_product">
