@@ -176,6 +176,7 @@ usort($lowStockProducts, static fn (array $a, array $b): int => ((int) ($a['stoc
 
 $dbOrders = shop_get_orders();
 $orders = [];
+$orderRows = [];
 foreach ($dbOrders as $order) {
     $orders[] = [
         'id' => $order['id'],
@@ -188,6 +189,19 @@ foreach ($dbOrders as $order) {
         'time' => $order['time'],
         'total' => (float)$order['total'],
         'tracking_numbers' => $order['tracking_numbers'] ?? '',
+    ];
+
+    $orderRows[] = [
+        'id' => (int) ($order['id'] ?? 0),
+        'order_no' => (string) ($order['order_no'] ?? ''),
+        'created_at' => (string) ($order['time'] ?? ''),
+        'items_data' => $order['items_data'] ?? [],
+        'items_summary' => $order['items_summary'] ?? '暂无商品',
+        'quantity' => shop_order_items_quantity($order['items_data'] ?? []),
+        'user_id' => $order['user_id'] ?? null,
+        'express_company' => (string) ($order['express_company'] ?? ''),
+        'total_amount' => (float) ($order['total'] ?? 0),
+        'status' => (string) ($order['status'] ?? ''),
     ];
 }
 
@@ -206,6 +220,25 @@ foreach ($orders as $order) {
     } elseif ($status === '已支付 已确认 待发货') {
         $orderStats['pending_ship']++;
     } elseif ($status === '已支付 已确认 已发货') {
+        $orderStats['done']++;
+    }
+}
+
+$orderStats = [
+    'pending_confirm' => 0,
+    'pending_ship' => 0,
+    'done' => 0,
+    'total' => count($orders),
+];
+
+foreach ($orders as $order) {
+    $status = (string) ($order['status'] ?? '');
+
+    if ($status === 'paid' || $status === '已支付，待发货') {
+        $orderStats['pending_confirm']++;
+    } elseif ($status === 'shipped' || $status === '已发货') {
+        $orderStats['pending_ship']++;
+    } elseif ($status === 'completed' || $status === '已完成') {
         $orderStats['done']++;
     }
 }
