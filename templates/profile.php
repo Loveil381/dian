@@ -6,6 +6,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once __DIR__ . '/../data/products.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 $pageTitle = '魔女小店 - 个人中心';
 $currentPage = 'profile';
@@ -68,6 +69,7 @@ include __DIR__ . '/header.php';
             
             if ($isLoggedIn && $pdo) {
                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_profile') {
+                    csrf_verify();
                     $userName = trim($_POST['name'] ?? '');
                     $userPhone = trim($_POST['phone'] ?? '');
                     $userAddress = trim($_POST['address'] ?? '');
@@ -75,7 +77,7 @@ include __DIR__ . '/header.php';
                     try {
                         $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET name=?, phone=?, address=? WHERE id=?");
                         $stmt->execute([$userName, $userPhone, $userAddress, $_SESSION['user_id']]);
-                        $_SESSION['user_name'] = $userName; // Update session
+                        $_SESSION['user_name'] = $userName; // 同步更新会话中的昵称。
                         echo '<div style="margin-top:16px; padding: 10px; background: #ecfdf5; color: #047857; border-radius: 8px; font-size: 14px;">收货信息已保存</div>';
                     } catch (PDOException $e) {}
                 } else {
@@ -90,12 +92,14 @@ include __DIR__ . '/header.php';
                     } catch (PDOException $e) {}
                 }
             } else if (!$isLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_profile') {
-                 // For guest, save to cookie/session for this visit if needed, or simply warn
+                 csrf_verify();
+                 // 游客提交时仅给出提示，不落库存储。
                  echo '<div style="margin-top:16px; padding: 10px; background: #fffbeb; color: #d97706; border-radius: 8px; font-size: 14px;">访客状态下无法永久保存收货信息，请注册账号。</div>';
             }
             ?>
             
             <form method="post" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="action" value="save_profile">
                 <input type="text" name="name" value="<?php echo shop_e($userName); ?>" placeholder="收货人姓名" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;">
                 <input type="text" name="phone" value="<?php echo shop_e($userPhone); ?>" placeholder="手机号" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;">

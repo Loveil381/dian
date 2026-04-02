@@ -121,6 +121,7 @@ $selectedUserForm = $editingUser !== null ? $editingUser : [
     'id' => 0,
     'username' => '',
     'name' => '',
+    'email' => '',
     'phone' => '',
     'level' => '普通会员',
     'status' => 'active',
@@ -128,6 +129,8 @@ $selectedUserForm = $editingUser !== null ? $editingUser : [
     'last_login' => date('Y-m-d H:i:s'),
     'note' => '',
 ];
+
+$userRows = $users;
 
 $pdo = get_db_connection();
 $prefix = get_db_prefix();
@@ -200,7 +203,7 @@ foreach ($dbOrders as $order) {
         'quantity' => shop_order_items_quantity($order['items_data'] ?? []),
         'user_id' => $order['user_id'] ?? null,
         'express_company' => (string) ($order['express_company'] ?? ''),
-        'total_amount' => (float) ($order['total'] ?? 0),
+        'total' => (float) ($order['total'] ?? 0),
         'status' => (string) ($order['status'] ?? ''),
     ];
 }
@@ -259,7 +262,7 @@ foreach ($users as $user) {
     }
 }
 
-// Update roles member count
+// 更新角色成员数。
 $roles = [
     ['name' => '超级管理员', 'members' => 0, 'scope' => '全站', 'desc' => '拥有最高权限'],
     ['name' => '管理员', 'members' => 0, 'scope' => '后台', 'desc' => '管理商品、订单等基础业务'],
@@ -301,7 +304,7 @@ foreach ($categorySummary as $summary) {
     $categoryUsageMap[(string) ($summary['name'] ?? '')] = $summary;
 }
 
-// Plugin code removed
+// 插件数据已独立，不再在此处构造旧结构。
 
 $categoryManagementRows = [];
 foreach ($categories as $category) {
@@ -324,7 +327,7 @@ foreach ($categories as $category) {
 
 usort($categoryManagementRows, static fn (array $a, array $b): int => ((int) ($a['sort'] ?? 0)) <=> ((int) ($b['sort'] ?? 0)) ?: strcmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? '')));
 
-// Roles now calculated dynamically above
+// 角色数据已在上方动态统计。
 
 $settings = [
     ['label' => '站点名称', 'value' => '魔女小店'],

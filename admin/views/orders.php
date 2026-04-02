@@ -55,7 +55,7 @@
                                     <div class="meta"><?php echo shop_e((string) ($order['express_company'] ?? '')); ?></div>
                                 </td>
                                 <td>
-                                    <div class="name"><?php echo shop_format_price((float) ($order['total_amount'] ?? 0)); ?></div>
+                                    <div class="name"><?php echo shop_format_price((float) ($order['total'] ?? 0)); ?></div>
                                     <span class="status-pill" style="margin-top: 4px; display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
                                         <?php echo shop_e(shop_admin_order_status_label((string) ($order['status'] ?? 'pending'))); ?>
                                     </span>

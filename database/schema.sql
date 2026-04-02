@@ -17,8 +17,11 @@ CREATE TABLE IF NOT EXISTS {PREFIX}admin_users (
 CREATE TABLE IF NOT EXISTS {PREFIX}users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(80) NOT NULL,
+    email VARCHAR(120) DEFAULT NULL,
     username VARCHAR(50) NULL UNIQUE,
     password_hash VARCHAR(255) NULL,
+    reset_token VARCHAR(128) DEFAULT NULL,
+    reset_expires DATETIME NULL,
     phone VARCHAR(20) DEFAULT NULL,
     level VARCHAR(30) DEFAULT '普通会员',
     status VARCHAR(20) DEFAULT 'active',
@@ -28,7 +31,9 @@ CREATE TABLE IF NOT EXISTS {PREFIX}users (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uk_users_username (username)
+    UNIQUE KEY uk_users_username (username),
+    UNIQUE KEY uk_users_email (email),
+    KEY idx_users_reset_token (reset_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS {PREFIX}categories (
