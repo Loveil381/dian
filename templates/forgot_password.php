@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/logger.php';
 require_once __DIR__ . '/../includes/mailer.php';
 require_once __DIR__ . '/../data/products.php';
 
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "操作过于频繁，请 {$wait} 秒后再试。";
         } else {
             $pdo = get_db_connection();
-            if (!$pdo) {
+            if (!$pdo instanceof PDO) {
                 $error = '数据库连接失败，请稍后再试。';
             } else {
                 $prefix = get_db_prefix();
@@ -42,12 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $stmt = $pdo->prepare("SELECT id, email FROM `{$prefix}users` WHERE email = ? LIMIT 1");
                     $stmt->execute([$submitted_email]);
-                    $user = $stmt->fetch();
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    $success = '如果该邮箱已注册，系统会发送重置链接；当前页面也会提供一份可直接使用的链接。';
-                    if ($user) {
+                    $success = '如果该邮箱已注册，系统会发送重置链接。当前环境也会在下方显示重置链接，方便直接继续流程。';
+                    if (is_array($user)) {
                         $token = bin2hex(random_bytes(32));
                         $hashed = hash('sha256', $token);
+
                         $update_stmt = $pdo->prepare("UPDATE `{$prefix}users` SET reset_token = ?, reset_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
                         $update_stmt->execute([$hashed, (int) ($user['id'] ?? 0)]);
 
@@ -58,19 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $reset_link = $scheme . '://' . $host . $base_path . '/index.php?page=reset_password&token=' . urlencode($token);
 
                         $mail_subject = '魔女小店 — 密码重置';
-                        $mail_body = "你好，\n\n";
-                        $mail_body .= "请在 1 小时内打开以下链接完成密码重置：\n";
+                        $mail_body = "您好，\n\n";
+                        $mail_body .= "请在 1 小时内打开以下链接重置密码：\n";
                         $mail_body .= $reset_link . "\n\n";
-                        $mail_body .= "如果这不是你的操作，请忽略这封邮件。";
+                        $mail_body .= "如果这不是您的操作，请忽略本邮件。";
 
                         if (!shop_send_mail((string) ($user['email'] ?? ''), $mail_subject, $mail_body)) {
-                            $mail_warning = '邮件发送失败，请直接使用下方链接';
+                            $mail_warning = '邮件发送失败，请直接使用下方链接。';
                         }
                     }
 
                     $_SESSION['fp_last_request'] = $now;
                 } catch (Throwable $exception) {
-                    error_log('[shop] 处理找回密码请求失败: ' . $exception->getMessage());
+                    shop_log('error', '处理找回密码请求失败', ['message' => $exception->getMessage()]);
                     $error = '密码重置链接生成失败，请稍后再试。';
                 }
             }
@@ -84,7 +86,7 @@ include __DIR__ . '/header.php';
 <main class="page-shell auth-page">
     <section class="auth-card auth-card--wide">
         <h1 class="auth-title">找回密码</h1>
-        <p class="auth-description">请输入注册邮箱。系统会优先尝试发送密码重置邮件；如果当前环境未配置邮件服务，页面下方也会显示一份可直接打开的重置链接。</p>
+        <p class="auth-description">输入注册邮箱后，系统会发送密码重置链接。当前环境如果邮件发送失败，也会在页面下方提供可直接打开的重置链接。</p>
 
         <?php if ($error !== ''): ?>
             <div class="auth-alert auth-alert--error"><?php echo shop_e($error); ?></div>

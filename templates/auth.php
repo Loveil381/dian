@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/logger.php';
 require_once __DIR__ . '/../data/products.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
 
     $pdo = get_db_connection();
-    if (!$pdo) {
+    if (!$pdo instanceof PDO) {
         $error = '数据库连接失败，请稍后再试。';
     } else {
         $prefix = get_db_prefix();
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $action = 'login';
                     }
                 } catch (PDOException $exception) {
-                    error_log('[shop] 用户注册失败: ' . $exception->getMessage());
+                    shop_log('error', '用户注册失败', ['message' => $exception->getMessage()]);
                     $error = '注册失败，请稍后再试。';
                 }
             }
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->execute([$login_id, $login_id]);
                     }
 
-                    $user = $stmt->fetch();
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($user && password_verify($password, (string) ($user['password_hash'] ?? ''))) {
                         $update_stmt = $pdo->prepare("UPDATE `{$prefix}users` SET last_login = NOW() WHERE id = ?");
                         $update_stmt->execute([(int) ($user['id'] ?? 0)]);
@@ -86,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $error = '登录信息不正确。';
                 } catch (PDOException $exception) {
-                    error_log('[shop] 用户登录失败: ' . $exception->getMessage());
+                    shop_log('error', '用户登录失败', ['message' => $exception->getMessage()]);
                     $error = '登录失败，请稍后再试。';
                 }
             }
@@ -104,7 +105,7 @@ if ($action !== 'register') {
     $action = 'login';
 }
 
-$pageTitle = $action === 'login' ? '登录中心 - 魔女小店' : '注册中心 - 魔女小店';
+$pageTitle = $action === 'login' ? '用户登录 - 魔女小店' : '用户注册 - 魔女小店';
 $currentPage = 'profile';
 
 include __DIR__ . '/header.php';
@@ -141,7 +142,7 @@ include __DIR__ . '/header.php';
 
                 <div class="auth-links auth-links--split">
                     <a class="auth-link" href="index.php?page=forgot_password">忘记密码？</a>
-                    <span>还没有账号？ <a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
+                    <span>还没有账号？<a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
                 </div>
             </form>
         <?php else: ?>
@@ -150,8 +151,8 @@ include __DIR__ . '/header.php';
                 <label class="auth-label" for="username">用户名</label>
                 <input class="auth-input" id="username" type="text" name="username" required placeholder="请输入用户名">
 
-                <label class="auth-label" for="name">姓名</label>
-                <input class="auth-input" id="name" type="text" name="name" required placeholder="请输入姓名">
+                <label class="auth-label" for="name">昵称</label>
+                <input class="auth-input" id="name" type="text" name="name" required placeholder="请输入昵称">
 
                 <label class="auth-label" for="email">邮箱</label>
                 <input class="auth-input" id="email" type="email" name="email" required placeholder="请输入邮箱">
@@ -162,7 +163,7 @@ include __DIR__ . '/header.php';
                 <button class="auth-btn" type="submit">注册</button>
 
                 <div class="auth-links">
-                    <span>已有账号？ <a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
+                    <span>已有账号？<a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
                 </div>
             </form>
         <?php endif; ?>

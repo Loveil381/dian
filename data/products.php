@@ -2,11 +2,12 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/logger.php';
 require_once __DIR__ . '/../includes/order_status.php';
 
 function shop_log_exception(string $context, Throwable $exception): void
 {
-    error_log('[shop] ' . $context . ': ' . $exception->getMessage());
+    shop_log('error', $context, ['message' => $exception->getMessage()]);
 }
 
 function shop_e(string $value): string

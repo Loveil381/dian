@@ -26,6 +26,11 @@ a {
     color: inherit;
 }
 
+.btn--disabled {
+    background: #94a3b8 !important;
+    cursor: not-allowed;
+}
+
 .cart-link {
     position: relative;
     text-decoration: none;
@@ -595,12 +600,20 @@ header {
     background: #2563eb;
 }
 
+.product-detail-buy-btn:not(.btn--disabled) {
+    background: #2563eb;
+}
+
 .product-detail-cart-form {
     flex: 1;
     min-width: 180px;
 }
 
 .product-detail-cart-btn {
+    background: #f59e0b;
+}
+
+.product-detail-cart-btn:not(.btn--disabled) {
     background: #f59e0b;
 }
 
