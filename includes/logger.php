@@ -18,7 +18,7 @@ function shop_log(string $level, string $message, array $context = []): void
 
     $line = sprintf('[%s] [%s] %s %s', $timestamp, $normalized_level, $message, $context_json) . PHP_EOL;
 
-    if (!is_dir($logs_dir) && !@mkdir($logs_dir, 0777, true) && !is_dir($logs_dir)) {
+    if (!is_dir($logs_dir) && !@mkdir($logs_dir, 0755, true) && !is_dir($logs_dir)) {
         error_log($line);
         return;
     }
