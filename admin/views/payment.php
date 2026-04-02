@@ -52,42 +52,7 @@
                 </label>
             </div>
 
-            <script>
-            function updateQrPreview(type) {
-                const input = document.getElementById(type + '_qr');
-                const preview = document.getElementById(type + '_preview');
-                const url = input.value.trim();
-                
-                if (url) {
-                    preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: contain;" alt="收款码">`;
-                } else {
-                    preview.innerHTML = `<span style="color: #94a3b8; font-size: 12px;">暂未配置收款码</span>`;
-                }
-            }
 
-            function uploadPaymentQr(event, type) {
-                const file = event.target.files[0];
-                if (!file) return;
-                
-                const formData = new FormData();
-                formData.append('file', file);
-                
-                fetch('upload.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.url) {
-                        document.getElementById(type + '_qr').value = data.url;
-                        updateQrPreview(type);
-                    } else if (data.error) {
-                        alert(data.error);
-                    }
-                })
-                .catch(err => alert('上传收款码过程出错，请联系后台。'));
-            }
-            </script>
             
             <div class="actions">
                 <button class="btn btn-primary" type="submit">保存支付状态</button>

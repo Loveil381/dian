@@ -322,6 +322,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             break;
 
+        case 'update_order_status':
+            $id = shop_admin_post_int('id');
+            $status = shop_admin_post_string('status');
+            $allowed_status = ['已支付 待确认 未发货', '已支付 已确认 待发货', '已支付 已确认 已发货', 'pending', 'paid', 'shipped', 'completed', 'cancelled'];
+            if (!in_array($status, $allowed_status, true)) {
+                $message = '不允许的订单状态。';
+                $messageType = 'error';
+                break;
+            }
+            $pdo = get_db_connection();
+            $prefix = get_db_prefix();
+            if ($pdo) {
+                try {
+                    $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET status = ? WHERE id = ?");
+                    $stmt->execute([$status, $id]);
+                    $message = '订单状态已更新。';
+                } catch (PDOException $e) {
+                    $message = '订单状态更新失败: ' . $e->getMessage();
+                    $messageType = 'error';
+                }
+            } else {
+                $message = '数据库连接失败';
+                $messageType = 'error';
+            }
+            break;
+
+        case 'toggle_user_status':
+            $id = shop_admin_post_int('id');
+            $status = shop_admin_post_string('status');
+            if (!in_array($status, ['active', 'banned'], true)) {
+                $message = '不允许的用户状态。';
+                $messageType = 'error';
+                break;
+            }
+            $pdo = get_db_connection();
+            $prefix = get_db_prefix();
+            if ($pdo) {
+                try {
+                    $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET status = ? WHERE id = ?");
+                    $stmt->execute([$status, $id]);
+                    $message = '用户状态已更新。';
+                } catch (PDOException $e) {
+                    $message = '用户状态更新失败: ' . $e->getMessage();
+                    $messageType = 'error';
+                }
+            } else {
+                $message = '数据库连接失败';
+                $messageType = 'error';
+            }
+            break;
+
+        case 'change_password':
+            $new_username = shop_admin_post_string('new_username');
+            $new_password = shop_admin_post_string('new_password');
+            if (mb_strlen($new_password, 'UTF-8') < 6) {
+                $message = '密码长度不能少于6位';
+                $messageType = 'error';
+                break;
+            }
+            $admin_id = (int)($_SESSION['admin_id'] ?? 0);
+            $pdo = get_db_connection();
+            $prefix = get_db_prefix();
+            if ($pdo && $admin_id > 0) {
+                try {
+                    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+                    if ($new_username !== '') {
+                        $stmt = $pdo->prepare("UPDATE `{$prefix}admin_users` SET username = ?, password_hash = ? WHERE id = ?");
+                        $stmt->execute([$new_username, $password_hash, $admin_id]);
+                    } else {
+                        $stmt = $pdo->prepare("UPDATE `{$prefix}admin_users` SET password_hash = ? WHERE id = ?");
+                        $stmt->execute([$password_hash, $admin_id]);
+                    }
+                    session_destroy();
+                    session_start();
+                    shop_admin_flash('密码已更新，请用新密码重新登录。', 'success');
+                    header('Location: login.php');
+                    exit;
+                } catch (PDOException $e) {
+                    $message = '修改密码失败: ' . $e->getMessage();
+                    $messageType = 'error';
+                }
+            } else {
+                $message = '数据库连接或鉴权失败';
+                $messageType = 'error';
+            }
+            break;
+
+        case 'save_role':
+            $message = '权限管理功能开发中，敬请期待。';
+            $messageType = 'info';
+            break;
+
         default:
             $message = '未知操作。';
             $messageType = 'error';
