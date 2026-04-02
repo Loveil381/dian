@@ -60,3 +60,5 @@ $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum,
         <a class="page-link <?php echo $currentPage === 'profile' ? 'active' : ''; ?>" href="index.php?page=profile">个人</a>
     </nav>
 </header>
+
+<div id="searchAjaxResults" class="search-ajax-results" hidden></div>

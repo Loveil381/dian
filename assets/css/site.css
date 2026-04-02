@@ -73,6 +73,12 @@ header {
     border: 0;
 }
 
+.search-ajax-results {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    padding: 12px 16px 0;
+}
+
 /* 页面主体布局 */
 .page-shell {
     max-width: 1200px;

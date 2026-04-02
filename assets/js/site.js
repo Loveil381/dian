@@ -13,13 +13,13 @@ function shopUpdateProductActionState(stock, price) {
         if (buyBtn) {
             buyBtn.disabled = true;
             buyBtn.style.background = '#94a3b8';
-            buyBtn.innerText = '已售罄';
+            buyBtn.innerText = '暂时缺货';
         }
 
         if (cartBtn) {
             cartBtn.disabled = true;
             cartBtn.style.background = '#94a3b8';
-            cartBtn.innerText = '已售罄';
+            cartBtn.innerText = '暂时缺货';
         }
 
         return;
@@ -117,12 +117,12 @@ function hideAlert() {
 
 function showPaymentPopup() {
     if (typeof hasPayment !== 'undefined' && !hasPayment) {
-        showAlert('当前暂未配置收款码，请稍后再试。');
+        showAlert('商品尚未配置收款码，请稍后再试。');
         return;
     }
 
     if (typeof requireAddress !== 'undefined' && requireAddress && typeof hasUserInfo !== 'undefined' && !hasUserInfo) {
-        showAlert('请先完善个人资料中的收货信息，再继续下单。');
+        showAlert('请先完善姓名、手机号和收货地址后再继续购买。');
         return;
     }
 
@@ -221,7 +221,7 @@ function submitOrder() {
     }
 
     if (!payMethodInput.value) {
-        alert('请选择支付方式后再提交订单。');
+        alert('请选择你计划使用的支付方式。');
         return;
     }
 
@@ -230,9 +230,97 @@ function submitOrder() {
         return;
     }
 
-    if (confirm('确认提交订单并继续支付吗？')) {
+    if (confirm('确认已完成付款，并准备提交订单吗？')) {
         form.submit();
     }
+}
+
+function shopHideSearchResults(searchResults) {
+    if (!searchResults) {
+        return;
+    }
+
+    searchResults.hidden = true;
+    searchResults.innerHTML = '';
+}
+
+function shopBindSearchAjax(searchForm, searchInput) {
+    const searchResults = document.getElementById('searchAjaxResults');
+    if (!searchForm || !searchInput || !searchResults) {
+        return;
+    }
+
+    let debounceTimer = null;
+    let searchAbortController = null;
+
+    const renderMessage = (message) => {
+        searchResults.hidden = false;
+        searchResults.innerHTML = `<div class="empty-state"><strong>${message}</strong></div>`;
+    };
+
+    const fetchResults = (keyword) => {
+        if (searchAbortController) {
+            searchAbortController.abort();
+        }
+
+        searchAbortController = new AbortController();
+
+        fetch(`index.php?page=products&keyword=${encodeURIComponent(keyword)}&ajax=1`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            signal: searchAbortController.signal
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('search_request_failed');
+                }
+
+                return response.text();
+            })
+            .then((html) => {
+                const trimmedHtml = html.trim();
+                searchResults.hidden = false;
+                searchResults.innerHTML = trimmedHtml !== '' ? trimmedHtml : '<div class="empty-state"><strong>未找到相关商品</strong></div>';
+            })
+            .catch((error) => {
+                if (error.name === 'AbortError') {
+                    return;
+                }
+
+                renderMessage('未找到相关商品');
+            });
+    };
+
+    searchInput.addEventListener('keyup', () => {
+        const keyword = searchInput.value.trim();
+
+        if (debounceTimer) {
+            window.clearTimeout(debounceTimer);
+        }
+
+        if (keyword.length < 2) {
+            if (searchAbortController) {
+                searchAbortController.abort();
+            }
+
+            shopHideSearchResults(searchResults);
+            return;
+        }
+
+        debounceTimer = window.setTimeout(() => {
+            fetchResults(keyword);
+        }, 300);
+    });
+
+    searchInput.addEventListener('blur', () => {
+        window.setTimeout(() => {
+            if (document.activeElement !== searchInput) {
+                shopHideSearchResults(searchResults);
+            }
+        }, 150);
+    });
 }
 
 function shopBindFooterEvents() {
@@ -266,9 +354,11 @@ function shopBindFooterEvents() {
             }
 
             event.preventDefault();
-            alert('请输入搜索关键词。');
+            alert('请先输入搜索关键词。');
         });
     }
+
+    shopBindSearchAjax(searchForm, searchInput);
 
     document.querySelectorAll('.page-nav .page-link').forEach((link) => {
         link.addEventListener('click', closeMobileNav);
