@@ -1,5 +1,5 @@
 # 评审问题 Backlog
-> 最后更新: 2026-04-02 | 当前轮次: #9
+> 最后更新: 2026-04-02 | 当前轮次: #10
 
 ## Critical
 | # | 位置 | 问题 | 状态 |
@@ -30,3 +30,7 @@
 | F-2 | `header.php` | 搜索交互仍较轻量 | ⏳ 待优化 |
 | UX-2 | 找回密码 | 尚未接入邮件服务 | ⏳ 技术债 |
 | P-1 | 后台列表 | 缺少分页 | ✅ 已修复 |
+| Q-9.1 | `admin/controllers/actions.php` | `update_order` 缺少状态流转校验 | ✅ 已修复 |
+| Q-9.2 | `admin/views/*.php` | 后台视图残留多处内联事件属性 | ✅ 已修复 |
+| Q-9.3 | `templates/header.php` | header 仍保留内联样式块 | ✅ 已修复 |
+| Q-9.5 | `assets/js/site.js` / `assets/css/mobile.css` | 移动端菜单显隐联动需最终收口 | ✅ 已修复 |

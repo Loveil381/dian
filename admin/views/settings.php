@@ -51,7 +51,7 @@
             </div>
 
             <div class="actions mt-3">
-                <button class="btn btn-primary" type="submit" onclick="return confirm('警告：密匙修改后将立即强制下线所有已登录设备（包含正在操作的本机），需要用新账户参数重新登入，确认执行？');">发放新根密匙与下发设备退库</button>
+                <button class="btn btn-primary" type="submit" data-confirm-click="警告：密匙修改后将立即强制下线所有已登录设备（包含正在操作的本机），需要用新账户参数重新登入，确认执行？">发放新根密匙与下发设备退库</button>
             </div>
         </form>
     </div>

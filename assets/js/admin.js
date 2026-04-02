@@ -34,10 +34,115 @@ document.addEventListener('DOMContentLoaded', () => {
         skuIndex = Number.isNaN(nextIndex) ? skuContainer.children.length : nextIndex;
     }
 
+    bindAdminConfirmForms();
+    bindAdminConfirmButtons();
+    bindAdminTriggerButtons();
+    bindAdminFileInputs();
+    bindAdminSkuEvents();
+    bindAdminPaymentInputs();
+
     if (document.getElementById('imagesTextarea')) {
         setTimeout(syncGallery, 500);
     }
 });
+
+function bindAdminConfirmForms() {
+    document.querySelectorAll('form[data-confirm]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            const message = form.getAttribute('data-confirm') || '确认继续执行吗？';
+            if (!confirm(message)) {
+                event.preventDefault();
+            }
+        });
+    });
+}
+
+function bindAdminConfirmButtons() {
+    document.querySelectorAll('button[data-confirm-click]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const message = button.getAttribute('data-confirm-click') || '确认继续执行吗？';
+            if (!confirm(message)) {
+                event.preventDefault();
+            }
+        });
+    });
+}
+
+function bindAdminTriggerButtons() {
+    document.querySelectorAll('[data-trigger-click]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const targetId = button.getAttribute('data-trigger-click');
+            if (!targetId) {
+                return;
+            }
+
+            const target = document.getElementById(targetId);
+            if (target instanceof HTMLElement) {
+                target.click();
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-sync-gallery]').forEach((button) => {
+        button.addEventListener('click', syncGallery);
+    });
+
+    document.querySelectorAll('[data-add-sku]').forEach((button) => {
+        button.addEventListener('click', addSkuItem);
+    });
+}
+
+function bindAdminFileInputs() {
+    document.querySelectorAll('input[data-image-upload]').forEach((input) => {
+        input.addEventListener('change', handleImageUpload);
+    });
+
+    document.querySelectorAll('input[data-payment-upload]').forEach((input) => {
+        input.addEventListener('change', (event) => {
+            const type = input.getAttribute('data-payment-upload');
+            if (!type) {
+                return;
+            }
+
+            uploadPaymentQr(event, type);
+        });
+    });
+}
+
+function bindAdminSkuEvents() {
+    const container = document.getElementById('sku-container');
+    if (!container) {
+        return;
+    }
+
+    container.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        const removeButton = target.closest('[data-sku-remove]');
+        if (!(removeButton instanceof HTMLElement)) {
+            return;
+        }
+
+        const skuItem = removeButton.closest('.sku-item');
+        if (skuItem instanceof HTMLElement) {
+            skuItem.remove();
+        }
+    });
+}
+
+function bindAdminPaymentInputs() {
+    document.querySelectorAll('[data-qr-input]').forEach((input) => {
+        input.addEventListener('input', () => {
+            const type = input.getAttribute('data-qr-input');
+            if (type) {
+                updateQrPreview(type);
+            }
+        });
+    });
+}
 
 // 商品编辑相关函数。
 function addSkuItem() {
@@ -51,7 +156,7 @@ function addSkuItem() {
             <input type="text" name="sku[${skuIndex}][name]" placeholder="规格名" style="flex: 2;">
             <input type="number" name="sku[${skuIndex}][stock]" placeholder="库存" style="flex: 1;" min="0" value="0">
             <input type="number" name="sku[${skuIndex}][price]" placeholder="价格" style="flex: 1;" step="0.01" min="0" value="0">
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">删除</button>
+            <button type="button" class="btn btn-danger btn-sm" data-sku-remove>删除</button>
         </div>
     `;
 
@@ -61,17 +166,17 @@ function addSkuItem() {
 }
 
 function handleImageUpload(event) {
-    const files = event.target.files;
-    if (!files.length) {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.files || !input.files.length) {
         return;
     }
 
     const textarea = document.getElementById('imagesTextarea');
-    if (!textarea) {
+    if (!(textarea instanceof HTMLTextAreaElement)) {
         return;
     }
 
-    Array.from(files).forEach((file) => {
+    Array.from(input.files).forEach((file) => {
         const formData = new FormData();
         formData.append('file', file);
 
@@ -93,13 +198,15 @@ function handleImageUpload(event) {
                 alert('上传出错，请联系管理员。');
             });
     });
+
+    input.value = '';
 }
 
 function syncGallery() {
     const textarea = document.getElementById('imagesTextarea');
     const coverInput = document.getElementById('coverImageInput');
     const gallery = document.getElementById('galleryPreview');
-    if (!textarea || !coverInput || !gallery) {
+    if (!(textarea instanceof HTMLTextAreaElement) || !(coverInput instanceof HTMLInputElement) || !(gallery instanceof HTMLElement)) {
         return;
     }
 
@@ -137,7 +244,7 @@ function syncGallery() {
 function updateQrPreview(type) {
     const input = document.getElementById(type + '_qr');
     const preview = document.getElementById(type + '_preview');
-    if (!input || !preview) {
+    if (!(input instanceof HTMLInputElement) || !(preview instanceof HTMLElement)) {
         return;
     }
 
@@ -151,13 +258,13 @@ function updateQrPreview(type) {
 }
 
 function uploadPaymentQr(event, type) {
-    const file = event.target.files[0];
-    if (!file) {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.files || !input.files[0]) {
         return;
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', input.files[0]);
 
     fetch('upload.php', {
         method: 'POST',
@@ -166,9 +273,9 @@ function uploadPaymentQr(event, type) {
         .then((response) => response.json())
         .then((data) => {
             if (data.url) {
-                const input = document.getElementById(type + '_qr');
-                if (input) {
-                    input.value = data.url;
+                const targetInput = document.getElementById(type + '_qr');
+                if (targetInput instanceof HTMLInputElement) {
+                    targetInput.value = data.url;
                 }
                 updateQrPreview(type);
             } else if (data.error) {
@@ -178,4 +285,6 @@ function uploadPaymentQr(event, type) {
         .catch(() => {
             alert('上传收款码过程出错，请联系后台。');
         });
+
+    input.value = '';
 }

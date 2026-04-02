@@ -85,7 +85,7 @@
                                 <td>
                                     <div class="row-actions">
                                         <a class="btn btn-secondary btn-sm" href="index.php?page=admin&tab=categories&edit_category=<?php echo (int) ($category['id'] ?? 0); ?>">编辑</a>
-                                        <form method="post" onsubmit="return confirm('确定删除这个分类吗？');">
+                                        <form method="post" data-confirm="确定删除这个分类吗？">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                             <input type="hidden" name="admin_action" value="delete_category">

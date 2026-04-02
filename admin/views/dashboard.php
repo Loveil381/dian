@@ -36,7 +36,7 @@
             <li>保存商品后会写入数据库，前台页面会立即按新排序展示。</li>
         </ul>
         
-        <form method="post" class="actions" onsubmit="return confirm('确定要恢复示例数据吗？已保存的商品会被示例数据覆盖。');" style="margin-top: 16px;">
+        <form method="post" class="actions" data-confirm="确定要恢复示例数据吗？已保存的商品会被示例数据覆盖。" style="margin-top: 16px;">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
             <input type="hidden" name="admin_action" value="reset_products">

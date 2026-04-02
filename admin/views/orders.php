@@ -76,7 +76,7 @@
                                         </select>
                                         <button class="btn btn-soft btn-sm" type="submit" style="padding: 4px 8px; font-size: 12px; border-radius: 4px;">更新状态</button>
                                     </form>
-                                    <form method="post" onsubmit="return confirm('确认永久删除这笔订单吗？');" style="margin-top: 8px;">
+                                    <form method="post" data-confirm="确认永久删除这笔订单吗？" style="margin-top: 8px;">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                         <input type="hidden" name="admin_action" value="delete_order">

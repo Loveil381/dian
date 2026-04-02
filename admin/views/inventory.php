@@ -126,7 +126,7 @@
                                 <td>
                                     <div class="row-actions">
                                         <a class="btn btn-secondary btn-sm" href="index.php?page=admin&tab=inventory&edit_inventory=<?php echo (int) ($product['id'] ?? 0); ?>">操作</a>
-                                        <form method="post" onsubmit="return confirm('确认永久下架并清理该商品库存记录？');">
+                                        <form method="post" data-confirm="确认永久下架并清理该商品库存记录？">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                             <input type="hidden" name="admin_action" value="delete_product">

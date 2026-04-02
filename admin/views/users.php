@@ -47,9 +47,9 @@
                                         <input type="hidden" name="id" value="<?php echo (int) ($user['id'] ?? 0); ?>">
                                         <input type="hidden" name="status" value="<?php echo (string) ($user['status'] ?? 'active') === 'active' ? 'banned' : 'active'; ?>">
                                         <?php if ((string) ($user['status'] ?? 'active') === 'active'): ?>
-                                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('确定要封禁该用户？');" style="padding: 4px 10px; font-size: 12px; border-radius: 4px;">封禁买家</button>
+                                            <button class="btn btn-danger btn-sm" type="submit" data-confirm-click="确定要封禁该用户？" style="padding: 4px 10px; font-size: 12px; border-radius: 4px;">封禁买家</button>
                                         <?php else: ?>
-                                            <button class="btn btn-secondary btn-sm" type="submit" onclick="return confirm('确定解封该用户？');" style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: 1px solid #10b981; color: #10b981; background: #d1fae5;">解封买家</button>
+                                            <button class="btn btn-secondary btn-sm" type="submit" data-confirm-click="确定解封该用户？" style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: 1px solid #10b981; color: #10b981; background: #d1fae5;">解封买家</button>
                                         <?php endif; ?>
                                     </form>
                                 </td>
