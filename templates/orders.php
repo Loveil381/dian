@@ -1,158 +1,111 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
-require_once __DIR__ . '/../data/products.php';
-
-$pageTitle = '魔女小店 - 订单';
-$currentPage = 'orders';
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$allOrders = shop_get_orders();
-$myOrderNos = $_SESSION['my_orders'] ?? [];
-$userId = $_SESSION['user_id'] ?? null;
+require_once __DIR__ . '/../data/products.php';
 
+$pageTitle = '我的订单';
+$currentPage = 'orders';
+$flash_message = trim((string) ($_SESSION['flash_message'] ?? ''));
+unset($_SESSION['flash_message']);
+
+$all_orders = shop_get_orders();
+$my_order_nos = $_SESSION['my_orders'] ?? [];
+$user_id = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
 $orders = [];
-foreach ($allOrders as $order) {
-    $isMyOrder = false;
-    if ($userId !== null && $order['user_id'] !== null && (int)$order['user_id'] === (int)$userId) {
-        $isMyOrder = true;
-    } elseif (in_array($order['order_no'], $myOrderNos, true)) {
-        $isMyOrder = true;
-    }
 
-    if ($isMyOrder) {
-        $statusClass = 'shipping';
-        if ($order['status'] === '已支付(待确认)') {
-            $statusClass = 'shipping';
-        } elseif (strpos($order['status'], '已发货') !== false || $order['status'] === '已完成') {
-            $statusClass = 'done';
-        }
-        
-        $orders[] = [
-            'no' => $order['order_no'],
-            'status' => $order['status'],
-            'status_class' => $statusClass,
-            'time' => $order['time'],
-            'items' => $order['items'] ?? '未知商品',
-            'total' => (float)$order['total'],
-            'tracking_numbers' => $order['tracking_numbers'] ?? '',
-            'express_company' => $order['express_company'] ?? '',
-        ];
+foreach ($all_orders as $order) {
+    if (shop_user_can_view_order($order, $user_id, $my_order_nos)) {
+        $orders[] = $order;
     }
 }
 
-$pendingCount = 0;
-$doneCount = 0;
-$todayCount = 0;
+$pending_count = 0;
+$done_count = 0;
+$today_count = 0;
 $today = date('Y-m-d');
 
 foreach ($orders as $order) {
-    if (strpos($order['status'], '待确认') !== false || strpos($order['status'], '待发货') !== false) {
-        $pendingCount++;
-    } elseif (strpos($order['status'], '已发货') !== false || $order['status'] === '已完成') {
-        $doneCount++;
+    $status = (string) ($order['status'] ?? '');
+    if (str_contains($status, '待') || $status === 'pending' || $status === 'paid') {
+        $pending_count++;
     }
-    
-    if (strpos($order['time'], $today) === 0) {
-        $todayCount++;
+    if (str_contains($status, '已发货') || str_contains($status, '已完成') || $status === 'shipped' || $status === 'completed') {
+        $done_count++;
+    }
+    if (str_starts_with((string) ($order['time'] ?? ''), $today)) {
+        $today_count++;
     }
 }
-
-$orderStats = [
-    ['value' => (string)$pendingCount, 'label' => '待发货/确认'],
-    ['value' => (string)$doneCount, 'label' => '已发货/完成'],
-    ['value' => (string)$todayCount, 'label' => '今日订单'],
-];
-
-$flashMessage = $_SESSION['flash_message'] ?? '';
-unset($_SESSION['flash_message']);
 
 include __DIR__ . '/header.php';
 ?>
 
 <main class="page-shell">
-    <?php if ($flashMessage): ?>
-    <div style="background: #ecfdf5; color: #047857; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #10b981;">
-        <?php echo shop_e($flashMessage); ?>
-    </div>
+    <?php if ($flash_message !== ''): ?>
+        <div style="max-width: 960px; margin: 0 auto 18px; padding: 14px 16px; border-radius: 12px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+            <?php echo shop_e($flash_message); ?>
+        </div>
     <?php endif; ?>
 
-    <section class="page-hero">
-        <div class="hero-panel">
-            <span class="hero-kicker">订单中心</span>
-            <h1 class="hero-title">查看订单状态与发货进度</h1>
+    <section style="max-width: 960px; margin: 0 auto 24px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div style="background: #ffffff; padding: 18px; border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);">
+            <div style="font-size: 13px; color: #64748b;">待处理订单</div>
+            <div style="margin-top: 10px; font-size: 30px; font-weight: 700;"><?php echo $pending_count; ?></div>
         </div>
-
-        <div class="hero-stats">
-            <?php foreach ($orderStats as $stat): ?>
-                <div class="stat-card">
-                    <strong class="stat-value"><?php echo shop_e($stat['value']); ?></strong>
-                    <span class="stat-label"><?php echo shop_e($stat['label']); ?></span>
-                </div>
-            <?php endforeach; ?>
+        <div style="background: #ffffff; padding: 18px; border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);">
+            <div style="font-size: 13px; color: #64748b;">已发货 / 已完成</div>
+            <div style="margin-top: 10px; font-size: 30px; font-weight: 700;"><?php echo $done_count; ?></div>
+        </div>
+        <div style="background: #ffffff; padding: 18px; border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);">
+            <div style="font-size: 13px; color: #64748b;">今日新增</div>
+            <div style="margin-top: 10px; font-size: 30px; font-weight: 700;"><?php echo $today_count; ?></div>
         </div>
     </section>
 
-    <div class="order-layout">
-        <section class="panel">
-            <div class="section-heading">
-                <div>
-                    <h2 class="section-title">最近订单</h2>
-                </div>
-                <span class="section-badge"><?php echo count($orders); ?> 条示例</span>
+    <section style="max-width: 960px; margin: 0 auto; background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;">
+            <div>
+                <h1 style="font-size: 28px; margin: 0;">我的订单</h1>
+                <p style="margin: 8px 0 0; color: #64748b;">共 <?php echo count($orders); ?> 笔订单</p>
             </div>
+        </div>
 
-            <div class="order-list">
+        <?php if ($orders === []): ?>
+            <div style="text-align: center; padding: 48px 0; color: #64748b;">暂无订单记录。</div>
+        <?php else: ?>
+            <div style="display: grid; gap: 16px;">
                 <?php foreach ($orders as $order): ?>
-                    <article class="order-item">
-                        <div>
-                            <div class="order-title">订单号 <?php echo shop_e($order['no']); ?></div>
-                            <div class="section-note">下单时间 <?php echo shop_short_datetime((string) $order['time']); ?></div>
-                            <div class="section-note">商品：<?php echo shop_e($order['items']); ?></div>
-                        </div>
-
-                        <div style="text-align: right;">
-                            <span class="order-status order-status--<?php echo shop_e((string) $order['status_class']); ?>"><?php echo shop_e($order['status']); ?></span>
-                            <div class="product-price" style="margin-top: 8px;"><?php echo shop_format_price((float) $order['total']); ?></div>
-                            <?php if (!empty($order['tracking_numbers']) || !empty($order['express_company'])): ?>
-                                <div style="margin-top: 8px; font-size: 12px; color: #6b7280; text-align: left;">
-                                    <?php if (!empty($order['express_company'])): ?>
-                                        <strong><?php echo shop_e($order['express_company']); ?></strong><br>
-                                    <?php endif; ?>
-                                    <?php if (!empty($order['tracking_numbers'])): ?>
-                                        快递单号: <br>
-                                        <?php echo nl2br(shop_e($order['tracking_numbers'])); ?>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endif; ?>
+                    <?php
+                    $status_label = match ((string) ($order['status'] ?? '')) {
+                        'pending' => '待支付',
+                        'paid', '已支付，待发货' => '待发货',
+                        'shipped', '已发货' => '已发货',
+                        'completed', '已完成' => '已完成',
+                        'cancelled', '已取消' => '已取消',
+                        default => (string) ($order['status'] ?? '未知状态'),
+                    };
+                    ?>
+                    <article style="border: 1px solid #e5e7eb; border-radius: 16px; padding: 18px;">
+                        <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                            <div>
+                                <div style="font-size: 18px; font-weight: 700;">订单号 <?php echo shop_e((string) $order['order_no']); ?></div>
+                                <div style="margin-top: 8px; color: #64748b;">下单时间：<?php echo shop_e(shop_short_datetime((string) $order['time'])); ?></div>
+                                <div style="margin-top: 8px; color: #475569;">商品：<?php echo shop_e((string) $order['items_summary']); ?></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="display: inline-block; padding: 6px 12px; border-radius: 999px; background: #eff6ff; color: #2563eb;"><?php echo shop_e($status_label); ?></div>
+                                <div style="margin-top: 10px; font-size: 22px; font-weight: 700; color: #dc2626;"><?php echo shop_format_price((float) $order['total']); ?></div>
+                                <a href="index.php?page=order_detail&order_no=<?php echo urlencode((string) $order['order_no']); ?>" style="display: inline-block; margin-top: 10px; color: #2563eb; text-decoration: none;">查看详情</a>
+                            </div>
                         </div>
                     </article>
                 <?php endforeach; ?>
             </div>
-        </section>
-
-        <aside class="panel">
-            <h2 class="section-title">订单看板</h2>
-
-            <div class="order-summary-grid">
-                <div class="status-card">
-                    <strong><?php echo $pendingCount; ?></strong>
-                    <span>待发货订单</span>
-                </div>
-                <div class="status-card">
-                    <strong><?php echo $doneCount; ?></strong>
-                    <span>已完成订单</span>
-                </div>
-                <div class="status-card">
-                    <strong><?php echo count($orders); ?></strong>
-                    <span>累计订单</span>
-                </div>
-            </div>
-        </aside>
-    </div>
+        <?php endif; ?>
+    </section>
 </main>
 
 <?php include __DIR__ . '/footer.php'; ?>

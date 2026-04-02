@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 function shop_admin_flash(string $message, string $type = 'success'): void
 {
@@ -11,7 +10,7 @@ function shop_admin_flash(string $message, string $type = 'success'): void
 
 function shop_admin_status_label(string $status): string
 {
-    return $status === 'off_sale' ? '下架' : '上架';
+    return $status === 'off_sale' ? '已下架' : '上架中';
 }
 
 function shop_admin_status_class(string $status): string
@@ -22,9 +21,11 @@ function shop_admin_status_class(string $status): string
 function shop_admin_order_status_label(string $status): string
 {
     return match ($status) {
-        '已支付 待确认 未发货' => '待确认',
-        '已支付 已确认 待发货' => '待发货',
-        '已支付 已确认 已发货' => '已发货',
+        'pending' => '待支付',
+        'paid', '已支付，待发货' => '待发货',
+        'shipped', '已发货' => '已发货',
+        'completed', '已完成' => '已完成',
+        'cancelled', '已取消' => '已取消',
         default => $status !== '' ? $status : '未知',
     };
 }
@@ -32,25 +33,31 @@ function shop_admin_order_status_label(string $status): string
 function shop_admin_order_status_class(string $status): string
 {
     return match ($status) {
-        '已支付 待确认 未发货' => 'warning',
-        '已支付 已确认 待发货' => 'info',
-        '已支付 已确认 已发货' => 'success',
+        'pending' => 'warning',
+        'paid', '已支付，待发货' => 'info',
+        'shipped', '已发货' => 'success',
+        'completed', '已完成' => 'success',
+        'cancelled', '已取消' => 'danger',
         default => 'muted',
     };
 }
 
 function shop_admin_user_status_label(string $lastLogin): string
 {
-    if (empty($lastLogin)) return '沉睡';
-    
+    if (empty($lastLogin)) {
+        return '未登录';
+    }
+
     $loginTime = strtotime($lastLogin);
-    if ($loginTime === false) return '沉睡';
-    
-    // 如果最后登录时间在 30 分钟内，视为在线
+    if ($loginTime === false) {
+        return '未登录';
+    }
+
+    // 最近 30 分钟内登录视为在线。
     if (time() - $loginTime < 1800) {
         return '在线';
     }
-    
+
     return '离线';
 }
 
@@ -59,8 +66,7 @@ function shop_admin_user_status_class(string $lastLogin): string
     $label = shop_admin_user_status_label($lastLogin);
     return match ($label) {
         '在线' => 'success',
-        '离线' => 'muted',
-        '沉睡' => 'muted',
+        '离线', '未登录' => 'muted',
         default => 'muted',
     };
 }

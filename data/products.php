@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 
+function shop_log_exception(string $context, Throwable $exception): void
+{
+    error_log('[shop] ' . $context . ': ' . $exception->getMessage());
+}
+
 function shop_e(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
@@ -63,6 +68,8 @@ function shop_get_categories(): array
                 }, $rows);
             }
         } catch (PDOException $e) {
+            shop_log_exception('读取分类失败', $e);
+            return [];
         }
     }
     return [];
@@ -101,6 +108,8 @@ function shop_upsert_category(array $categories, array $category): array
             $cat['id'] = (int)$pdo->lastInsertId();
         }
     } catch (PDOException $e) {
+        shop_log_exception('保存分类失败', $e);
+        return [];
     }
     
     return shop_get_categories();
@@ -115,6 +124,8 @@ function shop_delete_category(array $categories, int $id): array
             $stmt = $pdo->prepare("DELETE FROM `{$prefix}categories` WHERE id=?");
             $stmt->execute([$id]);
         } catch (PDOException $e) {
+            shop_log_exception('删除分类失败', $e);
+            return [];
         }
     }
     return shop_get_categories();
@@ -206,6 +217,8 @@ function shop_get_products(): array
                 }, $rows);
             }
         } catch (PDOException $e) {
+            shop_log_exception('读取商品失败', $e);
+            return [];
         }
     }
     return [];
@@ -258,6 +271,8 @@ function shop_upsert_product(array $products, array $product): array
             $p['id'] = (int)$pdo->lastInsertId();
         }
     } catch (PDOException $e) {
+        shop_log_exception('保存商品失败', $e);
+        return [];
     }
     
     return shop_get_products();
@@ -272,6 +287,8 @@ function shop_delete_product(array $products, int $id): array
             $stmt = $pdo->prepare("DELETE FROM `{$prefix}products` WHERE id=?");
             $stmt->execute([$id]);
         } catch (PDOException $e) {
+            shop_log_exception('删除商品失败', $e);
+            return [];
         }
     }
     return shop_get_products();
@@ -472,6 +489,8 @@ function shop_get_users(): array
                 }, $rows);
             }
         } catch (PDOException $e) {
+            shop_log_exception('读取用户失败', $e);
+            return [];
         }
     }
     return [];
@@ -514,6 +533,8 @@ function shop_upsert_user(array $users, array $user): array
             $u['id'] = (int)$pdo->lastInsertId();
         }
     } catch (PDOException $e) {
+        shop_log_exception('保存用户失败', $e);
+        return [];
     }
     
     return shop_get_users();
@@ -528,6 +549,8 @@ function shop_delete_user(array $users, int $id): array
             $stmt = $pdo->prepare("DELETE FROM `{$prefix}users` WHERE id=?");
             $stmt->execute([$id]);
         } catch (PDOException $e) {
+            shop_log_exception('删除用户失败', $e);
+            return [];
         }
     }
     return shop_get_users();
@@ -570,6 +593,8 @@ function shop_get_plugins(): array
                 }, $rows);
             }
         } catch (PDOException $e) {
+            shop_log_exception('读取插件失败', $e);
+            return [];
         }
     }
     return [];
@@ -610,6 +635,8 @@ function shop_upsert_plugin(array $plugins, array $plugin): array
             $p['id'] = (int)$pdo->lastInsertId();
         }
     } catch (PDOException $e) {
+        shop_log_exception('保存插件失败', $e);
+        return [];
     }
     
     return shop_get_plugins();
@@ -624,6 +651,8 @@ function shop_delete_plugin(array $plugins, int $id): array
             $stmt = $pdo->prepare("DELETE FROM `{$prefix}plugins` WHERE id=?");
             $stmt->execute([$id]);
         } catch (PDOException $e) {
+            shop_log_exception('删除插件失败', $e);
+            return [];
         }
     }
     return shop_get_plugins();
@@ -635,7 +664,120 @@ function shop_reset_users(): bool { return true; }
 function shop_reset_plugins(): bool { return true; }
 function shop_storage_file(): string { return __DIR__ . '/../storage/dummy.json'; }
 
-// Order functions
+function shop_normalize_order_item(array $item): array
+{
+    return [
+        'product_id' => max(0, (int) ($item['product_id'] ?? 0)),
+        'name' => trim((string) ($item['name'] ?? '')),
+        'sku_name' => trim((string) ($item['sku_name'] ?? '')),
+        'price' => max(0, (float) ($item['price'] ?? 0)),
+        'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+    ];
+}
+
+function shop_decode_order_items(mixed $items): array
+{
+    if (is_array($items)) {
+        return array_values(array_map('shop_normalize_order_item', $items));
+    }
+
+    if (!is_string($items) || trim($items) === '') {
+        return [];
+    }
+
+    $decoded = json_decode($items, true);
+    if (is_array($decoded)) {
+        return array_values(array_map('shop_normalize_order_item', $decoded));
+    }
+
+    return [[
+        'product_id' => 0,
+        'name' => trim($items),
+        'sku_name' => '',
+        'price' => 0,
+        'quantity' => 1,
+    ]];
+}
+
+function shop_encode_order_items(array $items): string
+{
+    $normalized_items = array_values(array_map('shop_normalize_order_item', $items));
+    return json_encode($normalized_items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '[]';
+}
+
+function shop_order_items_summary(array $items): string
+{
+    if ($items === []) {
+        return '暂无商品';
+    }
+
+    $segments = [];
+    foreach ($items as $item) {
+        $name = trim((string) ($item['name'] ?? '商品'));
+        $sku_name = trim((string) ($item['sku_name'] ?? ''));
+        $quantity = max(1, (int) ($item['quantity'] ?? 1));
+        $segments[] = $name . ($sku_name !== '' ? '（' . $sku_name . '）' : '') . ' ×' . $quantity;
+    }
+
+    return implode('，', $segments);
+}
+
+function shop_order_items_quantity(array $items): int
+{
+    $quantity = 0;
+    foreach ($items as $item) {
+        $quantity += max(1, (int) ($item['quantity'] ?? 1));
+    }
+    return $quantity;
+}
+
+function shop_normalize_order(array $order): array
+{
+    $items_data = shop_decode_order_items($order['items'] ?? []);
+
+    return [
+        'id' => max(0, (int) ($order['id'] ?? 0)),
+        'order_no' => trim((string) ($order['order_no'] ?? '')),
+        'user_id' => isset($order['user_id']) && $order['user_id'] !== null ? (int) $order['user_id'] : null,
+        'customer' => trim((string) ($order['customer'] ?? '')),
+        'phone' => trim((string) ($order['phone'] ?? '')),
+        'address' => trim((string) ($order['address'] ?? '')),
+        'status' => trim((string) ($order['status'] ?? '')),
+        'pay_method' => trim((string) ($order['pay_method'] ?? '')),
+        'express_company' => trim((string) ($order['express_company'] ?? '')),
+        'tracking_numbers' => trim((string) ($order['tracking_numbers'] ?? '')),
+        'items' => (string) ($order['items'] ?? ''),
+        'items_data' => $items_data,
+        'items_summary' => shop_order_items_summary($items_data),
+        'total' => max(0, (float) ($order['total'] ?? 0)),
+        'remark' => trim((string) ($order['remark'] ?? '')),
+        'time' => trim((string) ($order['time'] ?? '')),
+        'created_at' => trim((string) ($order['created_at'] ?? ($order['time'] ?? ''))),
+        'updated_at' => trim((string) ($order['updated_at'] ?? '')),
+    ];
+}
+
+function shop_find_order_by_no(array $orders, string $order_no): ?array
+{
+    foreach ($orders as $order) {
+        if ((string) ($order['order_no'] ?? '') === $order_no) {
+            return $order;
+        }
+    }
+
+    return null;
+}
+
+function shop_user_can_view_order(array $order, ?int $user_id, array $my_order_nos): bool
+{
+    if ($user_id !== null && isset($order['user_id']) && $order['user_id'] !== null && (int) $order['user_id'] === $user_id) {
+        return true;
+    }
+
+    return in_array((string) ($order['order_no'] ?? ''), $my_order_nos, true);
+}
+
+// 订单函数
 function shop_get_orders(): array
 {
     $pdo = get_db_connection();
@@ -643,8 +785,11 @@ function shop_get_orders(): array
     if ($pdo) {
         try {
             $stmt = $pdo->query("SELECT * FROM `{$prefix}orders` ORDER BY id DESC");
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll();
+            return array_map('shop_normalize_order', $rows);
         } catch (PDOException $e) {
+            shop_log_exception('读取订单失败', $e);
+            return [];
         }
     }
     return [];
