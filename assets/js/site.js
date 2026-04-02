@@ -40,13 +40,7 @@ function shopUpdateProductActionState(stock, price) {
 
 function selectSku(index, name, price, stock) {
     document.querySelectorAll('.sku-btn').forEach((btn, btnIndex) => {
-        if (btnIndex === index) {
-            btn.style.borderColor = '#2563eb';
-            btn.style.color = '#2563eb';
-        } else {
-            btn.style.borderColor = '#e5e7eb';
-            btn.style.color = '#334155';
-        }
+        btn.classList.toggle('sku-btn--selected', btnIndex === index);
     });
 
     currentPrice = price;
@@ -200,18 +194,6 @@ function showQR(method) {
     }
 }
 
-function selectPayment(method, element) {
-    document.querySelectorAll('.pay-method-btn').forEach((btn) => {
-        btn.style.borderColor = '#e5e7eb';
-        btn.style.backgroundColor = '#ffffff';
-    });
-
-    element.style.borderColor = method === 'wechat' ? '#10b981' : '#0ea5e9';
-    element.style.backgroundColor = method === 'wechat' ? '#ecfdf5' : '#f0f9ff';
-
-    showQR(method);
-}
-
 function submitOrder() {
     const payMethodInput = document.getElementById('payMethodInput');
     const form = document.getElementById('checkoutForm');
@@ -263,6 +245,7 @@ function shopBindSearchAjax(searchForm, searchInput) {
             searchAbortController.abort();
         }
 
+        renderMessage('正在搜索...');
         searchAbortController = new AbortController();
 
         fetch(`index.php?page=products&keyword=${encodeURIComponent(keyword)}&ajax=1`, {
@@ -395,16 +378,53 @@ function shopBindProductGallery() {
                 return;
             }
 
-            thumb.style.borderColor = 'transparent';
+            thumb.classList.remove('product-detail-thumb--active');
         });
 
-        target.style.borderColor = '#2563eb';
+        target.classList.add('product-detail-thumb--active');
+    });
+}
+
+function shopBindProductDetailActions() {
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+
+        const skuButton = target.closest('[data-sku-index]');
+        if (skuButton instanceof HTMLElement) {
+            selectSku(
+                Number(skuButton.dataset.skuIndex || '0'),
+                skuButton.dataset.skuName || '',
+                Number(skuButton.dataset.skuPrice || '0'),
+                Number(skuButton.dataset.skuStock || '0')
+            );
+            return;
+        }
+
+        const actionButton = target.closest('[data-action]');
+        if (!(actionButton instanceof HTMLElement)) {
+            return;
+        }
+
+        const action = actionButton.dataset.action || '';
+        if (action === 'show-payment-popup') {
+            showPaymentPopup();
+        } else if (action === 'hide-payment-popup') {
+            hidePaymentPopup();
+        } else if (action === 'hide-alert') {
+            hideAlert();
+        } else if (action === 'show-qr') {
+            showQR(actionButton.dataset.payMethod || '');
+        }
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     shopBindFooterEvents();
     shopBindProductGallery();
+    shopBindProductDetailActions();
 
     const buyBtn = document.getElementById('buyBtn');
     const cartBtn = document.getElementById('cartBtnSubmit');
@@ -413,9 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (typeof initialPayMethod !== 'undefined' && initialPayMethod) {
-        const selectedButton = document.querySelector(`.pay-method-btn[data-pay-method="${initialPayMethod}"]`);
-        if (selectedButton instanceof HTMLElement) {
-            selectPayment(initialPayMethod, selectedButton);
-        }
+        showQR(initialPayMethod);
     }
 });

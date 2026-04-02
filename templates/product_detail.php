@@ -19,6 +19,16 @@ if ($product === null) {
 
 $pageTitle = '商品详情 - ' . (string) ($product['name'] ?? '');
 $pageDescription = '查看商品详情、规格、库存与支付方式：' . (string) ($product['name'] ?? '商品详情');
+$ogType = 'product';
+$display_image = trim((string) ($product['cover_image'] ?? ''));
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+if ($display_image !== '' && !preg_match('#^https?://#i', $display_image)) {
+    $normalized_image = '/' . ltrim($display_image, '/');
+    $ogImage = $scheme . '://' . $host . $normalized_image;
+} elseif ($display_image !== '') {
+    $ogImage = $display_image;
+}
 $currentPage = 'product_detail';
 $showFooter = true;
 
@@ -27,11 +37,10 @@ if (!is_array($images)) {
     $images = [];
 }
 
-if ($images === [] && !empty($product['cover_image'])) {
-    $images[] = (string) ($product['cover_image'] ?? '');
+if ($images === [] && $display_image !== '') {
+    $images[] = $display_image;
 }
 
-$display_image = trim((string) ($product['cover_image'] ?? ''));
 if ($display_image === '') {
     $display_image = (string) ($images[0] ?? '');
 }
@@ -151,7 +160,10 @@ include __DIR__ . '/header.php';
                         <button
                             type="button"
                             class="<?php echo $sku_classes; ?>"
-                            onclick="selectSku(<?php echo $index; ?>, <?php echo json_encode($sku_name, JSON_UNESCAPED_UNICODE); ?>, <?php echo $sku_price; ?>, <?php echo $sku_stock; ?>)"
+                            data-sku-index="<?php echo $index; ?>"
+                            data-sku-name="<?php echo shop_e($sku_name); ?>"
+                            data-sku-price="<?php echo $sku_price; ?>"
+                            data-sku-stock="<?php echo $sku_stock; ?>"
                         >
                             <?php echo shop_e($sku_name); ?>
                         </button>
@@ -166,7 +178,7 @@ include __DIR__ . '/header.php';
             </div>
 
             <div class="product-detail-actions">
-                <button id="buyBtn" type="button" onclick="showPaymentPopup()" class="product-detail-buy-btn">
+                <button id="buyBtn" type="button" data-action="show-payment-popup" class="product-detail-buy-btn">
                     立即购买 <?php echo shop_format_price((float) ($default_sku['price'] ?? 0)); ?>
                 </button>
 
@@ -200,7 +212,7 @@ include __DIR__ . '/header.php';
         <h3 class="popup-title">提示</h3>
         <p id="alertMsg" class="popup-text"></p>
         <div class="popup-actions">
-            <button type="button" onclick="hideAlert()" class="popup-secondary-btn">关闭</button>
+            <button type="button" data-action="hide-alert" class="popup-secondary-btn">关闭</button>
             <a href="index.php?page=profile" class="popup-primary-link">去完善资料</a>
         </div>
     </div>
@@ -208,7 +220,7 @@ include __DIR__ . '/header.php';
 
 <div id="paymentPopup" class="popup-overlay" style="display: none;">
     <div class="popup-card">
-        <button type="button" onclick="hidePaymentPopup()" class="popup-close">&times;</button>
+        <button type="button" data-action="hide-payment-popup" class="popup-close">&times;</button>
         <h2 class="popup-title">选择支付方式</h2>
 
         <?php if (!$has_payment): ?>
@@ -216,10 +228,10 @@ include __DIR__ . '/header.php';
         <?php else: ?>
             <div class="popup-pay-options">
                 <?php if ($wechat_qr !== ''): ?>
-                    <button type="button" onclick="showQR('wechat')" class="popup-pay-btn popup-pay-btn--wechat">微信支付</button>
+                    <button type="button" data-action="show-qr" data-pay-method="wechat" class="popup-pay-btn popup-pay-btn--wechat">微信支付</button>
                 <?php endif; ?>
                 <?php if ($alipay_qr !== ''): ?>
-                    <button type="button" onclick="showQR('alipay')" class="popup-pay-btn popup-pay-btn--alipay">支付宝</button>
+                    <button type="button" data-action="show-qr" data-pay-method="alipay" class="popup-pay-btn popup-pay-btn--alipay">支付宝</button>
                 <?php endif; ?>
             </div>
 
