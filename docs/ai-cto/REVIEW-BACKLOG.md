@@ -1,5 +1,5 @@
 # 代码审查 Backlog
-> 最后更新: 2026-04-02 | 当前轮次: #13
+> 最后更新: 2026-04-02 | 当前轮次: #15
 
 ## Critical
 | # | 位置 | 问题 | 状态 |
@@ -27,6 +27,7 @@
 | UX-2 | 密码找回流程 | 尚未接入邮件发送 | ✅ 已修复 |
 | Q-12.2 | `templates/auth.php` / `templates/forgot_password.php` / `templates/reset_password.php` | 认证页仍残留 inline style | ✅ 已修复 |
 | Q-12.3 | `templates/products.php` | 商品卡片仍使用 `onclick` 跳转 | ✅ 已修复 |
+| Q-13.1 | `install.php` | 安装后缺少管理员初始化 | ✅ 已修复 |
 
 ## Minor
 | # | 位置 | 问题 | 状态 |
@@ -41,4 +42,7 @@
 | A-11.1 | `admin/views/orders.php` / `admin/index.php` | 订单列表缺少状态筛选 | ✅ 已修复 |
 | A-11.2 | `admin/views/products.php` / `admin/index.php` | 商品列表缺少分类/状态筛选 | ✅ 已修复 |
 | A-11.3 | `admin/views/products.php` / `admin/controllers/actions.php` | 商品缺少批量操作能力 | ✅ 已修复 |
+| Q-14.4 | `templates/product_detail.php` / `assets/css/site.css` | 商品详情页残留大量 inline style | ✅ 已修复 |
+| Q-14.5 | `templates/header.php` | canonical URL 包含临时查询参数 | ✅ 已修复 |
+| Q-14.6 | `templates/header.php` | cart 区域残留 inline style | ✅ 已修复 |
 | UX-3 | 移动端体验 | 需要真机测试验证细节与可用性 | ⏳ 待处理 |
