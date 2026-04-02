@@ -28,6 +28,7 @@ $prefix = get_db_prefix();
 if (!$pdo) {
     die('数据库连接失败');
 }
+$pdo->beginTransaction();
 
 $orderNo = date('YmdHis') . str_pad((string)random_int(1, 9999), 4, '0', STR_PAD_LEFT);
 $total = $skuPrice > 0 ? $skuPrice : (float)$product['price'];
@@ -62,7 +63,18 @@ try {
         $total,
         $itemName
     ]);
-    
+
+    $stmtStock = $pdo->prepare("UPDATE `{$prefix}products` SET stock = stock - 1 WHERE id = ? AND stock > 0");
+    $stmtStock->execute([$productId]);
+    if ($stmtStock->rowCount() === 0) {
+        $pdo->rollBack();
+        $_SESSION['flash_message'] = '库存不足，下单失败';
+        header('Location: index.php?page=product_detail&id=' . urlencode((string)$productId));
+        exit;
+    }
+
+    $pdo->commit();
+
     if (!isset($_SESSION['my_orders'])) {
         $_SESSION['my_orders'] = [];
     }
@@ -72,5 +84,8 @@ try {
     header('Location: index.php?page=orders');
     exit;
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     die('创建订单失败: ' . $e->getMessage());
 }
