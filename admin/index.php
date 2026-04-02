@@ -7,6 +7,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
 }
 
 require_once __DIR__ . '/../data/products.php';
+require_once __DIR__ . '/../includes/pagination.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -21,6 +22,7 @@ require_once __DIR__ . '/includes/helpers.php';
 
 $pageTitle = '魔女小店 - 管理后台';
 $adminUrl = 'index.php?page=admin';
+$currentTab = $_GET['tab'] ?? 'dashboard';
 
 $flash = $_SESSION['admin_flash'] ?? null;
 unset($_SESSION['admin_flash']);
@@ -137,6 +139,10 @@ $prefix = get_db_prefix();
 $wechatQr = '';
 $alipayQr = '';
 $requireAddress = '0';
+$perPage = 20;
+$productsPage = max(1, (int) ($_GET['products_page'] ?? 1));
+$ordersPage = max(1, (int) ($_GET['orders_page'] ?? 1));
+$usersPage = max(1, (int) ($_GET['users_page'] ?? 1));
 
 if ($pdo) {
     try {
@@ -147,6 +153,61 @@ if ($pdo) {
             if ($row['key'] === 'require_address') $requireAddress = $row['value'];
         }
     } catch (PDOException $e) {}
+}
+
+$productRows = $products;
+$productPagination = shop_paginate(count($products), $perPage, $productsPage);
+$productPaginationUrl = $adminUrl . '&tab=products&products_page=';
+$userPagination = shop_paginate(count($users), $perPage, $usersPage);
+$userPaginationUrl = $adminUrl . '&tab=users&users_page=';
+$orderPagination = shop_paginate(0, $perPage, $ordersPage);
+$orderPaginationUrl = $adminUrl . '&tab=orders&orders_page=';
+$pagedOrderRows = [];
+
+if ($pdo) {
+    try {
+        $productTotal = (int) $pdo->query("SELECT COUNT(*) FROM `{$prefix}products`")->fetchColumn();
+        $productPagination = shop_paginate($productTotal, $perPage, $productsPage);
+        $productStmt = $pdo->prepare("SELECT * FROM `{$prefix}products` ORDER BY id ASC LIMIT ? OFFSET ?");
+        $productStmt->bindValue(1, (int) $productPagination['limit'], PDO::PARAM_INT);
+        $productStmt->bindValue(2, (int) $productPagination['offset'], PDO::PARAM_INT);
+        $productStmt->execute();
+        $productRows = array_map(
+            static fn (array $row): array => shop_normalize_product($row, (int) ($row['id'] ?? 0)),
+            $productStmt->fetchAll()
+        );
+
+        $userTotal = (int) $pdo->query("SELECT COUNT(*) FROM `{$prefix}users`")->fetchColumn();
+        $userPagination = shop_paginate($userTotal, $perPage, $usersPage);
+        $userStmt = $pdo->prepare("SELECT * FROM `{$prefix}users` ORDER BY id ASC LIMIT ? OFFSET ?");
+        $userStmt->bindValue(1, (int) $userPagination['limit'], PDO::PARAM_INT);
+        $userStmt->bindValue(2, (int) $userPagination['offset'], PDO::PARAM_INT);
+        $userStmt->execute();
+        $userRows = array_map(static function (array $row): array {
+            $normalized = shop_normalize_user($row, (int) ($row['id'] ?? 0));
+            $normalized['created_at'] = (string) ($row['created_at'] ?? '');
+            return $normalized;
+        }, $userStmt->fetchAll());
+
+        $orderTotal = (int) $pdo->query("SELECT COUNT(*) FROM `{$prefix}orders`")->fetchColumn();
+        $orderPagination = shop_paginate($orderTotal, $perPage, $ordersPage);
+        $orderStmt = $pdo->prepare("SELECT * FROM `{$prefix}orders` ORDER BY id DESC LIMIT ? OFFSET ?");
+        $orderStmt->bindValue(1, (int) $orderPagination['limit'], PDO::PARAM_INT);
+        $orderStmt->bindValue(2, (int) $orderPagination['offset'], PDO::PARAM_INT);
+        $orderStmt->execute();
+        $pagedOrderRows = array_map('shop_normalize_order', $orderStmt->fetchAll());
+        $orderRows = $pagedOrderRows;
+    } catch (PDOException $exception) {
+        shop_log_exception('后台分页查询失败', $exception);
+        $productPagination = shop_paginate(count($products), $perPage, $productsPage);
+        $productRows = array_slice($products, (int) $productPagination['offset'], (int) $productPagination['limit']);
+        $userPagination = shop_paginate(count($users), $perPage, $usersPage);
+        $userRows = array_slice($users, (int) $userPagination['offset'], (int) $userPagination['limit']);
+        $orderPagination = shop_paginate(0, $perPage, $ordersPage);
+    }
+} else {
+    $productRows = array_slice($products, (int) $productPagination['offset'], (int) $productPagination['limit']);
+    $userRows = array_slice($users, (int) $userPagination['offset'], (int) $userPagination['limit']);
 }
 
 $statusValue = (string) ($selectedProduct['status'] ?? 'on_sale');
@@ -206,6 +267,13 @@ foreach ($dbOrders as $order) {
         'total' => (float) ($order['total'] ?? 0),
         'status' => (string) ($order['status'] ?? ''),
     ];
+}
+
+if ($pdo && $pagedOrderRows !== []) {
+    $orderRows = $pagedOrderRows;
+} else {
+    $orderPagination = shop_paginate(count($orderRows), $perPage, $ordersPage);
+    $orderRows = array_slice($orderRows, (int) $orderPagination['offset'], (int) $orderPagination['limit']);
 }
 
 $orderStats = [
@@ -338,5 +406,4 @@ $settings = [
     ['label' => '数据模式', 'value' => 'JSON 文件驱动'],
 ];
 
-$currentTab = $_GET['tab'] ?? 'dashboard';
 require __DIR__ . '/views/layout.php';

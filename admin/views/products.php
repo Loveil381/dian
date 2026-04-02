@@ -163,7 +163,7 @@
             <h2 class="section-title">商品列表</h2>
             <p class="section-note">可直接修改首页、商品页的显示序列。</p>
         </div>
-        <span class="badge"><?php echo count($products); ?> 件商品</span>
+        <span class="badge"><?php echo (int) ($productPagination['total'] ?? count($productRows)); ?> 件商品</span>
     </div>
 
     <p class="mobile-note">移动端下表格可横向滚动查看，可以直接在排序输入框保存。</p>
@@ -180,10 +180,10 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($products)): ?>
+                <?php if (empty($productRows)): ?>
                     <tr><td colspan="5" class="meta" style="padding: 20px 10px;">暂无商品，请先在上方新增商品。</td></tr>
                 <?php else: ?>
-                    <?php foreach ($products as $product): ?>
+                    <?php foreach ($productRows as $product): ?>
                         <?php $statusClass = shop_admin_status_class((string) ($product['status'] ?? 'on_sale')); ?>
                         <tr>
                             <td>
@@ -233,4 +233,5 @@
             </tbody>
         </table>
     </div>
+    <?php echo shop_render_pagination($productPagination, $productPaginationUrl); ?>
 </section>

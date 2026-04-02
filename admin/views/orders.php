@@ -6,7 +6,7 @@
                 <p class="section-note">订单商品已改为 JSON 结构化存储，后台展示按商品数组解析。</p>
             </div>
             <div class="section-actions">
-                <span class="badge"><?php echo count($orderRows); ?> 笔订单</span>
+                <span class="badge"><?php echo (int) ($orderPagination['total'] ?? count($orderRows)); ?> 笔订单</span>
             </div>
         </div>
 
@@ -89,5 +89,6 @@
                 </tbody>
             </table>
         </div>
+        <?php echo shop_render_pagination($orderPagination, $orderPaginationUrl); ?>
     </div>
 </section>
