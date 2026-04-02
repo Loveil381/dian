@@ -1,118 +1,129 @@
+<?php declare(strict_types=1); ?>
 <?php
-declare(strict_types=1);
+$current_page = 'products';
+$currentPage = $current_page;
+$page_title = '全部商品';
+$pageTitle = $page_title;
+$pageDescription = '魔女小店全部商品，支持分类浏览与关键词搜索。';
 
-require_once __DIR__ . '/../data/products.php';
+$keyword = trim((string)($_GET['keyword'] ?? ''));
+$selected_category = trim((string)($_GET['category'] ?? ''));
+$is_ajax = isset($_GET['ajax']);
 
-function shop_render_products_fragment(array $grouped_products): void
-{
-    if (empty($grouped_products)) {
-        ?>
-        <div class="empty-state">
-            <strong>未找到相关商品</strong>
-            <p>试试调整关键词，或者先看看正在热卖的商品。</p>
-        </div>
-        <?php
-        return;
+try {
+    $pdo = get_pdo();
+    $prefix = get_db_prefix();
+
+    $category_stmt = $pdo->query("SELECT id, name FROM `{$prefix}categories` ORDER BY sort_order ASC, id DESC");
+    $categories = $category_stmt ? $category_stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+    $where = ["status = 'on_sale'"];
+    $params = [];
+
+    if ($selected_category !== '') {
+        $where[] = 'category = ?';
+        $params[] = $selected_category;
     }
 
-    foreach ($grouped_products as $group) {
-        ?>
-        <section class="category-section" style="--section-accent: <?php echo shop_e((string) ($group['accent'] ?? '#3b82f6')); ?>;">
-            <div class="category-header">
-                <div>
-                    <h2 class="category-title"><?php echo shop_e((string) ($group['emoji'] ?? '*') . ' ' . (string) ($group['name'] ?? '')); ?></h2>
-                    <p class="category-desc"><?php echo shop_e((string) ($group['description'] ?? '')); ?></p>
-                </div>
-                <span class="category-count"><?php echo count($group['products'] ?? []); ?> 款</span>
-            </div>
-
-            <div class="category-track">
-                <?php foreach ($group['products'] as $product): ?>
-                    <?php
-                    $category_info = shop_get_category_info((string) ($product['category'] ?? ''));
-                    $display_img = !empty($product['cover_image']) ? $product['cover_image'] : (!empty($product['images']) ? $product['images'][0] : '');
-                    ?>
-                    <a class="product-card product-card--compact product-card-link" href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>" style="--card-accent: <?php echo shop_e((string) ($category_info['accent'] ?? '#e2e8f0')); ?>;">
-                        <?php if ($display_img): ?>
-                            <div class="product-card-image-wrap">
-                                <img class="product-card-image" src="<?php echo shop_e($display_img); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="product-body">
-                            <div class="product-title-row">
-                                <h3 class="product-title"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h3>
-                            </div>
-
-                            <p class="product-subtitle"><?php echo shop_e((string) ($product['category'] ?? '')); ?> · 上新 <?php echo shop_short_date((string) ($product['published_at'] ?? date('Y-m-d H:i:s'))); ?></p>
-
-                            <div class="product-meta">
-                                <div>
-                                    <div class="product-price"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></div>
-                                    <div class="product-stock">库存：<?php echo shop_format_sales((int) ($product['stock'] ?? 0)); ?> 件</div>
-                                </div>
-                                <span class="product-sales">销量：<?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
-                            </div>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <?php
+    if ($keyword !== '') {
+        $where[] = '(name LIKE ? OR description LIKE ?)';
+        $like_keyword = '%' . $keyword . '%';
+        $params[] = $like_keyword;
+        $params[] = $like_keyword;
     }
+
+    $sql = "SELECT * FROM `{$prefix}products`";
+    if ($where !== []) {
+        $sql .= ' WHERE ' . implode(' AND ', $where);
+    }
+    $sql .= ' ORDER BY id DESC';
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $exception) {
+    error_log('商品列表查询失败: ' . $exception->getMessage());
+    $categories = [];
+    $products = [];
 }
 
-$pageTitle = '全部商品 - 魔女小店';
-$pageDescription = '魔女小店全部商品，支持分类浏览与关键词搜索。';
-$currentPage = 'products';
-$showFooter = false;
+ob_start();
+?>
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <div class="page-kicker">Product Gallery</div>
+      <h1 class="page-title">全部商品</h1>
+      <p class="page-subtitle">探索魔女小店精选好物，支持分类浏览与关键词搜索。</p>
+    </div>
+  </div>
 
-$keyword = trim((string) ($_GET['keyword'] ?? ''));
-$is_ajax = isset($_GET['ajax']);
-$all_products = shop_get_products();
-$visible_products = shop_filter_products($all_products, $keyword);
-$grouped_products = shop_group_products_by_category($visible_products, 'page_sort');
-$metrics = shop_product_dashboard_metrics($all_products);
+  <div class="filter-card">
+    <form method="get" action="index.php" class="filter-form">
+      <input type="hidden" name="page" value="products">
+      <div class="filter-field">
+        <label for="productKeyword">关键词</label>
+        <input id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="输入商品名称或描述">
+      </div>
+      <div class="filter-field">
+        <label for="productCategory">分类</label>
+        <select id="productCategory" name="category">
+          <option value="">全部分类</option>
+          <?php foreach ($categories as $category): ?>
+            <option value="<?php echo shop_e((string)$category['name']); ?>" <?php echo $selected_category === (string)$category['name'] ? 'selected' : ''; ?>>
+              <?php echo shop_e((string)$category['name']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">筛选商品</button>
+    </form>
+  </div>
+
+  <div class="products-grid products-grid--compact" id="searchAjaxResults">
+    <?php if ($products === []): ?>
+      <div class="empty-state">
+        <h3>未找到相关商品</h3>
+        <p>可以尝试调整关键词或切换分类。</p>
+      </div>
+    <?php else: ?>
+      <?php foreach ($products as $product): ?>
+        <?php
+          $product_id = (int)($product['id'] ?? 0);
+          $product_name = (string)($product['name'] ?? '');
+          $cover_image = (string)($product['cover_image'] ?? '');
+          $product_price = (float)($product['price'] ?? 0);
+          $product_sales = (int)($product['sales'] ?? 0);
+          $detail_url = 'index.php?page=product_detail&id=' . $product_id;
+        ?>
+        <a class="product-card product-card--compact" href="<?php echo shop_e($detail_url); ?>">
+          <div class="product-card__media">
+            <?php if ($cover_image !== ''): ?>
+              <img src="<?php echo shop_e($cover_image); ?>" alt="<?php echo shop_e($product_name); ?>">
+            <?php else: ?>
+              <div class="product-card__placeholder">暂无图片</div>
+            <?php endif; ?>
+          </div>
+          <div class="product-card__body">
+            <h3><?php echo shop_e($product_name); ?></h3>
+            <div class="product-card__meta">
+              <span class="product-card__price"><?php echo shop_format_price($product_price); ?></span>
+              <span class="product-card__sales"><?php echo shop_format_sales($product_sales); ?></span>
+            </div>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
+</section>
+<?php
+$products_content = trim((string)ob_get_clean());
 
 if ($is_ajax) {
-    shop_render_products_fragment($grouped_products);
+    echo $products_content;
     return;
 }
 
 include __DIR__ . '/header.php';
-?>
-
-<main class="page-shell">
-    <section class="page-hero">
-        <div class="hero-panel">
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <strong class="stat-value"><?php echo shop_format_sales((int) $metrics['count']); ?></strong>
-                    <span class="stat-label">商品总数</span>
-                </div>
-                <div class="stat-card">
-                    <strong class="stat-value"><?php echo shop_format_sales((int) $metrics['category_count']); ?></strong>
-                    <span class="stat-label">分类数量</span>
-                </div>
-                <div class="stat-card">
-                    <strong class="stat-value"><?php echo shop_format_sales((int) $metrics['page_priority_count']); ?></strong>
-                    <span class="stat-label">首页推荐</span>
-                </div>
-                <div class="stat-card">
-                    <strong class="stat-value"><?php echo shop_format_sales((int) $metrics['sales']); ?></strong>
-                    <span class="stat-label">累计销量</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <?php if ($keyword !== ''): ?>
-        <div class="filter-bar">
-            搜索关键词“<?php echo shop_e($keyword); ?>”，共找到 <?php echo count($visible_products); ?> 款商品。
-        </div>
-    <?php endif; ?>
-
-    <?php shop_render_products_fragment($grouped_products); ?>
-</main>
-
-<?php include __DIR__ . '/footer.php'; ?>
+echo $products_content;
+include __DIR__ . '/footer.php';

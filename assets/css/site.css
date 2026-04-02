@@ -477,6 +477,10 @@ header {
     flex-shrink: 0;
 }
 
+.product-detail-thumb--active {
+    border-color: #2563eb;
+}
+
 .product-detail-category {
     font-size: 13px;
     color: #64748b;
@@ -541,6 +545,16 @@ header {
     color: #334155;
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.sku-btn--selected {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.sku-btn--disabled {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 .product-detail-stock {

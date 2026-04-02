@@ -4,6 +4,7 @@ declare(strict_types=1);
 $currentPage = $currentPage ?? 'home';
 $currentKeyword = (string) ($_GET['keyword'] ?? '');
 $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum, $item) => $sum + ($item['quantity'] ?? 0), 0) : 0;
+$pageTitle = $pageTitle ?? '魔女小店';
 $pageDescription = $pageDescription ?? '魔女小店 — 轻量在线商城';
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -20,15 +21,25 @@ if ($idParam !== '') {
 $canonicalPath = '/index.php';
 $canonicalQuery = $canonicalParams === [] ? '' : '?' . http_build_query($canonicalParams);
 $canonicalUrl = $scheme . '://' . $host . $canonicalPath . $canonicalQuery;
+$ogTitle = $ogTitle ?? $pageTitle;
+$ogDescription = $ogDescription ?? $pageDescription;
+$ogType = $ogType ?? 'website';
+$defaultOgImage = $scheme . '://' . $host . '/assets/favicon.svg';
+$ogImage = $ogImage ?? $defaultOgImage;
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle ?? '魔女小店'; ?></title>
-    <meta name="description" content="<?php echo htmlspecialchars((string) $pageDescription, ENT_QUOTES, 'UTF-8'); ?>">
-    <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8'); ?>">
+    <title><?php echo shop_e($pageTitle); ?></title>
+    <meta name="description" content="<?php echo shop_e($pageDescription); ?>">
+    <link rel="canonical" href="<?php echo shop_e($canonicalUrl); ?>">
+    <meta property="og:title" content="<?php echo shop_e($ogTitle); ?>">
+    <meta property="og:description" content="<?php echo shop_e($ogDescription); ?>">
+    <meta property="og:url" content="<?php echo shop_e($canonicalUrl); ?>">
+    <meta property="og:type" content="<?php echo shop_e($ogType); ?>">
+    <meta property="og:image" content="<?php echo shop_e($ogImage); ?>">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="assets/css/site.css">
     <link rel="stylesheet" href="assets/css/mobile.css">
@@ -50,7 +61,7 @@ $canonicalUrl = $scheme . '://' . $host . $canonicalPath . $canonicalQuery;
         <form class="search-form" id="searchForm" method="get" action="index.php" role="search">
             <label class="sr-only" for="searchInput">搜索商品</label>
             <input type="hidden" name="page" value="products">
-            <input class="search-input" type="search" id="searchInput" name="keyword" placeholder="搜索商品..." autocomplete="off" value="<?php echo htmlspecialchars($currentKeyword, ENT_QUOTES, 'UTF-8'); ?>">
+            <input class="search-input" type="search" id="searchInput" name="keyword" placeholder="搜索商品..." autocomplete="off" value="<?php echo shop_e($currentKeyword); ?>">
             <button class="icon-btn search-submit" aria-label="提交搜索" id="searchBtn" type="submit">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
