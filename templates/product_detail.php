@@ -91,8 +91,9 @@ include __DIR__ . '/header.php';
             <h1 style="font-size: 24px; margin-top: 0;"><?php echo shop_e($product['name']); ?></h1>
             <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">分类: <?php echo shop_e($product['category']); ?> | 销量: <?php echo shop_format_sales((int)$product['sales']); ?></p>
             
-            <div style="font-size: 28px; color: #dc2626; font-weight: bold; margin-bottom: 20px;">
-                <?php echo shop_format_price((float)$product['price']); ?>
+            <div style="font-size: 28px; color: #dc2626; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <span id="mainPriceDisplay"><?php echo shop_format_price((float)$product['price']); ?></span>
+                <span id="soldOutBadge" style="display: <?php echo $skus[0]['stock'] <= 0 ? 'inline-block' : 'none'; ?>; padding: 4px 8px; background: #fee2e2; color: #dc2626; font-size: 14px; border-radius: 4px; font-weight: normal;">已售罄</span>
             </div>
             
             <div style="margin-bottom: 20px;">
@@ -116,17 +117,29 @@ include __DIR__ . '/header.php';
                 <?php echo nl2br(shop_e($product['description'])); ?>
             </div>
             
-            <button id="buyBtn" onclick="showPaymentPopup()" style="width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                支付：<?php echo shop_format_price((float)$skus[0]['price']); ?>
-            </button>
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button id="buyBtn" onclick="showPaymentPopup()" style="flex: 1; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                    立即购买：<?php echo shop_format_price((float)$skus[0]['price']); ?>
+                </button>
+                <form method="post" action="index.php?page=cart" style="flex: 1; display: flex;">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="cart_action" value="add">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    <input type="hidden" name="name" value="<?php echo shop_e($product['name']); ?>">
+                    <input type="hidden" name="cover_image" value="<?php echo shop_e($displayImage); ?>">
+                    <input type="hidden" name="sku_name" id="cartSkuName" value="<?php echo shop_e($skus[0]['name']); ?>">
+                    <input type="hidden" name="sku_price" id="cartSkuPrice" value="<?php echo (float)$skus[0]['price']; ?>">
+                    <button id="cartBtnSubmit" type="submit" style="width: 100%; padding: 15px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                        加入购物车
+                    </button>
+                </form>
+            </div>
             
             <script>
             let currentPrice = <?php echo (float)$skus[0]['price']; ?>;
             let currentSkuName = '<?php echo shop_e($skus[0]['name']); ?>';
             
             function selectSku(index, name, price, stock) {
-                if (stock <= 0) return;
-                
                 document.querySelectorAll('.sku-btn').forEach((btn, i) => {
                     if (i === index) {
                         btn.style.borderColor = '#2563eb';
@@ -139,9 +152,44 @@ include __DIR__ . '/header.php';
                 
                 currentPrice = price;
                 currentSkuName = name;
-                document.querySelector('div[style*="color: #dc2626"]').innerText = '￥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
+                if (document.getElementById('mainPriceDisplay')) {
+                    document.getElementById('mainPriceDisplay').innerText = '￥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
+                } else {
+                    document.querySelector('div[style*="color: #dc2626"]').innerText = '￥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
+                }
+                
+                if (document.getElementById('soldOutBadge')) {
+                    document.getElementById('soldOutBadge').style.display = stock <= 0 ? 'inline-block' : 'none';
+                }
+                
                 document.getElementById('stockDisplay').innerText = stock.toLocaleString('en-US');
-                document.getElementById('buyBtn').innerText = '支付：￥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
+                
+                const buyBtn = document.getElementById('buyBtn');
+                const cartBtn = document.getElementById('cartBtnSubmit');
+                
+                if (stock <= 0) {
+                    if (buyBtn) {
+                        buyBtn.disabled = true;
+                        buyBtn.style.background = '#9ca3af';
+                        buyBtn.innerText = '已售罄';
+                    }
+                    if (cartBtn) {
+                        cartBtn.disabled = true;
+                        cartBtn.style.background = '#9ca3af';
+                        cartBtn.innerText = '已售罄';
+                    }
+                } else {
+                    if (buyBtn) {
+                        buyBtn.disabled = false;
+                        buyBtn.style.background = '#2563eb';
+                        buyBtn.innerText = '立即购买：￥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
+                    }
+                    if (cartBtn) {
+                        cartBtn.disabled = false;
+                        cartBtn.style.background = '#f59e0b';
+                        cartBtn.innerText = '加入购物车';
+                    }
+                }
                 
                 if (document.getElementById('selectedSkuInput')) {
                     document.getElementById('selectedSkuInput').value = name;
@@ -152,7 +200,32 @@ include __DIR__ . '/header.php';
                 if (document.getElementById('popupPriceDisplay')) {
                     document.getElementById('popupPriceDisplay').innerText = '¥' + price.toLocaleString('en-US', {minimumFractionDigits: 2});
                 }
+                if (document.getElementById('cartSkuName')) {
+                    document.getElementById('cartSkuName').value = name;
+                }
+                if (document.getElementById('cartSkuPrice')) {
+                    document.getElementById('cartSkuPrice').value = price;
+                }
             }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const initialStock = <?php echo (int)$skus[0]['stock']; ?>;
+                const buyBtn = document.getElementById('buyBtn');
+                const cartBtn = document.getElementById('cartBtnSubmit');
+                
+                if (initialStock <= 0) {
+                    if (buyBtn) {
+                        buyBtn.disabled = true;
+                        buyBtn.style.background = '#9ca3af';
+                        buyBtn.innerText = '已售罄';
+                    }
+                    if (cartBtn) {
+                        cartBtn.disabled = true;
+                        cartBtn.style.background = '#9ca3af';
+                        cartBtn.innerText = '已售罄';
+                    }
+                }
+            });
             </script>
         </div>
     </div>

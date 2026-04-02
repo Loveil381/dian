@@ -13,7 +13,8 @@ $routes = [
     'admin' => __DIR__ . '/admin/index.php',
     'admin_login' => __DIR__ . '/admin/login.php',
     'admin_setup' => __DIR__ . '/admin/setup.php',
+    'cart' => __DIR__ . '/templates/cart.php',
+    'checkout' => __DIR__ . '/templates/checkout.php',
 ];
-
 $currentPage = array_key_exists($page, $routes) ? $page : 'home';
 require $routes[$currentPage];
