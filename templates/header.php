@@ -1,7 +1,9 @@
+
 <!-- templates/header.php -->
 <?php
 $currentPage = $currentPage ?? 'home';
 $currentKeyword = (string) ($_GET['keyword'] ?? '');
+$cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn($sum, $item) => $sum + ($item['quantity'] ?? 0), 0) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -41,11 +43,6 @@ $currentKeyword = (string) ($_GET['keyword'] ?? '');
             top: 0;
             z-index: 1000;
             box-shadow: 0 1px 8px rgba(20, 20, 20, 0.04);
-        }
-
-        .nav-container,
-        .nav-divider {
-            display: none;
         }
 
         .page-nav {
@@ -123,7 +120,7 @@ $currentKeyword = (string) ($_GET['keyword'] ?? '');
 
         <form class="search-form" id="searchForm" method="get" action="index.php" role="search">
             <label class="sr-only" for="searchInput">搜索商品</label>
-            <input type="hidden" name="page" value="<?php echo htmlspecialchars($currentPage, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="page" value="products">
             <input class="search-input" type="search" id="searchInput" name="keyword" placeholder="搜索商品..." autocomplete="off" value="<?php echo htmlspecialchars($currentKeyword, ENT_QUOTES, 'UTF-8'); ?>">
             <button class="icon-btn search-submit" aria-label="提交搜索" id="searchBtn" type="submit">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,18 +131,18 @@ $currentKeyword = (string) ($_GET['keyword'] ?? '');
         </form>
 
         <div class="nav-right">
-            <button class="icon-btn" aria-label="查看购物车" id="cartBtn" type="button">
+            <a href="index.php?page=cart" class="icon-btn" aria-label="查看购物车" id="cartBtn" style="position: relative; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
-                <span class="cart-badge">3</span>
-            </button>
+                <?php if ($cartCount > 0): ?>
+                <span class="cart-badge" style="position: absolute; top: -5px; right: -5px; background: var(--badge-bg, #ff4d4f); color: white; border-radius: 10px; padding: 2px 6px; font-size: 10px; min-width: 14px; text-align: center;"><?php echo $cartCount; ?></span>
+                <?php endif; ?>
+            </a>
         </div>
     </div>
-
-    <div class="nav-divider"></div>
 
     <nav class="page-nav" aria-label="站点主导航">
         <a class="page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>

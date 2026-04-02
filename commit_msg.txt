@@ -1,9 +1,8 @@
-fix(admin): 补全 action 路由 + 下单扣库存 + JS 抽离
+feat(前台): 购物车+结算+收款码展示+搜索恢复
 
-- 新增 update_order_status / toggle_user_status / change_password / save_role 四个 action
-- 订单状态更新增加白名单校验
-- 密码修改后 session_destroy 强制重登录
-- templates/create_order.php 增加事务性库存扣减（stock - 1 + rollback）
-- 内联 JS 函数迁入 assets/js/admin.js
-- 删除 admin/index.original.php 备份文件
-- 更新 CTO 记忆文件 STATUS.md 和 REVIEW-BACKLOG.md
+- 恢复前台搜索框和购物车按钮可见性
+- 新建 templates/cart.php 实现 Session 购物车（增删改清空）
+- 商品详情页新增加入购物车按钮，库存 0 时显示已售罄
+- 新建 templates/checkout.php 结算页（收款码展示+下单+事务扣库存）
+- 创建 AGENTS.md 项目规则文件
+- 更新路由和 CTO 记忆文件
