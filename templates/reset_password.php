@@ -20,8 +20,9 @@ $user = null;
 
 if ($pdo && $token !== '') {
     try {
+        $hashed = hash('sha256', $token);
         $stmt = $pdo->prepare("SELECT id, email, reset_expires FROM `{$prefix}users` WHERE reset_token = ? AND reset_expires IS NOT NULL AND reset_expires > NOW() LIMIT 1");
-        $stmt->execute([$token]);
+        $stmt->execute([$hashed]);
         $user = $stmt->fetch();
     } catch (Throwable $exception) {
         error_log('[shop] 校验重置密码 token 失败: ' . $exception->getMessage());

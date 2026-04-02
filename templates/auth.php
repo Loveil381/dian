@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($username === '' || $name === '' || $email === '' || $password === '') {
                 $error = '请完整填写注册信息。';
+            } elseif (strlen($password) < 6) {
+                $error = '密码至少需要 6 位。';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = '请输入正确的邮箱地址。';
             } else {
