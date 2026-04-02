@@ -3,7 +3,7 @@
 
 <?php if ($showFooter): ?>
 <footer style="padding: 20px; text-align: center; color: #999; font-size: 14px; margin-top: 40px;">
-    &copy; 2026 魔女小店 . 版权所有.
+    &copy; 2026 魔女小店. 保留所有权利
 </footer>
 <?php endif; ?>
 
@@ -16,8 +16,8 @@
 
         if (menuBtn) {
             menuBtn.addEventListener('click', () => {
-                console.log('菜单图标被点击');
-                alert('菜单功能待实现');
+                console.log('菜单按钮点击，后续可接入侧边栏');
+                alert('菜单功能暂未开放');
             });
         }
 
@@ -25,31 +25,32 @@
             searchForm.addEventListener('submit', (event) => {
                 const keyword = searchInput ? searchInput.value.trim() : '';
 
-                if (keyword) {
+                if (keyword !== '') {
                     console.log(`搜索关键词：${keyword}`);
                     return;
-                } else {
-                    event.preventDefault();
-                    console.log('搜索框为空');
-                    alert('请输入搜索内容');
                 }
+
+                event.preventDefault();
+                console.log('搜索词为空');
+                alert('请输入搜索关键词');
             });
         }
 
         if (cartBtn) {
             cartBtn.addEventListener('click', () => {
-                console.log('购物车图标被点击');
-                alert('购物车功能待实现');
+                console.log('购物车入口已点击');
             });
         }
 
         window.addEventListener('resize', () => {
-            console.log(`当前窗口宽度: ${window.innerWidth}px`);
+            console.log(`当前窗口宽度：${window.innerWidth}px`);
         });
 
-        console.log('页面加载完成，导航栏验证就绪。');
+        console.log('页面公共脚本已加载');
     });
 </script>
+
+<script src="assets/js/site.js"></script>
 
 </body>
 </html>
