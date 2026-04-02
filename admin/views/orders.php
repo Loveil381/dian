@@ -11,6 +11,24 @@
             </div>
         </div>
 
+        <form method="get" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+            <input type="hidden" name="page" value="admin">
+            <input type="hidden" name="tab" value="orders">
+            <label class="field" style="min-width: 220px;">
+                <span class="label">订单状态筛选</span>
+                <select name="order_status">
+                    <option value="">全部</option>
+                    <?php foreach ($order_status_options as $status_key => $status_option): ?>
+                        <option value="<?php echo shop_e($status_key); ?>" <?php echo $orderStatusFilter === $status_key ? 'selected' : ''; ?>><?php echo shop_e((string) $status_option['label']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <button class="btn btn-secondary btn-sm" type="submit">应用筛选</button>
+            <?php if ($orderStatusFilter !== ''): ?>
+                <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=orders">清空筛选</a>
+            <?php endif; ?>
+        </form>
+
         <div class="table-wrap">
             <table class="table">
                 <thead>
@@ -66,6 +84,8 @@
                                     <form class="sort-form" method="post" style="display: flex; gap: 8px; align-items:flex-start; flex-wrap: wrap;">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+                                        <input type="hidden" name="orders_page" value="<?php echo (int) ($orderPagination['current_page'] ?? 1); ?>">
+                                        <input type="hidden" name="order_status" value="<?php echo shop_e($orderStatusFilter); ?>">
                                         <input type="hidden" name="admin_action" value="update_order_status">
                                         <input type="hidden" name="id" value="<?php echo (int) ($order['id'] ?? 0); ?>">
                                         <select name="status" style="width: 100px; padding: 4px; font-size: 12px;">
@@ -79,6 +99,8 @@
                                     <form method="post" data-confirm="确认永久删除这笔订单吗？" style="margin-top: 8px;">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+                                        <input type="hidden" name="orders_page" value="<?php echo (int) ($orderPagination['current_page'] ?? 1); ?>">
+                                        <input type="hidden" name="order_status" value="<?php echo shop_e($orderStatusFilter); ?>">
                                         <input type="hidden" name="admin_action" value="delete_order">
                                         <input type="hidden" name="id" value="<?php echo (int) ($order['id'] ?? 0); ?>">
                                         <button class="btn btn-danger btn-sm" type="submit" style="padding: 4px 8px; font-size: 12px; border-radius: 4px;">删除订单</button>

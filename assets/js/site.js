@@ -239,7 +239,6 @@ function shopBindFooterEvents() {
     const menuBtn = document.getElementById('menuBtn');
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
-    const cartBtn = document.getElementById('cartBtn');
     const closeMobileNav = () => {
         document.body.classList.remove('mobile-nav-open');
 
@@ -268,12 +267,6 @@ function shopBindFooterEvents() {
 
             event.preventDefault();
             alert('请输入搜索关键词。');
-        });
-    }
-
-    if (cartBtn) {
-        cartBtn.addEventListener('click', () => {
-            window.location.href = 'index.php?page=cart';
         });
     }
 

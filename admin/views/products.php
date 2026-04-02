@@ -164,10 +164,37 @@
 
     <p class="mobile-note">移动端下表格可横向滚动查看，可以直接在排序输入框保存。</p>
 
+    <form method="get" style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px;">
+        <input type="hidden" name="page" value="admin">
+        <input type="hidden" name="tab" value="products">
+        <label class="field" style="min-width: 220px;">
+            <span class="label">分类筛选</span>
+            <select name="product_category">
+                <option value="">全部分类</option>
+                <?php foreach ($categoryChoices as $category): ?>
+                    <option value="<?php echo shop_e($category); ?>" <?php echo $productCategoryFilter === $category ? 'selected' : ''; ?>><?php echo shop_e($category); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <label class="field" style="min-width: 180px;">
+            <span class="label">状态筛选</span>
+            <select name="product_status">
+                <option value="">全部状态</option>
+                <option value="on_sale" <?php echo $productStatusFilter === 'on_sale' ? 'selected' : ''; ?>>上架</option>
+                <option value="off_sale" <?php echo $productStatusFilter === 'off_sale' ? 'selected' : ''; ?>>下架</option>
+            </select>
+        </label>
+        <button class="btn btn-secondary btn-sm" type="submit">应用筛选</button>
+        <?php if ($productCategoryFilter !== '' || $productStatusFilter !== ''): ?>
+            <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=products">清空筛选</a>
+        <?php endif; ?>
+    </form>
+
     <div class="table-wrap">
         <table class="table">
             <thead>
                 <tr>
+                    <th style="width: 4%;"><input type="checkbox" id="selectAllProducts" data-select-all-products></th>
                     <th style="width: 22%;">商品</th>
                     <th style="width: 12%;">分类 / 状态</th>
                     <th style="width: 10%;">销量 / 库存</th>
@@ -177,11 +204,14 @@
             </thead>
             <tbody>
                 <?php if (empty($productRows)): ?>
-                    <tr><td colspan="5" class="meta" style="padding: 20px 10px;">暂无商品，请先在上方新增商品。</td></tr>
+                    <tr><td colspan="6" class="meta" style="padding: 20px 10px;">暂无商品，请先在上方新增商品。</td></tr>
                 <?php else: ?>
                     <?php foreach ($productRows as $product): ?>
                         <?php $statusClass = shop_admin_status_class((string) ($product['status'] ?? 'on_sale')); ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" name="ids[]" value="<?php echo (int) ($product['id'] ?? 0); ?>" form="productBatchForm" data-product-checkbox>
+                            </td>
                             <td>
                                 <div class="name"><a href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>" target="_blank" style="color: var(--primary); text-decoration: none;">#<?php echo (int) ($product['id'] ?? 0); ?> <?php echo shop_e((string) ($product['name'] ?? '')); ?></a></div>
                                 <div class="meta">SKU：<?php echo shop_e(trim((string) ($product['sku'] ?? '')) !== '' ? (string) ($product['sku'] ?? '') : '未设置'); ?></div>
@@ -201,6 +231,9 @@
                                 <form class="sort-form" method="post">
                                     <?php echo csrf_field(); ?>
                                     <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+                                    <input type="hidden" name="products_page" value="<?php echo (int) ($productPagination['current_page'] ?? 1); ?>">
+                                    <input type="hidden" name="product_category" value="<?php echo shop_e($productCategoryFilter); ?>">
+                                    <input type="hidden" name="product_status" value="<?php echo shop_e($productStatusFilter); ?>">
                                     <input type="hidden" name="admin_action" value="update_sort">
                                     <input type="hidden" name="id" value="<?php echo (int) ($product['id'] ?? 0); ?>">
                                     <div class="sort-fields">
@@ -217,6 +250,9 @@
                                     <form method="post" data-confirm="确定删除该商品？">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+                                        <input type="hidden" name="products_page" value="<?php echo (int) ($productPagination['current_page'] ?? 1); ?>">
+                                        <input type="hidden" name="product_category" value="<?php echo shop_e($productCategoryFilter); ?>">
+                                        <input type="hidden" name="product_status" value="<?php echo shop_e($productStatusFilter); ?>">
                                         <input type="hidden" name="admin_action" value="delete_product">
                                         <input type="hidden" name="id" value="<?php echo (int) ($product['id'] ?? 0); ?>">
                                         <button class="btn btn-danger btn-sm" type="submit">删除</button>
@@ -229,5 +265,18 @@
             </tbody>
         </table>
     </div>
+
+    <form method="post" id="productBatchForm" style="margin-top: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+        <input type="hidden" name="products_page" value="<?php echo (int) ($productPagination['current_page'] ?? 1); ?>">
+        <input type="hidden" name="product_category" value="<?php echo shop_e($productCategoryFilter); ?>">
+        <input type="hidden" name="product_status" value="<?php echo shop_e($productStatusFilter); ?>">
+        <input type="hidden" name="admin_action" value="batch_product_action">
+        <span class="help">已选商品可批量变更状态或删除。</span>
+        <button class="btn btn-secondary btn-sm" type="submit" name="batch_action" value="on_sale">批量上架</button>
+        <button class="btn btn-secondary btn-sm" type="submit" name="batch_action" value="off_sale">批量下架</button>
+        <button class="btn btn-danger btn-sm" type="submit" name="batch_action" value="delete" data-confirm-click="确认批量删除选中商品吗？此操作不可恢复。">批量删除</button>
+    </form>
     <?php echo shop_render_pagination($productPagination, $productPaginationUrl); ?>
 </section>
