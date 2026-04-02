@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imagesInput = shop_admin_post_string('images');
             $imagesArr = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $imagesInput))));
             
-            // Handle SKU/规格
+            // 处理规格数据。
             $skuInput = $_POST['sku'] ?? '';
             $skuData = [];
             if (is_array($skuInput)) {
@@ -204,10 +204,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
+            $email = shop_admin_post_string('email');
+            if ($email !== '') {
+                $stmt = $pdo->prepare("SELECT id FROM `{$prefix}users` WHERE email = ? AND id != ?");
+                $stmt->execute([$email, $id]);
+                if ($stmt->fetch()) {
+                    shop_admin_flash('邮箱已被占用，请更换后再试。', 'error');
+                    header('Location: ' . $adminUrl . '#admin-users');
+                    exit;
+                }
+            }
+
             $user = [
                 'id' => $id,
                 'username' => $username,
                 'name' => shop_admin_post_string('name'),
+                'email' => $email,
                 'phone' => shop_admin_post_string('phone'),
                 'level' => shop_admin_post_string('level', '普通会员'),
                 'status' => 'active',
@@ -224,15 +236,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user['last_login'] = date('Y-m-d H:i:s');
             }
 
-            // 自己实现更新，因为 shop_upsert_user 没处理 username
+            // 这里单独更新用户名与邮箱，避免旧辅助函数遗漏字段。
             try {
                 if ($id > 0) {
-                    $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET username=?, name=?, phone=?, level=?, address=?, note=? WHERE id=?");
-                    $stmt->execute([$user['username'], $user['name'], $user['phone'], $user['level'], $user['address'], $user['note'], $id]);
+                    $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET username=?, name=?, email=?, phone=?, level=?, address=?, note=? WHERE id=?");
+                    $stmt->execute([$user['username'], $user['name'], $user['email'] === '' ? null : $user['email'], $user['phone'], $user['level'], $user['address'], $user['note'], $id]);
                     $message = '用户已更新。';
                 } else {
-                    $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, phone, level, address, last_login, note) VALUES (?, ?, ?, ?, ?, NOW(), ?)");
-                    $stmt->execute([$user['username'], $user['name'], $user['phone'], $user['level'], $user['address'], $user['note']]);
+                    $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, phone, level, address, last_login, note) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)");
+                    $stmt->execute([$user['username'], $user['name'], $user['email'] === '' ? null : $user['email'], $user['phone'], $user['level'], $user['address'], $user['note']]);
                     $message = '用户已新增。';
                 }
             } catch (PDOException $e) {

@@ -1,5 +1,5 @@
 function shopFormatSitePrice(price) {
-    return '¥' + Number(price).toLocaleString('en-US', {
+    return '¥' + Number(price).toLocaleString('zh-CN', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -64,7 +64,7 @@ function selectSku(index, name, price, stock) {
 
     const stockDisplay = document.getElementById('stockDisplay');
     if (stockDisplay) {
-        stockDisplay.innerText = stock.toLocaleString('en-US');
+        stockDisplay.innerText = stock.toLocaleString('zh-CN');
     }
 
     shopUpdateProductActionState(stock, price);
@@ -117,12 +117,12 @@ function hideAlert() {
 
 function showPaymentPopup() {
     if (typeof hasPayment !== 'undefined' && !hasPayment) {
-        showAlert('当前未配置支付方式，请稍后再试。');
+        showAlert('当前暂未配置收款码，请稍后再试。');
         return;
     }
 
     if (typeof requireAddress !== 'undefined' && requireAddress && typeof hasUserInfo !== 'undefined' && !hasUserInfo) {
-        showAlert('请先在个人中心完善收货信息，再继续购买。');
+        showAlert('请先完善个人资料中的收货信息，再继续下单。');
         return;
     }
 
@@ -173,6 +173,7 @@ function showQR(method) {
     const payMethodInput = document.getElementById('payMethodInput');
     const wechatQR = document.getElementById('wechatQR');
     const alipayQR = document.getElementById('alipayQR');
+    const popupPriceDisplay = document.getElementById('popupPriceDisplay');
 
     if (qrContainer) {
         qrContainer.style.display = 'block';
@@ -186,12 +187,16 @@ function showQR(method) {
         payMethodInput.value = method;
     }
 
+    if (popupPriceDisplay && typeof currentPrice !== 'undefined') {
+        popupPriceDisplay.innerText = shopFormatSitePrice(currentPrice);
+    }
+
     if (wechatQR) {
-        wechatQR.style.display = method === 'wechat' ? (document.getElementById('paymentPopup') ? 'flex' : 'block') : 'none';
+        wechatQR.style.display = method === 'wechat' ? 'flex' : 'none';
     }
 
     if (alipayQR) {
-        alipayQR.style.display = method === 'alipay' ? (document.getElementById('paymentPopup') ? 'flex' : 'block') : 'none';
+        alipayQR.style.display = method === 'alipay' ? 'flex' : 'none';
     }
 }
 
@@ -216,7 +221,7 @@ function submitOrder() {
     }
 
     if (!payMethodInput.value) {
-        alert('请选择支付方式并完成扫码。');
+        alert('请选择支付方式后再提交订单。');
         return;
     }
 
@@ -225,7 +230,7 @@ function submitOrder() {
         return;
     }
 
-    if (confirm('确认已经完成支付，并提交订单吗？')) {
+    if (confirm('确认提交订单并继续支付吗？')) {
         form.submit();
     }
 }
@@ -238,8 +243,7 @@ function shopBindFooterEvents() {
 
     if (menuBtn) {
         menuBtn.addEventListener('click', () => {
-            console.log('菜单按钮已点击，后续可接入侧边栏。');
-            alert('菜单功能暂未开放');
+            alert('菜单功能正在完善中。');
         });
     }
 
@@ -247,29 +251,56 @@ function shopBindFooterEvents() {
         searchForm.addEventListener('submit', (event) => {
             const keyword = searchInput ? searchInput.value.trim() : '';
             if (keyword !== '') {
-                console.log(`搜索关键词：${keyword}`);
                 return;
             }
 
             event.preventDefault();
-            console.log('搜索关键词为空');
-            alert('请输入搜索关键词');
+            alert('请输入搜索关键词。');
         });
     }
 
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
-            console.log('购物车入口已点击');
+            window.location.href = 'index.php?page=cart';
         });
     }
 
     window.addEventListener('resize', () => {
-        console.log(`当前窗口宽度：${window.innerWidth}px`);
+        document.body.dataset.viewport = String(window.innerWidth);
+    });
+}
+
+function shopBindProductGallery() {
+    const thumbList = document.getElementById('productThumbList');
+    const mainImage = document.getElementById('productMainImage');
+
+    if (!thumbList || !mainImage) {
+        return;
+    }
+
+    thumbList.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLImageElement) || target.dataset.productThumb !== '1') {
+            return;
+        }
+
+        mainImage.src = target.src;
+
+        thumbList.querySelectorAll('[data-product-thumb="1"]').forEach((thumb) => {
+            if (!(thumb instanceof HTMLElement)) {
+                return;
+            }
+
+            thumb.style.borderColor = 'transparent';
+        });
+
+        target.style.borderColor = '#2563eb';
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     shopBindFooterEvents();
+    shopBindProductGallery();
 
     const buyBtn = document.getElementById('buyBtn');
     const cartBtn = document.getElementById('cartBtnSubmit');
@@ -279,10 +310,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof initialPayMethod !== 'undefined' && initialPayMethod) {
         const selectedButton = document.querySelector(`.pay-method-btn[data-pay-method="${initialPayMethod}"]`);
-        if (selectedButton) {
+        if (selectedButton instanceof HTMLElement) {
             selectPayment(initialPayMethod, selectedButton);
         }
     }
-
-    console.log('页面公共脚本已加载');
 });

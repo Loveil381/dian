@@ -50,5 +50,6 @@
 - 新增或修改任何 <form> 的 admin_action 值时，
   必须同步在 admin/controllers/actions.php 中添加对应 case
 - 禁止在视图文件中定义 JavaScript 函数，统一放 assets/js/
+- 引入新的工具函数后，必须全局搜索并更新所有已有的同类调用点
 - 禁止硬编码占位数据标记为已完成
 - UI 元素不可交互 = 未完成

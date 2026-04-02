@@ -77,7 +77,7 @@ function shop_get_categories(): array
 
 function shop_save_categories(array $categories): bool
 {
-    return true; // Deprecated, CRUD operations are now handled individually via DB.
+    return true; // 已废弃，当前通过数据库增删改查直接处理。
 }
 
 function shop_find_category(array $categories, int $id): ?array
@@ -226,7 +226,7 @@ function shop_get_products(): array
 
 function shop_save_products(array $products): bool
 {
-    return true; // Deprecated, CRUD operations are now handled individually via DB.
+    return true; // 已废弃，当前通过数据库增删改查直接处理。
 }
 
 function shop_find_product_index(array $products, int $id): ?int
@@ -466,12 +466,15 @@ function shop_normalize_user(array $user, int $fallbackId = 0): array
         'id' => max(0, (int) ($user['id'] ?? $fallbackId)),
         'username' => trim((string) ($user['username'] ?? '')),
         'name' => trim((string) ($user['name'] ?? '未命名用户')),
+        'email' => trim((string) ($user['email'] ?? '')),
         'phone' => trim((string) ($user['phone'] ?? '')),
         'level' => trim((string) ($user['level'] ?? '普通会员')),
         'status' => $status,
         'address' => trim((string) ($user['address'] ?? '')),
         'last_login' => trim((string) ($user['last_login'] ?? '')),
         'note' => trim((string) ($user['note'] ?? '')),
+        'reset_token' => trim((string) ($user['reset_token'] ?? '')),
+        'reset_expires' => trim((string) ($user['reset_expires'] ?? '')),
     ];
 }
 
@@ -498,7 +501,7 @@ function shop_get_users(): array
 
 function shop_save_users(array $users): bool
 {
-    return true; // Deprecated, CRUD operations are now handled individually via DB.
+    return true; // 已废弃，当前通过数据库增删改查直接处理。
 }
 
 function shop_find_user(array $users, int $id): ?array
@@ -519,16 +522,35 @@ function shop_upsert_user(array $users, array $user): array
     try {
         $prefix = get_db_prefix();
         if ($u['id'] > 0) {
-            $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET username=?, name=?, phone=?, level=?, status=?, address=?, last_login=?, note=? WHERE id=?");
+            $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET username=?, name=?, email=?, phone=?, level=?, status=?, address=?, last_login=?, note=?, reset_token=?, reset_expires=? WHERE id=?");
             $stmt->execute([
-                $u['username'], $u['name'], $u['phone'], $u['level'], $u['status'], $u['address'], 
-                $u['last_login'] === '' ? null : $u['last_login'], $u['note'], $u['id']
+                $u['username'],
+                $u['name'],
+                $u['email'] === '' ? null : $u['email'],
+                $u['phone'],
+                $u['level'],
+                $u['status'],
+                $u['address'],
+                $u['last_login'] === '' ? null : $u['last_login'],
+                $u['note'],
+                $u['reset_token'] === '' ? null : $u['reset_token'],
+                $u['reset_expires'] === '' ? null : $u['reset_expires'],
+                $u['id']
             ]);
         } else {
-            $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, phone, level, status, address, last_login, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, phone, level, status, address, last_login, note, reset_token, reset_expires) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
-                $u['username'], $u['name'], $u['phone'], $u['level'], $u['status'], $u['address'], 
-                $u['last_login'] === '' ? null : $u['last_login'], $u['note']
+                $u['username'],
+                $u['name'],
+                $u['email'] === '' ? null : $u['email'],
+                $u['phone'],
+                $u['level'],
+                $u['status'],
+                $u['address'],
+                $u['last_login'] === '' ? null : $u['last_login'],
+                $u['note'],
+                $u['reset_token'] === '' ? null : $u['reset_token'],
+                $u['reset_expires'] === '' ? null : $u['reset_expires']
             ]);
             $u['id'] = (int)$pdo->lastInsertId();
         }
@@ -602,7 +624,7 @@ function shop_get_plugins(): array
 
 function shop_save_plugins(array $plugins): bool
 {
-    return true; // Deprecated, CRUD operations are now handled individually via DB.
+    return true; // 已废弃，当前通过数据库增删改查直接处理。
 }
 
 function shop_find_plugin(array $plugins, int $id): ?array
