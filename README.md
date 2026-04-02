@@ -7,7 +7,7 @@
 - PHP 8.1+
 - MySQL 5.6+
 - Apache，启用 `mod_rewrite` 与 `mod_headers`
-- 允许 PHP 写入 `config/` 目录
+- 允许 PHP 写入 `config/` 与 `assets/uploads/` 目录
 
 ## 主要能力
 
@@ -21,9 +21,15 @@
 
 1. 将项目上传到站点根目录。
 2. 确保 `config/` 目录可写，`assets/uploads/` 目录可写。
-3. 访问 `/install.php`，填写数据库主机、端口、数据库名、用户名、密码和表前缀。
-4. 安装向导会自动生成 `config/database.php`，并执行 `database/schema.sql` 初始化表结构。
+3. 访问 `/install.php`，填写数据库连接信息、表前缀，以及首个管理员用户名和密码。
+4. 安装向导会自动生成 `config/database.php`，执行 `database/schema.sql` 初始化表结构，并创建一条 `super_admin` 管理员记录。
 5. 安装成功后会生成 `config/installed.lock`，后续再次访问安装页会提示“已安装”。
+
+## 首次登录后台
+
+- 安装成功后访问 `index.php?page=admin_login`
+- 使用安装向导中填写的管理员用户名和密码登录
+- 首次进入后台后建议立即检查支付配置、站点设置与商品分类
 
 ## 生产配置
 
@@ -42,4 +48,4 @@
 - 首次上线前先访问 `install.php` 完成初始化
 - Apache 站点根目录指向项目根目录
 - 保留根目录 `.htaccess`，用于安全头与敏感目录访问限制
-- 上线后删除或限制安装入口访问，仅保留必要的站点权限
+- 若迁移到 Nginx，需要将 `.htaccess` 规则改写为对应配置

@@ -17,6 +17,7 @@ if ($product === null) {
 }
 
 $pageTitle = '商品详情 - ' . (string) ($product['name'] ?? '');
+$pageDescription = '查看商品详情、规格、库存与支付方式：' . (string) ($product['name'] ?? '商品详情');
 $currentPage = 'product_detail';
 $showFooter = true;
 

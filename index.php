@@ -1,6 +1,18 @@
 <?php
 declare(strict_types=1);
 
+set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(static function (Throwable $exception): void {
+    http_response_code(500);
+    error_log('[shop] 全局异常: ' . $exception->getMessage());
+    $errorCode = 500;
+    $errorMessage = '系统暂时不可用，请稍后再试。';
+    require __DIR__ . '/templates/error.php';
+});
+
 $page = $_GET['page'] ?? 'home';
 $routes = [
     'home' => __DIR__ . '/templates/index.php',
@@ -18,5 +30,14 @@ $routes = [
     'cart' => __DIR__ . '/templates/cart.php',
     'checkout' => __DIR__ . '/templates/checkout.php',
 ];
-$currentPage = array_key_exists($page, $routes) ? $page : 'home';
+
+if (!array_key_exists($page, $routes)) {
+    http_response_code(404);
+    $errorCode = 404;
+    $errorMessage = '你访问的页面不存在。';
+    require __DIR__ . '/templates/error.php';
+    exit;
+}
+
+$currentPage = $page;
 require $routes[$currentPage];

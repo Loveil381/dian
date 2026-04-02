@@ -16,6 +16,7 @@ if (file_exists($lock_path) || file_exists($config_path)) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>魔女小店安装状态</title>
+        <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
         <link rel="stylesheet" href="assets/css/site.css">
     </head>
     <body class="auth-page">
@@ -43,6 +44,8 @@ $defaults = [
     'user' => 'root',
     'password' => '',
     'prefix' => 'shop_',
+    'admin_username' => 'admin',
+    'admin_password' => '',
 ];
 $form = $defaults;
 
@@ -55,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($form['host'] === '' || $form['name'] === '' || $form['user'] === '') {
         $error = '请完整填写数据库主机、数据库名和用户名。';
+    } elseif ($form['admin_username'] === '' || $form['admin_password'] === '') {
+        $error = '请完整填写管理员用户名和密码。';
+    } elseif (strlen($form['admin_password']) < 6) {
+        $error = '管理员密码至少需要 6 位。';
     } elseif (!file_exists($schema_path)) {
         $error = '未找到数据库结构文件 database/schema.sql。';
     } else {
@@ -79,12 +86,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->beginTransaction();
             foreach ($statements as $statement) {
-                if ($statement === '' || str_starts_with($statement, '--')) {
+                if ($statement === '') {
                     continue;
                 }
 
                 $pdo->exec($statement);
             }
+
+            $admin_stmt = $pdo->prepare("INSERT INTO `{$form['prefix']}admin_users` (username, name, password_hash, role, status, created_at, updated_at) VALUES (?, ?, ?, 'super_admin', 1, NOW(), NOW())");
+            $admin_stmt->execute([
+                $form['admin_username'],
+                $form['admin_username'],
+                password_hash($form['admin_password'], PASSWORD_DEFAULT),
+            ]);
+
             $pdo->commit();
 
             $config = [
@@ -110,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new RuntimeException('安装锁文件写入失败。');
             }
 
-            $success = '安装完成，数据库结构已经初始化。';
+            $success = '安装完成，数据库结构与管理员账号已经初始化。';
         } catch (Throwable $exception) {
             if (isset($pdo) && $pdo instanceof PDO && $pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -127,13 +142,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魔女小店安装向导</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body class="auth-page">
 <main class="page-shell">
     <section class="auth-card auth-card--wide">
         <h1 class="auth-title">安装向导</h1>
-        <p class="auth-description">填写数据库连接信息后，系统会生成配置文件并执行 `database/schema.sql` 完成初始化。</p>
+        <p class="auth-description">填写数据库连接信息和首个管理员账号后，系统会写入配置文件并执行 `database/schema.sql` 完成初始化。</p>
 
         <?php if ($error !== ''): ?>
             <div class="auth-alert auth-alert--error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
@@ -143,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="auth-alert auth-alert--success"><?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?></div>
             <div class="auth-links">
                 <a class="auth-link" href="index.php">前往首页</a>
-                <a class="auth-link" href="admin/index.php">进入后台</a>
+                <a class="auth-link" href="index.php?page=admin_login">进入后台登录</a>
             </div>
         <?php else: ?>
             <form method="post" class="auth-form">
@@ -165,6 +181,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <label class="auth-label" for="prefix">表前缀</label>
                 <input class="auth-input" id="prefix" name="prefix" value="<?php echo htmlspecialchars($form['prefix'], ENT_QUOTES, 'UTF-8'); ?>">
+
+                <label class="auth-label" for="admin_username">管理员用户名</label>
+                <input class="auth-input" id="admin_username" name="admin_username" value="<?php echo htmlspecialchars($form['admin_username'], ENT_QUOTES, 'UTF-8'); ?>" required>
+
+                <label class="auth-label" for="admin_password">管理员密码</label>
+                <input class="auth-input" id="admin_password" type="password" name="admin_password" value="<?php echo htmlspecialchars($form['admin_password'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
                 <button class="auth-btn" type="submit">开始安装</button>
             </form>
