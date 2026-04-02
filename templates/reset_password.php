@@ -20,7 +20,8 @@ $user = null;
 
 if ($pdo && $token !== '') {
     try {
-        $stmt = $pdo->prepare("SELECT id, email, reset_expires FROM `{$prefix}users` WHERE reset_token = ? AND reset_expires IS NOT NULL AND reset_expires > NOW() LIMIT 1");
+        // T-1a: 库中存储的是 SHA-256 哈希，查询时对输入 token 做相同 hash 后匹配
+        $stmt = $pdo->prepare("SELECT id, email, reset_expires FROM `{$prefix}users` WHERE reset_token = SHA2(?, 256) AND reset_expires IS NOT NULL AND reset_expires > NOW() LIMIT 1");
         $stmt->execute([$token]);
         $user = $stmt->fetch();
     } catch (Throwable $exception) {

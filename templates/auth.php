@@ -33,6 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = '请完整填写注册信息。';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = '请输入正确的邮箱地址。';
+            } elseif (strlen($password) < 6) {
+                // T-3a: 与 reset_password.php 保持一致的密码强度最低要求
+                $error = '密码至少需要 6 位。';
             } else {
                 try {
                     $stmt = $pdo->prepare("SELECT id FROM `{$prefix}users` WHERE username = ? OR email = ? LIMIT 1");

@@ -18,38 +18,50 @@ $submitted_email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
 
-    $submitted_email = trim((string) ($_POST['email'] ?? ''));
-    if ($submitted_email === '') {
-        $error = '请输入注册邮箱。';
-    } elseif (!filter_var($submitted_email, FILTER_VALIDATE_EMAIL)) {
-        $error = '请输入正确的邮箱地址。';
+    // T-2a: 速率限制 — 同一 session 60 秒内只能提交一次
+    $last_request_time = (int) ($_SESSION['fp_last_request'] ?? 0);
+    if ($last_request_time > 0 && (time() - $last_request_time) < 60) {
+        $remaining = 60 - (time() - $last_request_time);
+        $error = '操作过于频繁，请 ' . $remaining . ' 秒后再试。';
     } else {
-        $pdo = get_db_connection();
-        if (!$pdo) {
-            $error = '数据库连接失败，请稍后再试。';
+        $_SESSION['fp_last_request'] = time();
+
+        $submitted_email = trim((string) ($_POST['email'] ?? ''));
+        if ($submitted_email === '') {
+            $error = '请输入注册邮箱。';
+        } elseif (!filter_var($submitted_email, FILTER_VALIDATE_EMAIL)) {
+            $error = '请输入正确的邮箱地址。';
         } else {
-            $prefix = get_db_prefix();
+            $pdo = get_db_connection();
+            if (!$pdo) {
+                $error = '数据库连接失败，请稍后再试。';
+            } else {
+                $prefix = get_db_prefix();
 
-            try {
-                $stmt = $pdo->prepare("SELECT id, email FROM `{$prefix}users` WHERE email = ? LIMIT 1");
-                $stmt->execute([$submitted_email]);
-                $user = $stmt->fetch();
+                try {
+                    $stmt = $pdo->prepare("SELECT id, email FROM `{$prefix}users` WHERE email = ? LIMIT 1");
+                    $stmt->execute([$submitted_email]);
+                    $user = $stmt->fetch();
 
-                $success = '如果该邮箱已注册，我们已生成密码重置链接。';
-                if ($user) {
-                    $token = bin2hex(random_bytes(32));
-                    $update_stmt = $pdo->prepare("UPDATE `{$prefix}users` SET reset_token = ?, reset_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
-                    $update_stmt->execute([$token, (int) ($user['id'] ?? 0)]);
+                    $success = '如果该邮箱已注册，我们已生成密码重置链接。';
+                    if ($user) {
+                        $token = bin2hex(random_bytes(32));
+                        // T-1a: 数据库存储 token 的 SHA-256 哈希，原始 token 只发给用户
+                        $token_hash = hash('sha256', $token);
+                        $update_stmt = $pdo->prepare("UPDATE `{$prefix}users` SET reset_token = ?, reset_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
+                        $update_stmt->execute([$token_hash, (int) ($user['id'] ?? 0)]);
 
-                    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-                    $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
-                    $script_dir = trim(str_replace('\\', '/', dirname((string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php'))), '/');
-                    $base_path = $script_dir === '' ? '' : '/' . $script_dir;
-                    $reset_link = $scheme . '://' . $host . $base_path . '/index.php?page=reset_password&token=' . urlencode($token);
+                        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                        $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+                        $script_dir = trim(str_replace('\\', '/', dirname((string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php'))), '/');
+                        $base_path = $script_dir === '' ? '' : '/' . $script_dir;
+                        // 链接携带原始 token，不含 hash
+                        $reset_link = $scheme . '://' . $host . $base_path . '/index.php?page=reset_password&token=' . urlencode($token);
+                    }
+                } catch (Throwable $exception) {
+                    error_log('[shop] 生成找回密码链接失败: ' . $exception->getMessage());
+                    $error = '密码重置链接生成失败，请稍后再试。';
                 }
-            } catch (Throwable $exception) {
-                error_log('[shop] 生成找回密码链接失败: ' . $exception->getMessage());
-                $error = '密码重置链接生成失败，请稍后再试。';
             }
         }
     }
