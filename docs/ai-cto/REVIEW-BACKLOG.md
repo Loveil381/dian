@@ -1,5 +1,5 @@
 # 代码审查 Backlog
-> 最后更新: 2026-04-02 | 当前轮次: #12
+> 最后更新: 2026-04-02 | 当前轮次: #13
 
 ## Critical
 | # | 位置 | 问题 | 状态 |
@@ -20,11 +20,13 @@
 | Q-1 | `data/products.php` | 异常处理缺少统一日志 | ✅ 已修复 |
 | C-3 | `orders.items` | 订单商品字段为拼接字符串 | ✅ 已修复 |
 | C-4 | `create_order.php` / `checkout.php` | 两条下单路径不一致 | ✅ 已修复 |
-| I-7 | `footer.php` | 页脚仍残留内联脚本 | ✅ 已修复 |
+| I-7 | `footer.php` | 页脚残留内联脚本 | ✅ 已修复 |
 | Q-6.1 | `templates/product_detail.php` | 缩略图 inline onclick 存在注入风险 | ✅ 已修复 |
 | Q-8.6 | `admin/views/products.php` | SKU 管理脚本仍在视图内定义 | ✅ 已修复 |
 | F-2 | `templates/products.php` / `assets/js/site.js` | 搜索交互未完成异步增强 | ✅ 已修复 |
 | UX-2 | 密码找回流程 | 尚未接入邮件发送 | ✅ 已修复 |
+| Q-12.2 | `templates/auth.php` / `templates/forgot_password.php` / `templates/reset_password.php` | 认证页仍残留 inline style | ✅ 已修复 |
+| Q-12.3 | `templates/products.php` | 商品卡片仍使用 `onclick` 跳转 | ✅ 已修复 |
 
 ## Minor
 | # | 位置 | 问题 | 状态 |

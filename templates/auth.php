@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
@@ -43,18 +44,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = '用户名或邮箱已被使用。';
                     } else {
                         $hash = password_hash($password, PASSWORD_DEFAULT);
-                        $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, password_hash, status, level, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', '普通会员', NOW(), NOW())");
+                        $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, password_hash, status, level, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', 'member', NOW(), NOW())");
                         $stmt->execute([$username, $name, $email, $hash]);
 
-                        $success = '注册成功，请使用账号登录。';
+                        $success = '注册成功，请使用新账号登录。';
                         $action = 'login';
                     }
                 } catch (PDOException $exception) {
-                    error_log('[shop] 注册失败: ' . $exception->getMessage());
+                    error_log('[shop] 用户注册失败: ' . $exception->getMessage());
                     $error = '注册失败，请稍后再试。';
                 }
             }
-        } elseif ($action === 'login') {
+        } else {
             $login_id = trim((string) ($_POST['login_id'] ?? ''));
             $password = (string) ($_POST['password'] ?? '');
 
@@ -83,9 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         exit;
                     }
 
-                    $error = '账号或密码不正确。';
+                    $error = '登录信息不正确。';
                 } catch (PDOException $exception) {
-                    error_log('[shop] 登录失败: ' . $exception->getMessage());
+                    error_log('[shop] 用户登录失败: ' . $exception->getMessage());
                     $error = '登录失败，请稍后再试。';
                 }
             }
@@ -103,79 +104,69 @@ if ($action !== 'register') {
     $action = 'login';
 }
 
-$pageTitle = $action === 'login' ? '账号中心 - 登录' : '账号中心 - 注册';
+$pageTitle = $action === 'login' ? '登录中心 - 魔女小店' : '注册中心 - 魔女小店';
 $currentPage = 'profile';
 
 include __DIR__ . '/header.php';
 ?>
 
-<main class="page-shell" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 20px;">
-    <div style="background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-        <h1 style="text-align: center; margin-bottom: 20px; font-size: 24px; color: #0f172a;">
-            <?php echo $action === 'login' ? '用户登录' : '账号注册'; ?>
-        </h1>
+<main class="page-shell auth-page">
+    <section class="auth-card">
+        <h1 class="auth-title"><?php echo $action === 'login' ? '用户登录' : '用户注册'; ?></h1>
 
         <?php if (is_array($flash) && ($flash['message'] ?? '') !== ''): ?>
-            <div style="background: <?php echo ($flash['type'] ?? 'success') === 'error' ? '#fef2f2' : '#ecfdf5'; ?>; color: <?php echo ($flash['type'] ?? 'success') === 'error' ? '#b91c1c' : '#047857'; ?>; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid <?php echo ($flash['type'] ?? 'success') === 'error' ? '#fecaca' : '#10b981'; ?>; font-size: 14px;">
+            <div class="auth-alert <?php echo ($flash['type'] ?? 'success') === 'error' ? 'auth-alert--error' : 'auth-alert--success'; ?>">
                 <?php echo shop_e((string) ($flash['message'] ?? '')); ?>
             </div>
         <?php endif; ?>
 
         <?php if ($error !== ''): ?>
-            <div style="background: #fef2f2; color: #b91c1c; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #fecaca; font-size: 14px;">
-                <?php echo shop_e($error); ?>
-            </div>
+            <div class="auth-alert auth-alert--error"><?php echo shop_e($error); ?></div>
         <?php endif; ?>
 
         <?php if ($success !== ''): ?>
-            <div style="background: #ecfdf5; color: #047857; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #10b981; font-size: 14px;">
-                <?php echo shop_e($success); ?>
-            </div>
+            <div class="auth-alert auth-alert--success"><?php echo shop_e($success); ?></div>
         <?php endif; ?>
 
         <?php if ($action === 'login'): ?>
-            <form method="post" action="index.php?page=auth&action=login" style="display: flex; flex-direction: column; gap: 15px;">
+            <form method="post" action="index.php?page=auth&action=login" class="auth-form">
                 <?php echo csrf_field(); ?>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">账号 / 邮箱 / ID</label>
-                    <input type="text" name="login_id" required placeholder="请输入账号、邮箱或 ID" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">密码</label>
-                    <input type="password" name="password" required placeholder="请输入密码" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <button type="submit" style="width: 100%; padding: 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px;">登录</button>
-                <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; font-size: 14px; color: #64748b;">
-                    <a href="index.php?page=forgot_password" style="color: #2563eb; text-decoration: none;">忘记密码？</a>
-                    <span>还没有账号？<a href="index.php?page=auth&action=register" style="color: #2563eb; text-decoration: none;">立即注册</a></span>
+                <label class="auth-label" for="login_id">用户名 / 邮箱 / ID</label>
+                <input class="auth-input" id="login_id" type="text" name="login_id" required placeholder="请输入用户名、邮箱或 ID">
+
+                <label class="auth-label" for="password">密码</label>
+                <input class="auth-input" id="password" type="password" name="password" required placeholder="请输入密码">
+
+                <button class="auth-btn" type="submit">登录</button>
+
+                <div class="auth-links auth-links--split">
+                    <a class="auth-link" href="index.php?page=forgot_password">忘记密码？</a>
+                    <span>还没有账号？ <a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
                 </div>
             </form>
         <?php else: ?>
-            <form method="post" action="index.php?page=auth&action=register" style="display: flex; flex-direction: column; gap: 15px;">
+            <form method="post" action="index.php?page=auth&action=register" class="auth-form">
                 <?php echo csrf_field(); ?>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">用户名</label>
-                    <input type="text" name="username" required placeholder="请输入用于登录的用户名" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">昵称</label>
-                    <input type="text" name="name" required placeholder="请输入展示昵称" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">注册邮箱</label>
-                    <input type="email" name="email" required placeholder="请输入可用于找回密码的邮箱" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px; color: #475569; font-size: 14px;">密码</label>
-                    <input type="password" name="password" required placeholder="请设置登录密码" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <button type="submit" style="width: 100%; padding: 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px;">注册</button>
-                <div style="text-align: center; margin-top: 10px; font-size: 14px; color: #64748b;">
-                    已有账号？<a href="index.php?page=auth&action=login" style="color: #2563eb; text-decoration: none;">返回登录</a>
+                <label class="auth-label" for="username">用户名</label>
+                <input class="auth-input" id="username" type="text" name="username" required placeholder="请输入用户名">
+
+                <label class="auth-label" for="name">姓名</label>
+                <input class="auth-input" id="name" type="text" name="name" required placeholder="请输入姓名">
+
+                <label class="auth-label" for="email">邮箱</label>
+                <input class="auth-input" id="email" type="email" name="email" required placeholder="请输入邮箱">
+
+                <label class="auth-label" for="register_password">密码</label>
+                <input class="auth-input" id="register_password" type="password" name="password" required placeholder="请输入密码">
+
+                <button class="auth-btn" type="submit">注册</button>
+
+                <div class="auth-links">
+                    <span>已有账号？ <a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
                 </div>
             </form>
         <?php endif; ?>
-    </div>
+    </section>
 </main>
 
 <?php include __DIR__ . '/footer.php'; ?>

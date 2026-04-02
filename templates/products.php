@@ -20,7 +20,7 @@ function shop_render_products_fragment(array $grouped_products): void
         <section class="category-section" style="--section-accent: <?php echo shop_e((string) ($group['accent'] ?? '#3b82f6')); ?>;">
             <div class="category-header">
                 <div>
-                    <h2 class="category-title"><?php echo shop_e((string) ($group['emoji'] ?? '🪄') . ' ' . (string) ($group['name'] ?? '')); ?></h2>
+                    <h2 class="category-title"><?php echo shop_e((string) ($group['emoji'] ?? '*') . ' ' . (string) ($group['name'] ?? '')); ?></h2>
                     <p class="category-desc"><?php echo shop_e((string) ($group['description'] ?? '')); ?></p>
                 </div>
                 <span class="category-count"><?php echo count($group['products'] ?? []); ?> 款</span>
@@ -28,16 +28,17 @@ function shop_render_products_fragment(array $grouped_products): void
 
             <div class="category-track">
                 <?php foreach ($group['products'] as $product): ?>
-                    <?php $category_info = shop_get_category_info((string) ($product['category'] ?? '')); ?>
-                    <article class="product-card product-card--compact" style="--card-accent: <?php echo shop_e((string) ($category_info['accent'] ?? '#e2e8f0')); ?>; cursor: pointer;" onclick="window.location.href='index.php?page=product_detail&id=<?php echo $product['id']; ?>'">
-                        <?php
-                        $display_img = !empty($product['cover_image']) ? $product['cover_image'] : (!empty($product['images']) ? $product['images'][0] : '');
-                        if ($display_img):
-                            ?>
-                            <div style="width: 100%; height: 140px; overflow: hidden; border-radius: 12px 12px 0 0;">
-                                <img src="<?php echo shop_e($display_img); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '')); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php
+                    $category_info = shop_get_category_info((string) ($product['category'] ?? ''));
+                    $display_img = !empty($product['cover_image']) ? $product['cover_image'] : (!empty($product['images']) ? $product['images'][0] : '');
+                    ?>
+                    <a class="product-card product-card--compact product-card-link" href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>" style="--card-accent: <?php echo shop_e((string) ($category_info['accent'] ?? '#e2e8f0')); ?>;">
+                        <?php if ($display_img): ?>
+                            <div class="product-card-image-wrap">
+                                <img class="product-card-image" src="<?php echo shop_e($display_img); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
                             </div>
                         <?php endif; ?>
+
                         <div class="product-body">
                             <div class="product-title-row">
                                 <h3 class="product-title"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h3>
@@ -50,11 +51,10 @@ function shop_render_products_fragment(array $grouped_products): void
                                     <div class="product-price"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></div>
                                     <div class="product-stock">库存：<?php echo shop_format_sales((int) ($product['stock'] ?? 0)); ?> 件</div>
                                 </div>
-
                                 <span class="product-sales">销量：<?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
                             </div>
                         </div>
-                    </article>
+                    </a>
                 <?php endforeach; ?>
             </div>
         </section>
@@ -68,13 +68,13 @@ $showFooter = false;
 
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $is_ajax = isset($_GET['ajax']);
-$allProducts = shop_get_products();
-$visibleProducts = shop_filter_products($allProducts, $keyword);
-$groupedProducts = shop_group_products_by_category($visibleProducts, 'page_sort');
-$metrics = shop_product_dashboard_metrics($allProducts);
+$all_products = shop_get_products();
+$visible_products = shop_filter_products($all_products, $keyword);
+$grouped_products = shop_group_products_by_category($visible_products, 'page_sort');
+$metrics = shop_product_dashboard_metrics($all_products);
 
 if ($is_ajax) {
-    shop_render_products_fragment($groupedProducts);
+    shop_render_products_fragment($grouped_products);
     return;
 }
 
@@ -107,11 +107,11 @@ include __DIR__ . '/header.php';
 
     <?php if ($keyword !== ''): ?>
         <div class="filter-bar">
-            搜索关键词 “<?php echo shop_e($keyword); ?>”，共找到 <?php echo count($visibleProducts); ?> 款商品。你也可以继续修改关键词重新搜索。
+            搜索关键词“<?php echo shop_e($keyword); ?>”，共找到 <?php echo count($visible_products); ?> 款商品。
         </div>
     <?php endif; ?>
 
-    <?php shop_render_products_fragment($groupedProducts); ?>
+    <?php shop_render_products_fragment($grouped_products); ?>
 </main>
 
 <?php include __DIR__ . '/footer.php'; ?>
