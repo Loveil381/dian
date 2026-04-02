@@ -1,6 +1,13 @@
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-# Redirect /admin or /admin/ to the routing script
 RewriteRule ^admin/?$ index.php?page=admin [R=301,L]
+RewriteRule ^(config|includes|data|docs)(/|$) - [F,L,NC]
+RewriteRule ^assets/uploads/.*\.(php|phtml|phar|cgi|pl|py|sh)$ - [F,L,NC]
 </IfModule>

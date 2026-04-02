@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
@@ -11,7 +12,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 $pageTitle = '重置密码';
 $currentPage = 'profile';
 $error = '';
-$success = '';
 $token = trim((string) ($_GET['token'] ?? ($_POST['token'] ?? '')));
 
 $pdo = get_db_connection();
@@ -29,7 +29,7 @@ if ($pdo && $token !== '') {
         $error = '重置链接校验失败，请稍后再试。';
     }
 } elseif ($token === '') {
-    $error = '重置链接无效，请重新生成。';
+    $error = '重置链接无效，请重新申请。';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === '') {
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === '') {
 
             $_SESSION['auth_flash'] = [
                 'type' => 'success',
-                'message' => '密码已重置，请使用新密码登录。',
+                'message' => '密码已重置成功，请使用新密码登录。',
             ];
             header('Location: index.php?page=auth&action=login');
             exit;
@@ -70,42 +70,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === '') {
 include __DIR__ . '/header.php';
 ?>
 
-<main class="page-shell" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 20px;">
-    <div style="background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 520px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-        <h1 style="margin: 0 0 14px; font-size: 28px; color: #0f172a;">重置密码</h1>
+<main class="page-shell auth-page">
+    <section class="auth-card auth-card--wide">
+        <h1 class="auth-title">重置密码</h1>
 
         <?php if ($error !== ''): ?>
-            <div style="background: #fef2f2; color: #b91c1c; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #fecaca; font-size: 14px;">
-                <?php echo shop_e($error); ?>
-            </div>
+            <div class="auth-alert auth-alert--error"><?php echo shop_e($error); ?></div>
         <?php endif; ?>
 
         <?php if ($user): ?>
-            <p style="margin: 0 0 20px; color: #64748b; line-height: 1.7;">当前正在为邮箱 <strong><?php echo shop_e((string) ($user['email'] ?? '')); ?></strong> 重置密码。</p>
+            <p class="auth-description">正在为邮箱 <strong><?php echo shop_e((string) ($user['email'] ?? '')); ?></strong> 重置密码。</p>
 
-            <form method="post" action="index.php?page=reset_password&token=<?php echo urlencode($token); ?>" style="display: flex; flex-direction: column; gap: 15px;">
+            <form method="post" action="index.php?page=reset_password&token=<?php echo urlencode($token); ?>" class="auth-form">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" name="token" value="<?php echo shop_e($token); ?>">
-                <div>
-                    <label style="display: block; margin-bottom: 6px; color: #475569; font-size: 14px;">新密码</label>
-                    <input type="password" name="password" required placeholder="请输入新的登录密码" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 6px; color: #475569; font-size: 14px;">确认新密码</label>
-                    <input type="password" name="password_confirm" required placeholder="请再次输入新密码" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px;">
-                </div>
-                <button type="submit" style="padding: 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">确认重置密码</button>
+
+                <label class="auth-label" for="reset_password">新密码</label>
+                <input class="auth-input" id="reset_password" type="password" name="password" required placeholder="请输入新密码">
+
+                <label class="auth-label" for="reset_password_confirm">确认新密码</label>
+                <input class="auth-input" id="reset_password_confirm" type="password" name="password_confirm" required placeholder="请再次输入新密码">
+
+                <button class="auth-btn" type="submit">确认重置密码</button>
             </form>
         <?php else: ?>
-            <div style="color: #64748b; line-height: 1.7;">
-                当前链接无法继续使用，你可以重新申请新的重置链接。
-            </div>
+            <div class="auth-description">当前链接不可用，请返回找回密码页面重新申请新的重置链接。</div>
         <?php endif; ?>
 
-        <div style="margin-top: 18px; font-size: 14px; color: #64748b;">
-            <a href="index.php?page=forgot_password" style="color: #2563eb; text-decoration: none;">重新生成链接</a>
+        <div class="auth-links">
+            <a class="auth-link" href="index.php?page=forgot_password">重新获取链接</a>
         </div>
-    </div>
+    </section>
 </main>
 
 <?php include __DIR__ . '/footer.php'; ?>

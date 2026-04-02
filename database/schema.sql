@@ -1,32 +1,33 @@
--- 魔女小店 / PHP + MySQL 基础数据库结构
+-- 魔女小店数据库结构
+-- 安装程序会在执行前将 {prefix} 替换为实际表前缀
 
-CREATE TABLE IF NOT EXISTS {PREFIX}admin_users (
+CREATE TABLE IF NOT EXISTS {prefix}admin_users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,
-    name VARCHAR(80) NULL DEFAULT '',
+    name VARCHAR(80) NOT NULL DEFAULT '',
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(30) NOT NULL DEFAULT 'admin',
     status TINYINT(1) NOT NULL DEFAULT 1,
-    last_login_at DATETIME NULL,
+    last_login_at DATETIME DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_admin_users_username (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS {PREFIX}users (
+CREATE TABLE IF NOT EXISTS {prefix}users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) DEFAULT NULL,
     name VARCHAR(80) NOT NULL,
     email VARCHAR(120) DEFAULT NULL,
-    username VARCHAR(50) NULL UNIQUE,
-    password_hash VARCHAR(255) NULL,
+    password_hash VARCHAR(255) DEFAULT NULL,
     reset_token VARCHAR(128) DEFAULT NULL,
-    reset_expires DATETIME NULL,
+    reset_expires DATETIME DEFAULT NULL,
     phone VARCHAR(20) DEFAULT NULL,
-    level VARCHAR(30) DEFAULT '普通会员',
-    status VARCHAR(20) DEFAULT 'active',
+    level VARCHAR(30) NOT NULL DEFAULT 'member',
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
     address TEXT,
-    last_login DATETIME NULL,
+    last_login DATETIME DEFAULT NULL,
     note TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -36,29 +37,29 @@ CREATE TABLE IF NOT EXISTS {PREFIX}users (
     KEY idx_users_reset_token (reset_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS {PREFIX}categories (
+CREATE TABLE IF NOT EXISTS {prefix}categories (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(80) NOT NULL,
     description TEXT,
-    accent VARCHAR(20) DEFAULT '#cbd5e1',
-    emoji VARCHAR(10) DEFAULT '🛍️',
+    accent VARCHAR(20) NOT NULL DEFAULT '#cbd5e1',
+    emoji VARCHAR(10) NOT NULL DEFAULT '*',
     sort INT NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS {PREFIX}products (
+CREATE TABLE IF NOT EXISTS {prefix}products (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(150) NOT NULL,
     category VARCHAR(80) NOT NULL DEFAULT '未分类',
     sales INT NOT NULL DEFAULT 0,
     price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     stock INT NOT NULL DEFAULT 0,
-    tag VARCHAR(50) DEFAULT '',
+    tag VARCHAR(50) NOT NULL DEFAULT '',
     home_sort INT NOT NULL DEFAULT 0,
     page_sort INT NOT NULL DEFAULT 0,
-    sku TEXT NULL,
+    sku TEXT,
     cover_image VARCHAR(255) DEFAULT NULL,
     images TEXT DEFAULT NULL,
     description TEXT DEFAULT NULL,
@@ -69,16 +70,16 @@ CREATE TABLE IF NOT EXISTS {PREFIX}products (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS {PREFIX}orders (
+CREATE TABLE IF NOT EXISTS {prefix}orders (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     order_no VARCHAR(32) NOT NULL,
     user_id INT UNSIGNED DEFAULT NULL,
     customer VARCHAR(80) DEFAULT NULL,
     phone VARCHAR(20) DEFAULT NULL,
     address TEXT,
-    status VARCHAR(20) NOT NULL DEFAULT '待发货',
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
     pay_method VARCHAR(20) DEFAULT NULL,
-    express_company VARCHAR(80) NULL DEFAULT '',
+    express_company VARCHAR(80) DEFAULT '',
     tracking_numbers TEXT DEFAULT NULL,
     items TEXT DEFAULT NULL,
     total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
@@ -90,21 +91,8 @@ CREATE TABLE IF NOT EXISTS {PREFIX}orders (
     UNIQUE KEY uk_orders_order_no (order_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS {PREFIX}plugins (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(30) NOT NULL DEFAULT 'none',
-    description TEXT,
-    version VARCHAR(20) DEFAULT '1.0.0',
-    enabled TINYINT(1) NOT NULL DEFAULT 1,
-    config TEXT DEFAULT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS {PREFIX}settings (
+CREATE TABLE IF NOT EXISTS {prefix}settings (
     `key` VARCHAR(50) NOT NULL,
-    `value` TEXT NULL,
+    `value` TEXT,
     PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
