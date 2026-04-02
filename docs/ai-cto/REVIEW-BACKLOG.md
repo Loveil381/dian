@@ -9,7 +9,9 @@
 | S-3 | 全部 POST 表单 | CSRF 覆盖不完整 | ✅ 已修复 |
 | C-2 | `templates/product_detail.php` | `paidForm` 缺少 CSRF | ✅ 已修复 |
 | Q-6.3 | `admin/views/orders.php` | 后台订单金额字段名不匹配 | ✅ 已修复 |
-| Q-7.1 | 后台分页接入 | 列表页缺少分页，数据量增长后体验会退化 | ✅ 已修复 |
+| Q-7.1 | `templates/forgot_password.php` | reset token 以明文存储在数据库中 | ✅ 已修复 |
+| Q-7.2 | `templates/forgot_password.php` | 密码找回接口缺少速率限制 | ✅ 已修复 |
+| Q-7.4 | `templates/auth.php` | 注册密码缺少最小长度校验 | ✅ 已修复 |
 
 ## Major
 | # | 位置 | 问题 | 状态 |
