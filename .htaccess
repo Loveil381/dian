@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Redirect /admin or /admin/ to the routing script
+RewriteRule ^admin/?$ index.php?page=admin [R=301,L]
+</IfModule>

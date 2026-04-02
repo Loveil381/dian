@@ -1,18 +1,26 @@
 <!-- templates/header.php -->
+<?php
+$currentPage = $currentPage ?? 'home';
+$currentKeyword = (string) ($_GET['keyword'] ?? '');
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? '魔女小店'; ?></title>
+    <link rel="stylesheet" href="assets/css/site.css">
     <style>
         :root {
             --nav-bg: #ffffff;
             --icon-color: #333333;
             --icon-hover: #000000;
-            --divider-color: rgba(240, 240, 240, 0.6);
+            --divider-color: rgba(230, 233, 238, 0.9);
             --badge-bg: #ff4d4f;
             --badge-text: #ffffff;
+            --link-color: #666666;
+            --link-active-bg: #f0f2f5;
+            --link-hover-bg: #f5f6f8;
         }
 
         * {
@@ -28,79 +36,73 @@
 
         header {
             background-color: var(--nav-bg);
-            padding: 12px 16px;
+            padding: 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 1px 8px rgba(20, 20, 20, 0.04);
         }
 
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .nav-container,
+        .nav-divider {
+            display: none;
+        }
+
+        .page-nav {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 12px 16px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
         }
 
-        .nav-left, .nav-right {
-            display: flex;
-            align-items: center;
+        .page-link {
+            text-align: center;
+            text-decoration: none;
+            color: var(--link-color);
+            padding: 12px 6px;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        .nav-right {
-            gap: 16px;
+        .page-link:hover {
+            color: #111;
+            background-color: var(--link-hover-bg);
         }
 
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s ease;
-            color: var(--icon-color);
-            position: relative;
+        .page-link.active {
+            color: #111;
+            font-weight: 600;
+            background-color: var(--link-active-bg);
         }
 
-        .icon-btn:hover {
-            color: var(--icon-hover);
-        }
-
-        .icon-btn svg {
-            display: block;
-        }
-
-        .cart-badge {
+        .sr-only {
             position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: var(--badge-bg);
-            color: var(--badge-text);
-            font-size: 10px;
-            font-weight: bold;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
-        .nav-divider {
+            width: 1px;
             height: 1px;
-            background-color: var(--divider-color);
-            margin-top: 8px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         @media (max-width: 768px) {
             header {
+                padding: 0;
+            }
+
+            .page-nav {
                 padding: 10px 12px;
+                gap: 6px;
+            }
+
+            .page-link {
+                font-size: 13px;
+                padding: 10px 3px;
             }
         }
     </style>
@@ -110,7 +112,7 @@
 <header>
     <div class="nav-container">
         <div class="nav-left">
-            <button class="icon-btn" aria-label="打开菜单" id="menuBtn">
+            <button class="icon-btn" aria-label="打开菜单" id="menuBtn" type="button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -119,14 +121,20 @@
             </button>
         </div>
 
-        <div class="nav-right">
-            <button class="icon-btn" aria-label="搜索商品" id="searchBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <form class="search-form" id="searchForm" method="get" action="index.php" role="search">
+            <label class="sr-only" for="searchInput">搜索商品</label>
+            <input type="hidden" name="page" value="<?php echo htmlspecialchars($currentPage, ENT_QUOTES, 'UTF-8'); ?>">
+            <input class="search-input" type="search" id="searchInput" name="keyword" placeholder="搜索商品..." autocomplete="off" value="<?php echo htmlspecialchars($currentKeyword, ENT_QUOTES, 'UTF-8'); ?>">
+            <button class="icon-btn search-submit" aria-label="提交搜索" id="searchBtn" type="submit">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
-            <button class="icon-btn" aria-label="查看购物车" id="cartBtn">
+        </form>
+
+        <div class="nav-right">
+            <button class="icon-btn" aria-label="查看购物车" id="cartBtn" type="button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -136,5 +144,13 @@
             </button>
         </div>
     </div>
+
     <div class="nav-divider"></div>
+
+    <nav class="page-nav" aria-label="站点主导航">
+        <a class="page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>
+        <a class="page-link <?php echo $currentPage === 'products' ? 'active' : ''; ?>" href="index.php?page=products">商品页</a>
+        <a class="page-link <?php echo $currentPage === 'orders' ? 'active' : ''; ?>" href="index.php?page=orders">订单</a>
+        <a class="page-link <?php echo $currentPage === 'profile' ? 'active' : ''; ?>" href="index.php?page=profile">个人</a>
+    </nav>
 </header>
