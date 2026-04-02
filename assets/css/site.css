@@ -26,6 +26,27 @@ a {
     color: inherit;
 }
 
+.cart-link {
+    position: relative;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--badge-bg, #ff4d4f);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+    min-width: 14px;
+    text-align: center;
+}
+
 header {
     background-color: var(--nav-bg);
     padding: 0;
@@ -403,6 +424,313 @@ header {
     min-height: 140px;
 }
 
+.product-detail {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.product-detail-gallery,
+.product-detail-info {
+    flex: 1;
+    min-width: 320px;
+}
+
+.product-detail-main-image {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+}
+
+.product-detail-image-empty {
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+}
+
+.product-detail-thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    overflow-x: auto;
+}
+
+.product-detail-thumb {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+}
+
+.product-detail-category {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.product-detail-title {
+    font-size: 30px;
+    line-height: 1.3;
+    margin: 0 0 12px;
+    color: #0f172a;
+}
+
+.product-detail-sales {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 18px;
+}
+
+.product-detail-price-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.product-detail-price {
+    font-size: 32px;
+    font-weight: 700;
+    color: #dc2626;
+}
+
+.product-detail-soldout {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 13px;
+}
+
+.product-detail-sku {
+    margin-bottom: 18px;
+}
+
+.product-detail-sku-title {
+    display: block;
+    margin-bottom: 10px;
+    color: #0f172a;
+}
+
+.product-detail-sku-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sku-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.product-detail-stock {
+    margin-bottom: 18px;
+    color: #475569;
+}
+
+.product-detail-desc {
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.product-detail-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.product-detail-buy-btn,
+.product-detail-cart-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.product-detail-buy-btn {
+    flex: 1;
+    min-width: 180px;
+    background: #2563eb;
+}
+
+.product-detail-cart-form {
+    flex: 1;
+    min-width: 180px;
+}
+
+.product-detail-cart-btn {
+    background: #f59e0b;
+}
+
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-card {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px;
+    position: relative;
+    text-align: center;
+}
+
+.popup-card--sm {
+    max-width: 340px;
+    padding: 24px;
+    z-index: 3000;
+}
+
+.popup-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.popup-title {
+    margin: 0 0 12px;
+    font-size: 20px;
+    color: #0f172a;
+}
+
+.popup-text {
+    margin: 0 0 20px;
+    color: #475569;
+    line-height: 1.7;
+}
+
+.popup-text--top-space {
+    margin-top: 24px;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.popup-secondary-btn,
+.popup-primary-link {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.popup-secondary-btn {
+    border: none;
+    background: #e2e8f0;
+    color: #334155;
+    cursor: pointer;
+}
+
+.popup-primary-link {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.popup-pay-options {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.popup-pay-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 999px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.popup-pay-btn--wechat {
+    background: #10b981;
+}
+
+.popup-pay-btn--alipay {
+    background: #0ea5e9;
+}
+
+.popup-qr-container {
+    margin: 20px 0;
+}
+
+.popup-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #dc2626;
+    margin-bottom: 16px;
+}
+
+.popup-qr-box {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
+    border-radius: 14px;
+    background: #f8fafc;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.popup-qr-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.popup-submit-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 .empty-state {
     margin-top: 18px;
     padding: 32px 18px;
@@ -768,6 +1096,11 @@ header {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .product-detail {
+        gap: 20px;
+        padding: 20px;
+    }
+
     .auth-card {
         padding: 24px 18px;
     }
@@ -800,6 +1133,11 @@ header {
         grid-template-columns: 1fr;
     }
 
+    .product-detail-gallery,
+    .product-detail-info {
+        min-width: 100%;
+    }
+
     .hero-title {
         font-size: 24px;
     }
@@ -812,5 +1150,11 @@ header {
     .product-card--compact {
         flex-basis: 180px;
         min-width: 180px;
+    }
+
+    .popup-actions,
+    .product-detail-actions,
+    .popup-pay-options {
+        flex-direction: column;
     }
 }

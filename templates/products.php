@@ -63,6 +63,7 @@ function shop_render_products_fragment(array $grouped_products): void
 }
 
 $pageTitle = '全部商品 - 魔女小店';
+$pageDescription = '魔女小店全部商品，支持分类浏览与关键词搜索。';
 $currentPage = 'products';
 $showFooter = false;
 
