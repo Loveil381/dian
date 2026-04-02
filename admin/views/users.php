@@ -6,7 +6,7 @@
                 <p class="section-note">查看前台商城注册的买家账户。</p>
             </div>
             <div class="section-actions">
-                <span class="badge"><?php echo count($userRows); ?> 名用户</span>
+                <span class="badge"><?php echo (int) ($userPagination['total'] ?? count($userRows)); ?> 名用户</span>
             </div>
         </div>
 
@@ -59,5 +59,6 @@
                 </tbody>
             </table>
         </div>
+        <?php echo shop_render_pagination($userPagination, $userPaginationUrl); ?>
     </div>
 </section>
