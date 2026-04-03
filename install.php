@@ -57,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($form['host'] === '' || $form['name'] === '' || $form['user'] === '') {
         $error = '请完整填写数据库主机、数据库名和用户名。';
+    } elseif ($form['prefix'] !== '' && !preg_match('/^[a-zA-Z0-9_]+$/', $form['prefix'])) {
+        $error = '表前缀只能包含字母、数字和下划线。';
     } elseif ($form['admin_user'] === '' || strlen($form['admin_password']) < 6) {
         $error = '请填写管理员用户名，且管理员密码至少需要 6 位。';
     } elseif (!file_exists($schema_path)) {

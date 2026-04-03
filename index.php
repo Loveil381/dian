@@ -18,5 +18,13 @@ $routes = [
     'cart' => __DIR__ . '/templates/cart.php',
     'checkout' => __DIR__ . '/templates/checkout.php',
 ];
-$currentPage = array_key_exists($page, $routes) ? $page : 'home';
-require $routes[$currentPage];
+
+if (isset($routes[$page])) {
+    $currentPage = $page;
+    require $routes[$page];
+} else {
+    http_response_code(404);
+    require __DIR__ . '/includes/error_handler.php';
+    shop_error_page(404, '您访问的页面不存在，请检查链接后重试。');
+    exit;
+}
