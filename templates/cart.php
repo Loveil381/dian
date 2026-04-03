@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -18,14 +19,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== '') {
     if ($action === 'add') {
         $product_id = (int) ($_POST['product_id'] ?? 0);
         $sku_name = trim((string) ($_POST['sku_name'] ?? ''));
-        $sku_price = max(0, (float) ($_POST['sku_price'] ?? 0));
-        $cover_image = trim((string) ($_POST['cover_image'] ?? ''));
-        $name = trim((string) ($_POST['name'] ?? ''));
+        $product = shop_get_product_by_id($product_id);
+
+        if ($product === null) {
+            $_SESSION['flash_message'] = '商品不存在或已下架，请重新选择。';
+            header('Location: index.php?page=products');
+            exit;
+        }
+
+        $verified_price = (float) ($product['price'] ?? 0);
+        $decoded_skus = json_decode((string) ($product['sku'] ?? '[]'), true);
+        if (is_array($decoded_skus)) {
+            foreach ($decoded_skus as $sku) {
+                if ((string) ($sku['name'] ?? '') === $sku_name) {
+                    $verified_price = (float) ($sku['price'] ?? $verified_price);
+                    break;
+                }
+            }
+        }
+
+        if ($sku_name === '') {
+            $sku_name = (string) ($product['name'] ?? '默认规格');
+        }
+
+        $cover_image = trim((string) ($product['cover_image'] ?? ''));
+        if ($cover_image === '' && !empty($product['images']) && is_array($product['images'])) {
+            $cover_image = (string) ($product['images'][0] ?? '');
+        }
 
         $found = false;
         foreach ($_SESSION['cart'] as &$item) {
             if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
                 $item['quantity'] = max(1, (int) ($item['quantity'] ?? 0) + 1);
+                $item['price'] = $verified_price;
+                $item['sku_price'] = $verified_price;
+                $item['name'] = (string) ($product['name'] ?? '');
+                $item['cover_image'] = $cover_image;
                 $found = true;
                 break;
             }
@@ -35,15 +64,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== '') {
         if (!$found) {
             $_SESSION['cart'][] = [
                 'product_id' => $product_id,
-                'name' => $name,
-                'price' => $sku_price,
+                'name' => (string) ($product['name'] ?? ''),
+                'price' => $verified_price,
                 'sku_name' => $sku_name,
-                'sku_price' => $sku_price,
+                'sku_price' => $verified_price,
                 'quantity' => 1,
                 'cover_image' => $cover_image,
             ];
         }
 
+        $_SESSION['flash'] = '已成功加入购物车！';
         header('Location: index.php?page=product_detail&id=' . urlencode((string) $product_id));
         exit;
     }
@@ -87,7 +117,10 @@ $pageTitle = '购物车';
 $currentPage = 'cart';
 $cart = $_SESSION['cart'] ?? [];
 $flash_message = trim((string) ($_SESSION['flash_message'] ?? ''));
-unset($_SESSION['flash_message']);
+if ($flash_message === '') {
+    $flash_message = trim((string) ($_SESSION['flash'] ?? ''));
+}
+unset($_SESSION['flash_message'], $_SESSION['flash']);
 
 $total_price = 0;
 foreach ($cart as $item) {
@@ -99,7 +132,7 @@ include __DIR__ . '/header.php';
 
 <main class="page-shell">
     <?php if ($flash_message !== ''): ?>
-        <div style="max-width: 800px; margin: 0 auto 18px; padding: 14px 16px; border-radius: 12px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;">
+        <div style="max-width: 800px; margin: 0 auto 18px; padding: 14px 16px; border-radius: 12px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
             <?php echo shop_e($flash_message); ?>
         </div>
     <?php endif; ?>
@@ -109,8 +142,8 @@ include __DIR__ . '/header.php';
 
         <?php if ($cart === []): ?>
             <div style="text-align: center; padding: 48px 0; color: #64748b;">
-                <p style="margin: 0 0 18px;">购物车还是空的，先去挑点喜欢的商品吧。</p>
-                <a href="index.php?page=products" style="display: inline-block; padding: 12px 20px; border-radius: 999px; background: #2563eb; color: #ffffff; text-decoration: none;">去逛商品</a>
+                <p style="margin: 0 0 18px;">购物车还是空的，先去挑几件喜欢的商品吧。</p>
+                <a href="index.php?page=products" style="display: inline-block; padding: 12px 20px; border-radius: 999px; background: #2563eb; color: #ffffff; text-decoration: none;">继续购物</a>
             </div>
         <?php else: ?>
             <div style="display: grid; gap: 14px;">

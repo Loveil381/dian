@@ -21,26 +21,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($checkout_action === 'quick_buy') {
         $product_id = (int) ($_POST['product_id'] ?? 0);
-        $name = trim((string) ($_POST['name'] ?? ''));
         $sku_name = trim((string) ($_POST['sku_name'] ?? ''));
-        $sku_price = max(0, (float) ($_POST['sku_price'] ?? 0));
-        $cover_image = trim((string) ($_POST['cover_image'] ?? ''));
         $pay_method = trim((string) ($_POST['pay_method'] ?? ''));
 
-        if ($product_id <= 0 || $name === '' || $sku_name === '' || $sku_price <= 0) {
-            $_SESSION['flash_message'] = '商品信息不完整，请重新选择规格后再试。';
+        $product = shop_get_product_by_id($product_id);
+        if ($product === null) {
+            $_SESSION['flash_message'] = '商品不存在或已下架，请重新选择。';
             header('Location: index.php?page=products');
             exit;
+        }
+
+        $verified_price = (float) ($product['price'] ?? 0);
+        $decoded_skus = json_decode((string) ($product['sku'] ?? '[]'), true);
+        if (is_array($decoded_skus)) {
+            foreach ($decoded_skus as $sku) {
+                if ((string) ($sku['name'] ?? '') === $sku_name) {
+                    $verified_price = (float) ($sku['price'] ?? $verified_price);
+                    break;
+                }
+            }
+        }
+
+        if ($sku_name === '') {
+            $sku_name = (string) ($product['name'] ?? '默认规格');
+        }
+
+        $cover_image = trim((string) ($product['cover_image'] ?? ''));
+        if ($cover_image === '' && !empty($product['images']) && is_array($product['images'])) {
+            $cover_image = (string) ($product['images'][0] ?? '');
         }
 
         $found = false;
         foreach ($_SESSION['cart'] as &$item) {
             if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
                 $item['quantity'] = 1;
-                $item['price'] = $sku_price;
-                $item['sku_price'] = $sku_price;
+                $item['price'] = $verified_price;
+                $item['sku_price'] = $verified_price;
                 $item['cover_image'] = $cover_image;
-                $item['name'] = $name;
+                $item['name'] = (string) ($product['name'] ?? '');
                 $found = true;
                 break;
             }
@@ -50,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$found) {
             $_SESSION['cart'][] = [
                 'product_id' => $product_id,
-                'name' => $name,
-                'price' => $sku_price,
+                'name' => (string) ($product['name'] ?? ''),
+                'price' => $verified_price,
                 'sku_name' => $sku_name,
-                'sku_price' => $sku_price,
+                'sku_price' => $verified_price,
                 'quantity' => 1,
                 'cover_image' => $cover_image,
             ];
@@ -76,8 +94,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($cart === []) {
-        $_SESSION['flash_message'] = '购物车为空，请先选择商品。';
+        $_SESSION['flash'] = '购物车为空，请先选购商品。';
+        $_SESSION['flash_message'] = '购物车为空，请先选购商品。';
         header('Location: index.php?page=cart');
+        exit;
+    }
+
+    $price_changed = false;
+    foreach ($_SESSION['cart'] as &$item) {
+        $db_product = shop_get_product_by_id((int) ($item['product_id'] ?? 0));
+        if ($db_product === null) {
+            unset($item);
+            $_SESSION['flash_message'] = '购物车中存在已下架商品，请重新确认。';
+            header('Location: index.php?page=cart');
+            exit;
+        }
+
+        $verified_price = (float) ($db_product['price'] ?? 0);
+        $db_skus = json_decode((string) ($db_product['sku'] ?? '[]'), true);
+        if (is_array($db_skus)) {
+            foreach ($db_skus as $sku) {
+                if ((string) ($sku['name'] ?? '') === (string) ($item['sku_name'] ?? '')) {
+                    $verified_price = (float) ($sku['price'] ?? $verified_price);
+                    break;
+                }
+            }
+        }
+
+        $original_price = (float) ($item['sku_price'] ?? $item['price'] ?? 0);
+        if (abs($original_price - $verified_price) > 0.00001) {
+            $price_changed = true;
+        }
+
+        $item['name'] = (string) ($db_product['name'] ?? ($item['name'] ?? ''));
+        $item['price'] = $verified_price;
+        $item['sku_price'] = $verified_price;
+    }
+    unset($item);
+
+    $cart = $_SESSION['cart'];
+
+    if ($price_changed) {
+        $_SESSION['flash_message'] = '购物车中部分商品价格已按最新数据更新，请确认后重新提交订单。';
+        header('Location: index.php?page=checkout');
         exit;
     }
 
@@ -98,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($cart as $item) {
             $quantity = max(1, (int) ($item['quantity'] ?? 1));
-            $price = max(0, (float) ($item['price'] ?? 0));
+            $price = max(0, (float) ($item['sku_price'] ?? $item['price'] ?? 0));
             $product_id = (int) ($item['product_id'] ?? 0);
             $name = trim((string) ($item['name'] ?? ''));
             $sku_name = trim((string) ($item['sku_name'] ?? ''));
@@ -156,7 +215,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $cart = $_SESSION['cart'] ?? [];
-if ($cart === []) {
+if (empty($cart)) {
+    $_SESSION['flash'] = '购物车为空，请先选购商品。';
+    $_SESSION['flash_message'] = '购物车为空，请先选购商品。';
     header('Location: index.php?page=cart');
     exit;
 }
@@ -213,6 +274,8 @@ $has_payment = ($wechat_qr !== '' || $alipay_qr !== '');
 $pageTitle = '确认订单';
 $currentPage = 'checkout';
 $showFooter = true;
+$flash_message = trim((string) ($_SESSION['flash_message'] ?? ''));
+unset($_SESSION['flash_message']);
 
 $total_price = 0;
 foreach ($cart as $item) {
@@ -223,6 +286,12 @@ include __DIR__ . '/header.php';
 ?>
 
 <main class="page-shell">
+    <?php if ($flash_message !== ''): ?>
+        <div style="max-width: 860px; margin: 0 auto 18px; padding: 14px 16px; border-radius: 12px; background: #fffbeb; color: #92400e; border: 1px solid #fcd34d;">
+            <?php echo shop_e($flash_message); ?>
+        </div>
+    <?php endif; ?>
+
     <div style="max-width: 860px; margin: 0 auto; background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);">
         <h1 style="font-size: 28px; margin: 0 0 20px;">确认订单</h1>
 
@@ -287,7 +356,9 @@ include __DIR__ . '/header.php';
                 <h2 style="font-size: 18px; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb;">支付方式</h2>
 
                 <?php if (!$has_payment): ?>
-                    <div style="padding: 16px; border-radius: 12px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">当前未配置支付方式，请联系管理员。</div>
+                    <div style="background:#fff3cd;color:#856404;padding:12px 16px;border-radius:8px;margin:12px 0;text-align:center;">
+                        商家尚未配置支付方式，暂时无法下单。请联系商家。
+                    </div>
                 <?php else: ?>
                     <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
                         <?php if ($wechat_qr !== ''): ?>
@@ -323,7 +394,6 @@ include __DIR__ . '/header.php';
 </main>
 
 <script>
-// 由 PHP 动态生成的初始变量
 let requireAddress = <?php echo json_encode($require_address); ?>;
 let hasPayment = <?php echo json_encode($has_payment); ?>;
 let hasUserInfo = <?php echo json_encode($user_name !== '' && $user_phone !== '' && $user_address !== ''); ?>;
