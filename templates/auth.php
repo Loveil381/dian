@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pdo = get_db_connection();
     if (!$pdo instanceof PDO) {
-        $error = '数据库连接失败，请稍后再试。';
+        $error = '数据库连接失败，请稍后重试。';
     } else {
         $prefix = get_db_prefix();
 
@@ -30,19 +30,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = trim((string) ($_POST['name'] ?? ''));
             $email = trim((string) ($_POST['email'] ?? ''));
             $password = (string) ($_POST['password'] ?? '');
+            $password_confirm = (string) ($_POST['password_confirm'] ?? '');
 
             if ($username === '' || $name === '' || $email === '' || $password === '') {
-                $error = '请完整填写注册信息。';
+                $error = '请输入完整必填注册信息。';
             } elseif (strlen($password) < 6) {
                 $error = '密码至少需要 6 位。';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = '请输入正确的邮箱地址。';
+            } elseif ($password !== $password_confirm) {
+                $error = '两次输入的密码不一致。';
             } else {
                 try {
                     $stmt = $pdo->prepare("SELECT id FROM `{$prefix}users` WHERE username = ? OR email = ? LIMIT 1");
                     $stmt->execute([$username, $email]);
                     if ($stmt->fetch()) {
-                        $error = '用户名或邮箱已被使用。';
+                        $error = '用户名或邮箱已被注册使用。';
                     } else {
                         $hash = password_hash($password, PASSWORD_DEFAULT);
                         $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, password_hash, status, level, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', 'member', NOW(), NOW())");
@@ -53,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 } catch (PDOException $exception) {
                     shop_log('error', '用户注册失败', ['message' => $exception->getMessage()]);
-                    $error = '注册失败，请稍后再试。';
+                    $error = '注册失败，请稍后重试。';
                 }
             }
         } else {
@@ -61,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = (string) ($_POST['password'] ?? '');
 
             if ($login_id === '' || $password === '') {
-                $error = '请输入登录账号和密码。';
+                $error = '请输入登录账号与密码。';
             } else {
                 try {
                     if (is_numeric($login_id)) {
@@ -88,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = '登录信息不正确。';
                 } catch (PDOException $exception) {
                     shop_log('error', '用户登录失败', ['message' => $exception->getMessage()]);
-                    $error = '登录失败，请稍后再试。';
+                    $error = '登录失败，请稍后重试。';
                 }
             }
         }
@@ -119,8 +122,8 @@ include __DIR__ . '/header.php';
                     <span class="material-symbols-outlined auth-brand-icon" aria-hidden="true">auto_awesome</span>
                 </div>
                 <p class="auth-brand-note">欢迎来到魔女小店</p>
-                <h1 class="auth-title"><?php echo $action === 'login' ? '欢迎回来' : '创建你的魔法账户'; ?></h1>
-                <p class="auth-description"><?php echo $action === 'login' ? '进入你的治愈工坊，继续管理订单与收货信息。' : '注册后即可同步保存订单记录、地址信息与账户资料。'; ?></p>
+                <h1 class="auth-title"><?php echo $action === 'login' ? '欢迎回来' : '创建你的购物账号'; ?></h1>
+                <p class="auth-description"><?php echo $action === 'login' ? '登录后即可查看购物车、订单记录并保存收货信息。' : '注册账号后可同步订单状态、保存配送信息，并获得更稳定的购物体验。'; ?></p>
             </div>
 
             <div class="auth-tabs" aria-label="登录注册切换">
@@ -176,7 +179,7 @@ include __DIR__ . '/header.php';
                     <button class="btn-primary auth-btn auth-submit" type="submit">立即登录</button>
 
                     <div class="auth-links auth-links--center">
-                        <span>还没有账号？<a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
+                        <span>还没有账号？ <a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
                     </div>
                 </form>
             <?php else: ?>
@@ -226,13 +229,13 @@ include __DIR__ . '/header.php';
                     <button class="btn-primary auth-btn auth-submit" type="submit">注册账号</button>
 
                     <div class="auth-links auth-links--center">
-                        <span>已有账号？<a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
+                        <span>已有账号？ <a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
                     </div>
                 </form>
             <?php endif; ?>
 
             <footer class="auth-footer">
-                <p class="auth-privacy">我们尊重并保护你的隐私，账户信息仅用于订单与服务流程。</p>
+                <p class="auth-privacy">提交即表示你同意平台用于账号登录、订单同步与收货信息保存所需的基础处理。</p>
             </footer>
         </div>
     </section>

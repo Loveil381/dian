@@ -18,7 +18,8 @@ $userUsername = (string) ($_SESSION['user_username'] ?? '');
 $userId = (string) ($_SESSION['user_id'] ?? '');
 $userPhone = '';
 $userAddress = '';
-$messageHtml = '';
+$messageType = '';
+$messageText = '';
 
 $pdo = get_db_connection();
 $prefix = get_db_prefix();
@@ -34,10 +35,12 @@ if ($isLoggedIn && $pdo instanceof PDO) {
             $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET name = ?, phone = ?, address = ? WHERE id = ?");
             $stmt->execute([$userName, $userPhone, $userAddress, $_SESSION['user_id']]);
             $_SESSION['user_name'] = $userName;
-            $messageHtml = '<div style="margin-top:16px; padding: 10px; background: #ecfdf5; color: #047857; border-radius: 8px; font-size: 14px;">收货信息已保存。</div>';
+            $messageType = 'success';
+            $messageText = '收货信息已保存。';
         } catch (PDOException $e) {
             shop_log('error', '保存收货信息失败', ['message' => $e->getMessage()]);
-            $messageHtml = '<div style="margin-top:16px; padding: 10px; background: #fef2f2; color: #b91c1c; border-radius: 8px; font-size: 14px;">保存失败，请稍后重试。</div>';
+            $messageType = 'error';
+            $messageText = '保存失败，请稍后重试。';
         }
     }
 
@@ -56,7 +59,8 @@ if ($isLoggedIn && $pdo instanceof PDO) {
 
 if (!$isLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['action'] ?? '') === 'save_profile') {
     csrf_verify();
-    $messageHtml = '<div style="margin-top:16px; padding: 10px; background: #fffbeb; color: #d97706; border-radius: 8px; font-size: 14px;">访客状态下无法永久保存收货信息，请注册账号。</div>';
+    $messageType = 'warning';
+    $messageText = '访客状态下无法永久保存收货信息，请注册账号。';
 }
 
 include __DIR__ . '/header.php';
@@ -99,8 +103,10 @@ include __DIR__ . '/header.php';
                 </div>
             </div>
 
-            <?php if ($messageHtml !== ''): ?>
-                <div class="profile-message"><?php echo $messageHtml; ?></div>
+            <?php if ($messageText !== ''): ?>
+                <div class="flash <?php echo shop_e($messageType); ?>">
+                    <?php echo shop_e($messageText); ?>
+                </div>
             <?php endif; ?>
 
             <form method="post" class="profile-form">
