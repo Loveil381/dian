@@ -3,395 +3,323 @@
 <html lang="zh-CN"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>魔女小店 / 管理后台</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "error-dim": "#a70138",
-                    "on-primary": "#f8f0ff",
-                    "surface-container-lowest": "#ffffff",
-                    "surface": "#faf5ff",
-                    "on-error": "#ffefef",
-                    "inverse-surface": "#0e0d14",
-                    "tertiary-fixed-dim": "#85b7ee",
-                    "surface-container-highest": "#dfdbe8",
-                    "outline": "#78757e",
-                    "on-tertiary-fixed": "#002949",
-                    "secondary-container": "#ffbfe0",
-                    "surface-tint": "#6a37d4",
-                    "on-secondary-fixed-variant": "#7a3b61",
-                    "on-tertiary-fixed-variant": "#004878",
-                    "on-primary-container": "#2b006e",
-                    "surface-variant": "#dfdbe8",
-                    "primary-fixed": "#ae8dff",
-                    "surface-container": "#ebe6f2",
-                    "surface-dim": "#d7d2e0",
-                    "outline-variant": "#afabb5",
-                    "on-surface-variant": "#5d5a62",
-                    "on-background": "#2f2e35",
-                    "inverse-primary": "#a078ff",
-                    "on-surface": "#2f2e35",
-                    "error-container": "#f74b6d",
-                    "primary-dim": "#5e26c7",
-                    "surface-container-high": "#e5e0ed",
-                    "tertiary": "#275e90",
-                    "on-secondary-fixed": "#581e43",
-                    "on-primary-fixed": "#000000",
-                    "surface-container-low": "#f4effa",
-                    "on-error-container": "#510017",
-                    "primary": "#6a37d4",
-                    "on-primary-fixed-variant": "#370086",
-                    "inverse-on-surface": "#9f9ba4",
-                    "background": "#faf5ff",
-                    "tertiary-container": "#93c5fd",
-                    "secondary-fixed": "#ffbfe0",
-                    "tertiary-dim": "#165284",
-                    "on-secondary-container": "#6f3257",
-                    "primary-container": "#ae8dff",
-                    "surface-bright": "#faf5ff",
-                    "on-secondary": "#ffeef4",
-                    "error": "#b41340",
-                    "on-tertiary-container": "#003f6a",
-                    "primary-fixed-dim": "#a27cff",
-                    "secondary-dim": "#793a60",
-                    "secondary-fixed-dim": "#fdabd7",
-                    "secondary": "#87456c",
-                    "tertiary-fixed": "#93c5fd",
-                    "on-tertiary": "#ecf3ff"
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#581e43",
+                      "on-primary-container": "#2b006e",
+                      "error": "#b41340",
+                      "outline-variant": "#afabb5",
+                      "secondary-dim": "#793a60",
+                      "secondary-fixed": "#ffbfe0",
+                      "tertiary": "#275e90",
+                      "primary-fixed-dim": "#a27cff",
+                      "tertiary-fixed": "#93c5fd",
+                      "inverse-surface": "#0e0d14",
+                      "surface-container-high": "#e5e0ed",
+                      "on-error": "#ffefef",
+                      "primary-container": "#ae8dff",
+                      "on-surface-variant": "#5d5a62",
+                      "on-tertiary-fixed-variant": "#004878",
+                      "on-surface": "#2f2e35",
+                      "on-secondary-fixed-variant": "#7a3b61",
+                      "inverse-primary": "#a078ff",
+                      "on-primary": "#f8f0ff",
+                      "background": "#faf5ff",
+                      "surface-bright": "#faf5ff",
+                      "error-container": "#f74b6d",
+                      "inverse-on-surface": "#9f9ba4",
+                      "surface-dim": "#d7d2e0",
+                      "surface-container-highest": "#dfdbe8",
+                      "on-primary-fixed": "#000000",
+                      "surface": "#faf5ff",
+                      "secondary-fixed-dim": "#fdabd7",
+                      "on-tertiary-container": "#003f6a",
+                      "on-error-container": "#510017",
+                      "on-primary-fixed-variant": "#370086",
+                      "surface-container": "#ebe6f2",
+                      "tertiary-container": "#93c5fd",
+                      "secondary": "#87456c",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#6f3257",
+                      "on-background": "#2f2e35",
+                      "surface-container-low": "#f4effa",
+                      "primary-fixed": "#ae8dff",
+                      "on-secondary": "#ffeef4",
+                      "primary": "#6a37d4",
+                      "primary-dim": "#5e26c7",
+                      "secondary-container": "#ffbfe0",
+                      "error-dim": "#a70138",
+                      "tertiary-fixed-dim": "#85b7ee",
+                      "outline": "#78757e",
+                      "surface-variant": "#dfdbe8",
+                      "on-tertiary": "#ecf3ff",
+                      "on-tertiary-fixed": "#002949",
+                      "surface-tint": "#6a37d4",
+                      "tertiary-dim": "#165284"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Be Vietnam Pro"],
+                      "label": ["Be Vietnam Pro"]
+              }
             },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Be Vietnam Pro"],
-                    "label": ["Be Vietnam Pro"]
-            }
           },
-        },
-      }
+        }
     </script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        body { font-family: 'Be Vietnam Pro', 'PingFang SC', sans-serif; }
-        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen">
-<!-- SideNavBar Shell -->
-<aside class="fixed left-0 top-0 bottom-0 w-64 flex flex-col z-50 bg-slate-900 dark:bg-black shadow-2xl">
-<div class="p-8 flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white">
-<span class="material-symbols-outlined">auto_fix_high</span>
+<body class="bg-[#f6f7fb] text-on-surface min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col h-full py-6 bg-slate-900 dark:bg-black h-screen w-64 left-0 top-0 fixed shadow-xl z-50 font-headline antialiased">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-violet-500/30">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
 </div>
 <div>
-<div class="text-xl font-black text-white tracking-tight">魔女小店</div>
-<div class="text-[10px] text-slate-400 font-medium tracking-widest uppercase">The Ethereal Apothecary</div>
+<h1 class="text-xl font-black text-white tracking-tight">魔女小店</h1>
+<p class="text-xs text-slate-400 font-medium tracking-widest">管理后台</p>
 </div>
 </div>
-<nav class="flex-1 px-4 space-y-1">
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 bg-violet-600/20 text-violet-300 border-r-4 border-violet-500 px-4 py-3 ml-2 rounded-l-full transition-all duration-300" href="#">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>首页看板 Overview</span>
+<span class="text-sm font-bold">首页看板</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
-<span>商品维护 Products</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="inventory_2">inventory_2</span>
+<span class="text-sm">商品维护</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="category">category</span>
-<span>分类管理 Categories</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="category">category</span>
+<span class="text-sm">分类管理</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="warehouse">warehouse</span>
-<span>库存管理 Inventory</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="warehouse">warehouse</span>
+<span class="text-sm">库存管理</span>
 </a>
-<!-- Active Navigation -->
-<a class="bg-violet-600/20 text-violet-400 border-r-4 border-violet-500 py-3 px-6 flex items-center gap-3 rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-<span class="font-bold">订单管理 Orders</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="receipt_long">receipt_long</span>
+<span class="text-sm">订单管理</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span>用户管理 Users</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="group">group</span>
+<span class="text-sm">用户管理</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-<span>支付管理 Payments</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="payments">payments</span>
+<span class="text-sm">支付管理</span>
 </a>
-<a class="text-slate-400 py-3 px-6 flex items-center gap-3 hover:bg-slate-800 hover:text-white transition-all rounded-xl" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span>系统状态 Status</span>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:text-white hover:bg-white/5 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="settings_heart">settings_heart</span>
+<span class="text-sm">系统状态</span>
 </a>
 </nav>
-<div class="p-6">
-<button class="w-full bg-violet-600 hover:bg-violet-500 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-transform active:scale-95 duration-150 shadow-lg shadow-violet-900/20">
-<span class="material-symbols-outlined">add_circle</span>
-<span>New Prescription</span>
-</button>
-</div>
 </aside>
 <!-- Main Content Area -->
-<main class="ml-64 min-h-screen">
-<!-- TopAppBar Shell -->
-<header class="fixed top-0 right-0 left-64 h-16 flex justify-between items-center px-8 z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50">
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full px-6 py-3 bg-white/70 backdrop-blur-md text-violet-600 font-plus-jakarta-sans text-sm tracking-wide docked full-width top-0 sticky z-40 shadow-sm transition-all duration-300">
 <div class="flex items-center gap-4">
-<span class="text-lg font-bold text-slate-800">魔女小店 / 管理后台</span>
+<div class="md:hidden w-8 h-8 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
 </div>
-<div class="flex items-center gap-6">
-<div class="relative">
-<input class="bg-surface-container-low border-none rounded-full px-4 py-2 text-sm w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400" placeholder="搜索订单号或用户..." type="text"/>
-<span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-sm">search</span>
+<div class="flex items-center bg-slate-100 rounded-full px-4 py-1.5 gap-2 border-transparent focus-within:bg-white focus-within:ring-2 focus-within:ring-violet-200 transition-all">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm p-0 w-48 text-on-surface" placeholder="搜索功能或数据..." type="text"/>
 </div>
-<div class="flex items-center gap-4 text-slate-500">
-<span class="material-symbols-outlined cursor-pointer hover:text-violet-500 transition-colors" data-icon="notifications">notifications</span>
-<span class="material-symbols-outlined cursor-pointer hover:text-violet-500 transition-colors" data-icon="help">help</span>
-<span class="material-symbols-outlined cursor-pointer hover:text-violet-500 transition-colors" data-icon="settings">settings</span>
 </div>
-<div class="flex items-center gap-3 border-l pl-6 border-slate-200">
-<img alt="Administrator Profile" class="w-8 h-8 rounded-full bg-primary-container" data-alt="close up professional administrator profile avatar in minimalist clean vector style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHsBTUho_XGl7RGeJoPIV2ajkw2SaHfNwDPgyqQQlLm5BRK5_UjVMT0c1lMekm68llqocc7F8PXnVPhdl7KC7SXcyz23_d9d5SW8hJe4ayQtoEuxKhZTkTDqzJrcbUAG8-blDcGrQTiuOCy73BJnZ4ZwTrCIieTUGmW7R74zHiDURRlJxmGdl7f-YPrOVh4SY9upiV7GV4hcKIqes1g41ul-E8_CzhVsZQYnMNn3JADxOX47gYT3zY9uFfstQEmd1PiP_ENkEbszw"/>
-<span class="text-sm font-semibold text-slate-700">管理员</span>
-</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
+<span class="text-xs font-bold text-slate-700">管理员</span>
+<span class="material-symbols-outlined text-violet-600 text-3xl" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
 </div>
 </header>
 <!-- Content Canvas -->
-<div class="pt-24 px-8 pb-12 bg-[#f6f7fb]">
-<div class="max-w-7xl mx-auto">
-<!-- Page Header & Action Bar -->
-<div class="flex items-center justify-between mb-8">
-<div class="flex items-center gap-4">
-<h1 class="text-3xl font-extrabold text-on-background tracking-tight">订单管理</h1>
-<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-bold">124</span>
-</div>
-<div class="flex gap-3">
-<button class="bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full flex items-center gap-2 font-medium shadow-sm hover:shadow-md transition-all">
-<span class="material-symbols-outlined text-[20px]">download</span>
-                            导出报表
-                        </button>
-</div>
-</div>
-<!-- Main White Card Container -->
-<div class="bg-white rounded-[12px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-<!-- Filter Bar -->
-<div class="p-6 border-b border-slate-50 flex flex-wrap items-center justify-between gap-4">
-<div class="flex flex-wrap items-center gap-4">
-<div class="flex items-center gap-3">
-<span class="text-sm font-medium text-slate-500">订单状态</span>
-<select class="bg-surface-container-low border-none rounded-xl text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 min-w-[140px] text-on-surface">
-<option>全部</option>
-<option>待付款</option>
-<option>已付款</option>
-<option>已发货</option>
-<option>已完成</option>
-<option>已取消</option>
-</select>
-</div>
-<div class="flex items-center gap-3">
-<span class="text-sm font-medium text-slate-500">时间范围</span>
-<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 rounded-xl text-sm">
-<span class="material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
-<span>最近7天</span>
-<span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
-</div>
-</div>
-</div>
-<button class="bg-primary text-white px-6 py-2.5 rounded-full font-bold hover:bg-primary-dim transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[20px]">filter_alt</span>
-                            应用筛选
-                        </button>
-</div>
-<!-- Table Section -->
-<div class="overflow-x-auto">
-<table class="w-full text-left">
-<thead class="bg-surface-container-low/50 border-b border-slate-50">
-<tr>
-<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">订单号/时间</th>
-<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">商品明细</th>
-<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">用户/物流</th>
-<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">金额/状态</th>
-<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">操作</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-slate-50">
-<!-- Row 1 -->
-<tr class="hover:bg-slate-50/50 transition-colors">
-<td class="px-6 py-5">
-<div class="font-mono text-sm font-semibold text-slate-700">20260403-1024</div>
-<div class="text-xs text-slate-400 mt-1">2026-04-03 14:30</div>
-</td>
-<td class="px-6 py-5">
+<div class="p-8 space-y-12 max-w-7xl mx-auto w-full">
+<!-- Section 1: 数据大盘 -->
+<section class="space-y-6">
 <div class="space-y-1">
-<div class="text-sm flex items-center gap-2">
-<span class="text-on-surface">补佳乐 1mg</span>
-<span class="text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SKU-B01</span>
-<span class="text-xs font-bold text-primary">x 2</span>
+<div class="flex items-center gap-2 text-xs font-bold text-violet-500 tracking-wider">
+<span>首页看板</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-slate-400">管理后台</span>
 </div>
-<div class="text-sm flex items-center gap-2">
-<span class="text-on-surface">安得卡 50mg</span>
-<span class="text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SKU-A88</span>
-<span class="text-xs font-bold text-primary">x 1</span>
+<h2 class="text-3xl font-black text-on-surface tracking-tight">数据大盘与运行状态</h2>
+</div>
+<!-- Stat Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-[0_4px_20px_rgba(106,55,212,0.04)] border border-slate-50 hover:translate-y-[-4px] transition-transform duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-violet-50 rounded-full flex items-center justify-center text-violet-600">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</div>
+<span class="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-bold">LIVE</span>
+</div>
+<div class="space-y-1">
+<span class="text-4xl font-headline font-extrabold text-primary tracking-tight">1,024</span>
+<p class="text-sm font-medium text-slate-500 group-hover:text-violet-600 transition-colors">商品总数</p>
 </div>
 </div>
-</td>
-<td class="px-6 py-5">
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-[0_4px_20px_rgba(106,55,212,0.04)] border border-slate-50 hover:translate-y-[-4px] transition-transform duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-pink-50 rounded-full flex items-center justify-center text-pink-500">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+</div>
+<div class="space-y-1">
+<span class="text-4xl font-headline font-extrabold text-primary tracking-tight">12</span>
+<p class="text-sm font-medium text-slate-500 group-hover:text-violet-600 transition-colors">首页固定排序商品</p>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-[0_4px_20px_rgba(106,55,212,0.04)] border border-slate-50 hover:translate-y-[-4px] transition-transform duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-500">
+<span class="material-symbols-outlined" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+</div>
+</div>
+<div class="space-y-1">
+<span class="text-4xl font-headline font-extrabold text-primary tracking-tight">24</span>
+<p class="text-sm font-medium text-slate-500 group-hover:text-violet-600 transition-colors">商品页固定排序商品</p>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-[0_4px_20px_rgba(106,55,212,0.04)] border border-slate-50 hover:translate-y-[-4px] transition-transform duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-amber-500">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<div class="text-amber-500 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span>
+<span class="text-[10px] font-bold">+5.2%</span>
+</div>
+</div>
+<div class="space-y-1">
+<span class="text-4xl font-headline font-extrabold text-primary tracking-tight">5,678</span>
+<p class="text-sm font-medium text-slate-500 group-hover:text-violet-600 transition-colors">全站累计销量</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: 平台状态 -->
+<section class="space-y-6">
+<div class="flex items-center gap-4">
+<h2 class="text-2xl font-bold text-on-surface">平台状态</h2>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black tracking-widest uppercase shadow-sm border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                        Status
+                    </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Database Status -->
+<div class="bg-surface-container-lowest p-8 rounded-lg flex items-center justify-between border border-white shadow-sm overflow-hidden relative group">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="database">database</span>
+</div>
+<div class="space-y-2 relative z-10">
+<h3 class="text-sm font-bold text-slate-400 tracking-wide">数据库连接</h3>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[20px] text-slate-300">person</span>
-<span class="text-sm font-medium text-on-surface">USER_882</span>
+<span class="material-symbols-outlined text-emerald-500" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xl font-bold text-on-surface">已连接 (Connected)</span>
 </div>
-<div class="text-xs text-slate-400 mt-1 flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">local_shipping</span>
-                                            顺丰速运: SF1422...
-                                        </div>
-</td>
-<td class="px-6 py-5">
-<div class="text-base font-bold text-on-surface">¥136.00</div>
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-600 mt-1">
-                                            待付款
-                                        </span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-end gap-3">
+</div>
+<div class="text-right relative z-10">
+<span class="text-xs font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded">Ping: 14ms</span>
+</div>
+</div>
+<!-- Tech Stack Status -->
+<div class="bg-surface-container-lowest p-8 rounded-lg flex items-center justify-between border border-white shadow-sm overflow-hidden relative group">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="memory">memory</span>
+</div>
+<div class="space-y-2 relative z-10">
+<h3 class="text-sm font-bold text-slate-400 tracking-wide">数据驱动</h3>
 <div class="flex items-center gap-2">
-<select class="bg-surface-container-low border-none rounded-lg text-xs px-2 py-1.5 focus:ring-1 focus:ring-primary/20">
-<option>已付款</option>
-<option>已发货</option>
-<option>已取消</option>
-</select>
-<button class="bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-lg font-bold hover:bg-primary/20 transition-colors">更新状态</button>
+<span class="material-symbols-outlined text-violet-500" data-icon="settings_input_component">settings_input_component</span>
+<span class="text-xl font-bold text-on-surface">MySQL 8.0</span>
 </div>
-<button class="text-error border border-error/30 hover:bg-error hover:text-white transition-all p-1.5 rounded-lg">
-<span class="material-symbols-outlined text-[18px]">delete</span>
-</button>
 </div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-slate-50/50 transition-colors">
-<td class="px-6 py-5">
-<div class="font-mono text-sm font-semibold text-slate-700">20260403-0988</div>
-<div class="text-xs text-slate-400 mt-1">2026-04-03 12:15</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-sm flex items-center gap-2">
-<span class="text-on-surface">仙居黄体酮胶囊</span>
-<span class="text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SKU-H12</span>
-<span class="text-xs font-bold text-primary">x 5</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[20px] text-slate-300">account_circle</span>
-<span class="text-sm font-medium text-slate-500 italic">游客订单</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-base font-bold text-on-surface">¥425.50</div>
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-600 mt-1">
-                                            已完成
-                                        </span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-end gap-3">
-<div class="flex items-center gap-2">
-<select class="bg-surface-container-low border-none rounded-lg text-xs px-2 py-1.5 focus:ring-1 focus:ring-primary/20">
-<option>已完成</option>
-<option>售后中</option>
-</select>
-<button class="bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-lg font-bold hover:bg-primary/20 transition-colors">更新状态</button>
-</div>
-<button class="text-error border border-error/30 hover:bg-error hover:text-white transition-all p-1.5 rounded-lg">
-<span class="material-symbols-outlined text-[18px]">delete</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-slate-50/50 transition-colors">
-<td class="px-6 py-5">
-<div class="font-mono text-sm font-semibold text-slate-700">20260403-0872</div>
-<div class="text-xs text-slate-400 mt-1">2026-04-03 09:44</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-sm flex items-center gap-2">
-<span class="text-on-surface">爱斯妥 凝胶</span>
-<span class="text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SKU-E04</span>
-<span class="text-xs font-bold text-primary">x 1</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[20px] text-slate-300">person</span>
-<span class="text-sm font-medium text-on-surface">USER_219</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-base font-bold text-on-surface">¥89.00</div>
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-600 mt-1">
-                                            已发货
-                                        </span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-end gap-3">
-<div class="flex items-center gap-2">
-<select class="bg-surface-container-low border-none rounded-lg text-xs px-2 py-1.5 focus:ring-1 focus:ring-primary/20">
-<option>已完成</option>
-</select>
-<button class="bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-lg font-bold hover:bg-primary/20 transition-colors">更新状态</button>
-</div>
-<button class="text-error border border-error/30 hover:bg-error hover:text-white transition-all p-1.5 rounded-lg">
-<span class="material-symbols-outlined text-[18px]">delete</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Pagination -->
-<div class="p-6 border-t border-slate-50 flex items-center justify-between">
-<span class="text-sm text-slate-400">显示 1-10 条，共 124 条</span>
-<div class="flex items-center gap-2">
-<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold shadow-md shadow-primary/20">1</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-600 hover:bg-slate-50 transition-colors">2</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-600 hover:bg-slate-50 transition-colors">3</button>
-<span class="px-2 text-slate-300">...</span>
-<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-600 hover:bg-slate-50 transition-colors">10</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
+<div class="text-right relative z-10">
+<span class="text-xs font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded">v8.0.35</span>
 </div>
 </div>
 </div>
-<!-- Subtle Brand Footnote -->
-<div class="mt-8 flex justify-center opacity-30 select-none">
-<div class="flex items-center gap-2 text-slate-500">
-<span class="material-symbols-outlined text-[16px]">stars</span>
-<span class="text-xs uppercase tracking-[0.2em] font-medium">Ethereal Apothecary Management System</span>
+<!-- Sorting Rules Card -->
+<div class="bg-surface-container-lowest p-8 rounded-lg border border-white shadow-sm relative overflow-hidden">
+<div class="absolute right-0 top-0 w-24 h-24 bg-violet-50 rounded-bl-full -mr-8 -mt-8 opacity-40"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-violet-600" data-icon="rule">rule</span>
+<h3 class="text-lg font-bold text-on-surface">排序规则说明</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-violet-600 text-sm italic">01</div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-on-surface">基础排序</p>
+<p class="text-xs text-slate-500 leading-relaxed">系统默认按商品 ID 降序排列，确保最新上架的灵药优先展示在列表顶端。</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-violet-600 text-sm italic">02</div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-on-surface">置顶逻辑</p>
+<p class="text-xs text-slate-500 leading-relaxed">标记为“置顶”的商品将无视时间戳，优先显示在各分类及全局搜索的首位。</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-violet-600 text-sm italic">03</div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-on-surface">权重调节</p>
+<p class="text-xs text-slate-500 leading-relaxed">当商品库存不足时，系统会自动触发降权机制，防止断货商品干扰用户浏览体验。</p>
 </div>
 </div>
 </div>
+</div>
+</div>
+</section>
+<!-- Bottom Actions -->
+<footer class="pt-12 pb-24 border-t border-slate-200/50 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-center md:text-left">
+<p class="text-xs font-medium text-slate-400">系统最后更新: 2023年10月24日 15:30</p>
+<p class="text-[10px] text-slate-300 mt-1 uppercase tracking-tighter">Witch's Shop Administrative System v2.4.1</p>
+</div>
+<button class="px-8 py-3 rounded-full border-2 border-error text-error hover:bg-error/5 transition-all duration-300 font-bold text-sm flex items-center gap-2 group active:scale-95">
+<span class="material-symbols-outlined text-lg group-hover:rotate-180 transition-transform duration-500" data-icon="refresh">refresh</span>
+                    恢复内置示例数据
+                </button>
+</footer>
 </div>
 </main>
-<!-- Contextual FAB (Only on relevant screens) -->
-<div class="fixed bottom-8 right-8 z-50">
-<button class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-white shadow-xl flex items-center justify-center active:scale-95 transition-transform">
-<span class="material-symbols-outlined text-[28px]">chat_bubble</span>
-</button>
+<!-- Visual Watermark Decorative Element -->
+<div class="fixed bottom-8 right-8 w-16 h-16 pointer-events-none opacity-10 select-none">
+<span class="text-6xl">✨</span>
 </div>
 </body></html>
