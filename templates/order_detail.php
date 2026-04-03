@@ -43,66 +43,104 @@ $currentPage = 'orders';
 include __DIR__ . '/header.php';
 ?>
 
-<main class="page-shell">
-    <section style="max-width: 920px; margin: 0 auto; background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);">
-        <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px;">
-            <div>
-                <div style="font-size: 13px; color: #64748b;">订单详情</div>
-                <h1 style="margin: 8px 0 0; font-size: 30px;">订单号 <?php echo shop_e((string) $order['order_no']); ?></h1>
+<main class="page-shell order-detail-page">
+    <section class="card order-detail-shell">
+        <header class="order-detail-header">
+            <a href="index.php?page=orders" class="order-detail-back">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                返回订单列表
+            </a>
+            <div class="order-detail-header-main">
+                <div class="order-detail-title-wrap">
+                    <p class="order-detail-kicker">订单详情</p>
+                    <h1 class="order-detail-title">订单号 <?php echo shop_e((string) $order['order_no']); ?></h1>
+                </div>
+                <div class="order-detail-header-side">
+                    <span class="badge order-detail-status orders-status-badge--<?php echo shop_e($status_key); ?>"><?php echo shop_e((string) $status_meta['label']); ?></span>
+                    <div class="text-price text-h1 order-detail-total"><?php echo shop_format_price((float) $order['total']); ?></div>
+                </div>
             </div>
-            <div style="text-align: right;">
-                <div style="display: inline-block; padding: 6px 12px; border-radius: 999px; background: <?php echo shop_e((string) $status_meta['badge_background']); ?>; color: <?php echo shop_e((string) $status_meta['badge_color']); ?>;"><?php echo shop_e((string) $status_meta['label']); ?></div>
-                <div style="margin-top: 10px; font-size: 28px; font-weight: 700; color: #dc2626;"><?php echo shop_format_price((float) $order['total']); ?></div>
-            </div>
-        </div>
+        </header>
 
-        <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 24px;">
-            <div style="padding: 16px; border-radius: 14px; background: #f8fafc;">
-                <div style="font-size: 13px; color: #64748b;">下单时间</div>
-                <div style="margin-top: 8px; font-weight: 600;"><?php echo shop_e((string) $order['time']); ?></div>
+        <section class="card checkout-section order-detail-section">
+            <div class="checkout-section-heading">
+                <div class="checkout-section-title-wrap">
+                    <span class="material-symbols-outlined checkout-section-icon" aria-hidden="true">shopping_bag</span>
+                    <h2 class="checkout-section-title">商品清单</h2>
+                </div>
             </div>
-            <div style="padding: 16px; border-radius: 14px; background: #f8fafc;">
-                <div style="font-size: 13px; color: #64748b;">支付方式</div>
-                <div style="margin-top: 8px; font-weight: 600;"><?php echo shop_e($pay_method_label); ?></div>
-            </div>
-            <div style="padding: 16px; border-radius: 14px; background: #f8fafc;">
-                <div style="font-size: 13px; color: #64748b;">收货人</div>
-                <div style="margin-top: 8px; font-weight: 600;"><?php echo shop_e((string) ($order['customer'] !== '' ? $order['customer'] : '游客')); ?></div>
-            </div>
-        </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; margin: 0 0 14px;">商品列表</h2>
-            <div style="display: grid; gap: 12px;">
+            <div class="checkout-items">
                 <?php foreach ($order['items_data'] as $item): ?>
-                    <div style="padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                        <div>
-                            <div style="font-size: 16px; font-weight: 600;"><?php echo shop_e((string) $item['name']); ?></div>
-                            <div style="margin-top: 6px; color: #64748b;">规格：<?php echo shop_e((string) ($item['sku_name'] !== '' ? $item['sku_name'] : '默认规格')); ?></div>
-                            <div style="margin-top: 6px; color: #64748b;">商品 ID：<?php echo (int) $item['product_id']; ?></div>
+                    <article class="card checkout-item order-detail-item">
+                        <div class="checkout-item-cover order-detail-item-cover">
+                            <span class="material-symbols-outlined order-detail-item-icon" aria-hidden="true">inventory_2</span>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 16px; font-weight: 700; color: #dc2626;"><?php echo shop_format_price((float) $item['price']); ?></div>
-                            <div style="margin-top: 6px; color: #475569;">数量：<?php echo (int) $item['quantity']; ?></div>
+                        <div class="checkout-item-content">
+                            <div class="checkout-item-title"><?php echo shop_e((string) $item['name']); ?></div>
+                            <div class="checkout-item-meta-row">
+                                <span class="badge"><?php echo shop_e((string) ($item['sku_name'] !== '' ? $item['sku_name'] : '默认规格')); ?></span>
+                                <span class="text-muted">商品 ID: <?php echo (int) $item['product_id']; ?></span>
+                                <span class="text-muted">数量 × <?php echo (int) $item['quantity']; ?></span>
+                            </div>
                         </div>
-                    </div>
+                        <div class="text-price checkout-item-price"><?php echo shop_format_price((float) $item['price']); ?></div>
+                    </article>
                 <?php endforeach; ?>
             </div>
         </section>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; margin: 0 0 14px;">收货信息</h2>
-            <div style="padding: 16px; border-radius: 14px; background: #f8fafc; line-height: 1.8; color: #475569;">
-                <div>收货人：<?php echo shop_e((string) ($order['customer'] !== '' ? $order['customer'] : '游客')); ?></div>
-                <div>手机号：<?php echo shop_e((string) ($order['phone'] !== '' ? $order['phone'] : '未填写')); ?></div>
-                <div>地址：<?php echo shop_e((string) ($order['address'] !== '' ? $order['address'] : '未填写')); ?></div>
+        <section class="card checkout-section order-detail-section">
+            <div class="checkout-section-heading">
+                <div class="checkout-section-title-wrap">
+                    <span class="material-symbols-outlined checkout-section-icon" aria-hidden="true">home_pin</span>
+                    <h2 class="checkout-section-title">收货信息</h2>
+                </div>
+            </div>
+
+            <div class="order-detail-info-card">
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">姓名</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['customer'] !== '' ? $order['customer'] : '游客')); ?></span>
+                </div>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">电话</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['phone'] !== '' ? $order['phone'] : '未填写')); ?></span>
+                </div>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">地址</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['address'] !== '' ? $order['address'] : '未填写')); ?></span>
+                </div>
             </div>
         </section>
 
-        <div style="display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap;">
-            <a href="index.php?page=orders" style="display: inline-block; padding: 12px 18px; border-radius: 999px; background: #e2e8f0; color: #334155; text-decoration: none;">返回订单列表</a>
-            <div style="font-size: 22px;">订单总价：<strong style="color: #dc2626;"><?php echo shop_format_price((float) $order['total']); ?></strong></div>
-        </div>
+        <section class="card checkout-section order-detail-section">
+            <div class="checkout-section-heading">
+                <div class="checkout-section-title-wrap">
+                    <span class="material-symbols-outlined checkout-section-icon" aria-hidden="true">receipt_long</span>
+                    <h2 class="checkout-section-title">订单信息</h2>
+                </div>
+            </div>
+
+            <div class="order-detail-info-card">
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">订单号</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) $order['order_no']); ?></span>
+                </div>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">下单时间</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) $order['time']); ?></span>
+                </div>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">支付方式</span>
+                    <span class="order-detail-info-value"><?php echo shop_e($pay_method_label); ?></span>
+                </div>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">总价</span>
+                    <span class="order-detail-info-value text-price"><?php echo shop_format_price((float) $order['total']); ?></span>
+                </div>
+            </div>
+        </section>
     </section>
 </main>
 
