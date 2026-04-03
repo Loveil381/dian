@@ -62,66 +62,100 @@ if (!$isLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['a
 include __DIR__ . '/header.php';
 ?>
 
-<main class="page-shell">
-    <section class="page-hero">
-        <div class="hero-panel">
+<main class="page-shell profile-page">
+    <section class="card profile-hero">
+        <div class="profile-hero-panel">
             <?php if ($isLoggedIn): ?>
-                <span class="hero-kicker">个人中心</span>
-                <h1 class="hero-title">欢迎回来，<?php echo shop_e($userName); ?></h1>
-                <p style="color: #64748b; margin-top: 10px; line-height: 1.6;">您的订单和收货信息会与账号同步保存。</p>
+                <div class="profile-hero-avatar">
+                    <?php echo shop_e(mb_substr($userName, 0, 1)); ?>
+                </div>
+                <div class="profile-hero-copy">
+                    <span class="badge badge-primary">个人中心</span>
+                    <h1 class="profile-hero-title"><?php echo shop_e($userName); ?></h1>
+                    <p class="profile-hero-meta">ID: <?php echo shop_e($userId); ?> | 用户名: <?php echo shop_e($userUsername); ?></p>
+                </div>
             <?php else: ?>
-                <span class="hero-kicker">游客中心</span>
-                <h1 class="hero-title">欢迎来到魔女小店</h1>
-                <p style="color: #64748b; margin-top: 10px; line-height: 1.6;">当前是访客模式。您可以注册账号来永久保存订单记录。</p>
+                <a href="index.php?page=auth&action=register" class="profile-guest-entry">
+                    <div class="profile-hero-avatar profile-hero-avatar--guest">
+                        <span class="material-symbols-outlined" aria-hidden="true">person</span>
+                    </div>
+                    <div class="profile-hero-copy">
+                        <span class="badge">访客模式</span>
+                        <h1 class="profile-hero-title">访客用户</h1>
+                        <p class="profile-hero-meta">IP: <?php echo shop_e((string) ($_SERVER['REMOTE_ADDR'] ?? '未知')); ?></p>
+                    </div>
+                    <span class="material-symbols-outlined profile-guest-arrow" aria-hidden="true">arrow_forward</span>
+                </a>
             <?php endif; ?>
         </div>
     </section>
 
-    <div class="profile-layout">
-        <section class="panel">
-            <div class="profile-identity">
-                <?php if ($isLoggedIn): ?>
-                    <div class="profile-avatar" style="background: #2563eb; color: #fff;">
-                        <?php echo shop_e(mb_substr($userName, 0, 1)); ?>
-                    </div>
-                    <div>
-                        <div class="profile-name"><?php echo shop_e($userName); ?></div>
-                        <div class="profile-meta">ID: <?php echo shop_e($userId); ?> | 用户名: <?php echo shop_e($userUsername); ?></div>
-                    </div>
-                <?php else: ?>
-                    <a href="index.php?page=auth&action=register" style="text-decoration: none; display: flex; align-items: center; gap: 16px; cursor: pointer;">
-                        <div class="profile-avatar" style="background: #e2e8f0; color: #475569;">游</div>
-                        <div>
-                            <div class="profile-name" style="color: #0f172a;">访客（点击注册或登录）</div>
-                            <div class="profile-meta">IP: <?php echo shop_e((string) ($_SERVER['REMOTE_ADDR'] ?? '未知')); ?></div>
-                        </div>
-                    </a>
-                <?php endif; ?>
+    <div class="profile-layout profile-layout--single">
+        <section class="card profile-card">
+            <div class="profile-section-heading">
+                <div class="profile-section-title-wrap">
+                    <span class="material-symbols-outlined profile-section-icon" aria-hidden="true">home_pin</span>
+                    <h2 class="profile-section-title">收货信息</h2>
+                </div>
             </div>
-        </section>
 
-        <section class="panel">
-            <h2 class="section-title">收货信息</h2>
-            <?php echo $messageHtml; ?>
+            <?php if ($messageHtml !== ''): ?>
+                <div class="profile-message"><?php echo $messageHtml; ?></div>
+            <?php endif; ?>
 
-            <form method="post" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <form method="post" class="profile-form">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" name="action" value="save_profile">
-                <input type="text" name="name" value="<?php echo shop_e($userName); ?>" placeholder="收货人姓名" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;">
-                <input type="text" name="phone" value="<?php echo shop_e($userPhone); ?>" placeholder="手机号" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;">
-                <textarea name="address" placeholder="详细收货地址（省市区/街道/门牌号）" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-height: 60px; resize: vertical;"><?php echo shop_e($userAddress); ?></textarea>
-                <button type="submit" style="padding: 10px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: bold;">保存默认收货信息</button>
-            </form>
 
-            <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-                <h3 style="font-size: 16px; margin-bottom: 12px; color: #0f172a;">其他操作</h3>
-                <ul class="link-list" style="margin: 0;">
-                    <li><a href="index.php?page=products">继续购物</a></li>
-                    <?php if ($isLoggedIn): ?>
-                        <li><a href="index.php?page=auth&action=logout" style="color: #dc2626;">退出登录</a></li>
-                    <?php endif; ?>
-                </ul>
+                <div class="profile-field">
+                    <label class="font-label profile-field-label" for="profile_name">姓名</label>
+                    <input class="input" id="profile_name" type="text" name="name" value="<?php echo shop_e($userName); ?>" placeholder="请输入收货姓名">
+                </div>
+
+                <div class="profile-field">
+                    <label class="font-label profile-field-label" for="profile_phone">电话</label>
+                    <input class="input" id="profile_phone" type="text" name="phone" value="<?php echo shop_e($userPhone); ?>" placeholder="请输入联系电话">
+                </div>
+
+                <div class="profile-field">
+                    <label class="font-label profile-field-label" for="profile_address">地址</label>
+                    <textarea class="input" id="profile_address" name="address" placeholder="请输入详细收货地址"><?php echo shop_e($userAddress); ?></textarea>
+                </div>
+
+                <button class="btn-primary profile-submit" type="submit">保存收货信息</button>
+            </form>
+        </section>
+
+        <section class="card profile-card">
+            <div class="profile-section-heading">
+                <div class="profile-section-title-wrap">
+                    <span class="material-symbols-outlined profile-section-icon" aria-hidden="true">bolt</span>
+                    <h2 class="profile-section-title">快捷入口</h2>
+                </div>
             </div>
+
+            <div class="profile-shortcuts">
+                <a href="index.php?page=products" class="profile-shortcut">
+                    <div class="profile-shortcut-copy">
+                        <strong>继续购物</strong>
+                        <span>浏览商品并继续下单</span>
+                    </div>
+                    <span class="material-symbols-outlined profile-shortcut-arrow" aria-hidden="true">arrow_forward</span>
+                </a>
+                <a href="index.php?page=orders" class="profile-shortcut">
+                    <div class="profile-shortcut-copy">
+                        <strong>我的订单</strong>
+                        <span>查看订单进度与历史记录</span>
+                    </div>
+                    <span class="material-symbols-outlined profile-shortcut-arrow" aria-hidden="true">arrow_forward</span>
+                </a>
+            </div>
+
+            <?php if ($isLoggedIn): ?>
+                <div class="profile-actions">
+                    <a href="index.php?page=auth&action=logout" class="btn-ghost profile-logout">退出登录</a>
+                </div>
+            <?php endif; ?>
         </section>
     </div>
 </main>
