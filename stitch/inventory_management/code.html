@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>魔女小店 Admin - Inventory Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #faf5ff; /* Overriding user's hex with Design System background */
+        }
+        h1, h2, h3, .headline {
+            font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#faf5ff",
+                        "on-tertiary": "#ecf3ff",
+                        "inverse-surface": "#0e0d14",
+                        "surface-container-high": "#e5e0ed",
+                        "tertiary-container": "#93c5fd",
+                        "primary-dim": "#5e26c7",
+                        "inverse-primary": "#a078ff",
+                        "surface-variant": "#dfdbe8",
+                        "secondary-fixed": "#ffbfe0",
+                        "surface-dim": "#d7d2e0",
+                        "on-primary-fixed-variant": "#370086",
+                        "tertiary-fixed-dim": "#85b7ee",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-dim": "#793a60",
+                        "error-dim": "#a70138",
+                        "on-secondary-fixed-variant": "#7a3b61",
+                        "tertiary-fixed": "#93c5fd",
+                        "tertiary-dim": "#165284",
+                        "error-container": "#f74b6d",
+                        "tertiary": "#275e90",
+                        "outline": "#78757e",
+                        "surface-container-highest": "#dfdbe8",
+                        "on-secondary-container": "#6f3257",
+                        "surface-container-low": "#f4effa",
+                        "secondary": "#87456c",
+                        "primary-fixed-dim": "#a27cff",
+                        "on-primary-container": "#2b006e",
+                        "secondary-fixed-dim": "#fdabd7",
+                        "inverse-on-surface": "#9f9ba4",
+                        "on-secondary": "#ffeef4",
+                        "secondary-container": "#ffbfe0",
+                        "error": "#b41340",
+                        "on-error": "#ffefef",
+                        "surface-tint": "#6a37d4",
+                        "primary-container": "#ae8dff",
+                        "outline-variant": "#afabb5",
+                        "on-surface": "#2f2e35",
+                        "surface": "#faf5ff",
+                        "on-primary": "#f8f0ff",
+                        "on-error-container": "#510017",
+                        "primary-fixed": "#ae8dff",
+                        "on-primary-fixed": "#000000",
+                        "on-surface-variant": "#5d5a62",
+                        "primary": "#6a37d4",
+                        "on-tertiary-container": "#003f6a",
+                        "on-secondary-fixed": "#581e43",
+                        "surface-container": "#ebe6f2",
+                        "on-background": "#2f2e35",
+                        "on-tertiary-fixed": "#002949",
+                        "background": "#faf5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 h-screen w-64 bg-slate-50/50 dark:bg-slate-950/50 transition-all z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-weight="fill">fluid_med</span>
+</div>
+<div>
+<h2 class="font-bold text-slate-800 dark:text-slate-100 text-base leading-tight">Apothecary Shop</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Inventory Control</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-violet-600 mx-2 hover:bg-white/80 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-plus-jakarta text-sm tracking-wide">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-200 rounded-xl mx-2 translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-plus-jakarta text-sm tracking-wide">Product Management</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-violet-600 mx-2 hover:bg-white/80 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-plus-jakarta text-sm tracking-wide">Business Modules</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-violet-600 mx-2 hover:bg-white/80 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-plus-jakarta text-sm tracking-wide">System Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-primary text-on-primary rounded-full font-bold text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined text-sm">add</span>
+                Add New Batch
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-error mx-2 hover:bg-white/80 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-plus-jakarta text-sm tracking-wide">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 min-h-screen relative">
+<!-- TopAppBar Anchor -->
+<header class="sticky top-0 z-50 flex justify-between items-center px-6 py-3 w-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-md shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-bold text-violet-700 dark:text-violet-300 tracking-tight">The Ethereal Apothecary Admin</h1>
+<div class="relative group ml-4">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all outline-none" placeholder="搜索库存商品..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:bg-violet-50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-violet-50 rounded-full transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">Admin Settings</p>
+<p class="text-[10px] text-slate-500">主管理员</p>
+</div>
+<img alt="Administrator Profile Avatar" class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="professional portrait of a person in high-end medical laboratory attire, soft lighting, lavender background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyPk4PsnxJv24LaBdwzP06XZMrwHl2zt91CYpcTiy375lTCge5Z9fEaCoKfe4CECmUgvWHe6FG3362EqfxFE4LO3iEKKsWcnurJVyoHrOnl6uQg1LDXe0WfbJWR1Pl-8MOLOdUwhe6okN3poyDvhFHJibFC5v5F0P2aKxOwgsZBHCLCtvi5IuxlVaOprzT9LHeKBYyFbDuQ4mnPJeffS0z5oXUT4QDi_VomR8J99JUUKC3Q6apoqWhHEKnvpDQ5u_6FKgWYOVbxec"/>
+</div>
+</div>
+</header>
+<div class="p-8 space-y-8">
+<!-- Dashboard Stats & Low Stock -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Section 1: 缺货看板 -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-lg p-6 shadow-[0_12px_40px_rgba(106,55,212,0.04)] relative">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<h2 class="text-xl font-extrabold text-on-surface">缺货看板</h2>
+<span class="bg-[#FFF4ED] text-[#FF8540] px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">warning</span>
+                                3 个预警
+                            </span>
+</div>
+<button class="text-sm text-primary font-medium hover:underline">查看全部</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Low Stock Item 1 -->
+<div class="bg-surface-container-low p-4 rounded-DEFAULT hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
+<div class="absolute top-2 right-2 opacity-10 group-hover:opacity-100 transition-opacity">✨</div>
+<p class="text-xs text-secondary font-bold mb-1">雌二醇制剂</p>
+<h3 class="font-bold text-on-surface text-lg mb-3">补佳乐 1mg</h3>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">当前库存</p>
+<p class="text-2xl font-black text-error">12</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">月销</p>
+<p class="text-sm font-bold text-on-surface">420</p>
+</div>
+</div>
+</div>
+<!-- Low Stock Item 2 -->
+<div class="bg-surface-container-low p-4 rounded-DEFAULT hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
+<div class="absolute top-2 right-2 opacity-10 group-hover:opacity-100 transition-opacity">✨</div>
+<p class="text-xs text-secondary font-bold mb-1">抗雄性激素</p>
+<h3 class="font-bold text-on-surface text-lg mb-3">安得卡 50mg</h3>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">当前库存</p>
+<p class="text-2xl font-black text-error">45</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">月销</p>
+<p class="text-sm font-bold text-on-surface">890</p>
+</div>
+</div>
+</div>
+<!-- Low Stock Item 3 -->
+<div class="bg-surface-container-low p-4 rounded-DEFAULT hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
+<div class="absolute top-2 right-2 opacity-10 group-hover:opacity-100 transition-opacity">✨</div>
+<p class="text-xs text-secondary font-bold mb-1">醋酸环丙孕酮</p>
+<h3 class="font-bold text-on-surface text-lg mb-3">色普龙 50mg</h3>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">当前库存</p>
+<p class="text-2xl font-black text-error">8</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">月销</p>
+<p class="text-sm font-bold text-on-surface">156</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Panel -->
+<div class="bg-gradient-to-br from-primary to-primary-dim rounded-lg p-6 text-on-primary shadow-xl shadow-primary/20 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold opacity-80">库存概览</h2>
+<span class="material-symbols-outlined opacity-50">analytics</span>
+</div>
+<p class="text-4xl font-black mt-4">2,450 <span class="text-sm font-normal opacity-70">件</span></p>
+<p class="text-xs opacity-70 mt-1">总库存状态: 良好</p>
+</div>
+<div class="space-y-3 mt-6">
+<div class="bg-white/10 p-3 rounded-xl flex items-center justify-between">
+<span class="text-xs font-medium">在售商品</span>
+<span class="font-bold">124</span>
+</div>
+<div class="bg-white/10 p-3 rounded-xl flex items-center justify-between">
+<span class="text-xs font-medium">本月入库</span>
+<span class="font-bold">+1,200</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: 库存管理 -->
+<div class="bg-surface-container-low rounded-xl p-8 space-y-8 border-none">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="text-2xl font-extrabold text-on-surface">库存管理</h2>
+<p class="text-sm text-on-surface-variant">精准调控库存，守护每一份健康契约</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-tertiary-container/30 px-4 py-2 rounded-full border border-tertiary/10">
+<span class="text-xs font-bold text-tertiary-dim">总库存: 2,450 件</span>
+</div>
+<button class="bg-surface-container-lowest p-2 rounded-full text-primary shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Form Area: 入库商品 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm">
+<h3 class="text-sm font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="w-1.5 h-4 bg-primary rounded-full"></span>
+                        快速入库商品
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 px-1">商品名称</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="输入药品全称" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 px-1">商品分类</label>
+<select class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none">
+<option>雌二醇</option>
+<option>抗雄</option>
+<option>孕酮</option>
+<option>辅助药物</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 px-1">库存数量 / 价格</label>
+<div class="flex items-center gap-2">
+<input class="w-1/2 bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="数量" type="number"/>
+<input class="w-1/2 bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="¥" type="number"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 px-1">状态</label>
+<select class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none">
+<option>正常销售</option>
+<option>隐藏下架</option>
+</select>
+</div>
+<button class="w-full bg-primary text-on-primary rounded-full py-3.5 font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[0.98] active:scale-95 transition-all">
+                            入库商品
+                        </button>
+</div>
+</div>
+<!-- Table Area -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+<tr>
+<th class="px-6 py-4 w-12 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</th>
+<th class="px-6 py-4">商品号与名称</th>
+<th class="px-6 py-4">分类</th>
+<th class="px-6 py-4">库存基数</th>
+<th class="px-6 py-4">累销</th>
+<th class="px-6 py-4 text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-violet-50/30 transition-colors group">
+<td class="px-6 py-5 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Estrogen medication box" class="w-full h-full object-cover" data-alt="close up of premium pharmaceutical packaging in soft purple and white colors, clinical aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsesMc8WzpZ4BThX9iAVurGez1vINbJ2WygdhTq_OUwoY6Vy375xaL-GvPOnL_ogq79Wu1v-CCFKj6YoG86ABtyJe0OqNEAxelCJ-M7hPxrWYY56rWqKGPtAfzsMaNRKO2YNR5yOhu2Nlq8B_ll0ZHqjohpOMN-tt2T0bsmezMsXwuaKUXKFxyTN41HVLydDsK_Uiq1NBDa8uAcepTzi0Cfk8c91ZFi9fsC_D6bOG65-MoNXp743AigfKPik4lwiPiIDnV9gw4HeE"/>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-medium">#APH-001</p>
+<p class="font-bold text-on-surface">补佳乐 (Progynova) 1mg</p>
+<p class="text-xs text-primary font-medium">¥ 148.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 bg-violet-100 text-violet-700 rounded text-[10px] font-bold">雌二醇</span>
+</td>
+<td class="px-6 py-5">
+<p class="font-bold text-error">12 <span class="text-[10px] font-normal text-slate-400">/ 500</span></p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium text-on-surface-variant">4,280</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-violet-50/30 transition-colors group">
+<td class="px-6 py-5 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Medication bottle" class="w-full h-full object-cover" data-alt="clean pharmaceutical bottle on a soft reflective surface, pastel blue background, minimalist photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOrAh39DoP5he3gqlZkaaOU-TqDMye0BKGtQvOi0hf9cT9tZ00vfvVWF-oA-0HwPqDjP0FfNX7CS5tsgjQVaYT6OIbzAeSmLuK3phWbVmRKxxSeijr-9-j0MPx1hdWLtj04uyUM3W8vTN7z8G0kJLdqV9V4Dwrqv6zrpgRPPrr2IQ9zrEE5yRp9tnKLpz24kXhgOltnR-VP0Q9HYIPooHFeiFW3Tm3_lAgCqivy8mkdWCk3uFQD5sFQOZ1oQho4hW2oS_DLskNZSs"/>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-medium">#APH-042</p>
+<p class="font-bold text-on-surface">安得卡 (Androcur) 50mg</p>
+<p class="text-xs text-primary font-medium">¥ 325.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 bg-pink-100 text-pink-700 rounded text-[10px] font-bold">抗雄</span>
+</td>
+<td class="px-6 py-5">
+<p class="font-bold text-error">45 <span class="text-[10px] font-normal text-slate-400">/ 200</span></p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium text-on-surface-variant">1,120</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-violet-50/30 transition-colors group">
+<td class="px-6 py-5 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Medicine capsules" class="w-full h-full object-cover" data-alt="vibrant medical capsules spilling onto a white surface, high key lighting, soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4JUNT8MOwLPEmaE9wkR6VsJu5hsyLBi3ecdxvgL5XZorLdlteYBhBq0Jui2_E8QpozNw8kgD0dzszh7w_-SsiRjTy8Lip71dExdY4CAm3jKttYjvR_WXVPl5tlXESkZkXMkSBtSax4P3I_92ZueujgyjJtbQmbYi25h0thgVAFKW2mgeUnThvvvakmJHUQnQHLs_4Ed31vpWkQbuEZzTkiurXj7Ose7kG-o67vAAiau3jEEzCI4gyfRQBfIP3eEQFKF6Y5XAyReo"/>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-medium">#APH-108</p>
+<p class="font-bold text-on-surface">色普龙 (Cyproterone) 50mg</p>
+<p class="text-xs text-primary font-medium">¥ 280.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 bg-pink-100 text-pink-700 rounded text-[10px] font-bold">抗雄</span>
+</td>
+<td class="px-6 py-5">
+<p class="font-bold text-error">8 <span class="text-[10px] font-normal text-slate-400">/ 150</span></p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium text-on-surface-variant">890</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-violet-50/30 transition-colors group">
+<td class="px-6 py-5 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Medical box" class="w-full h-full object-cover" data-alt="clean pharmaceutical box with modern typography, soft pastel colors, pharmaceutical product photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSKsrRqkslJaG1Blmrdshlaa-pgqqPO409HT7wyX3Es3bBKyz8hQIuoqJqDnNU8xH98cbRtcnU0LGKwVcwuCaIHei10ywS7Scr2LuqyBpBv4SYiaZqwUQAZAPXHflqPCEuZHvsN2XWB4tJHsI1-A7RIKJM4e4D4xDFWx1dkeTVzj9TDONMjIe2niSBUKnGwcGrBXuV7GAJvISzFRdewYfRMsjixs8ep6juYCyZq-Ao1bLcdynYDkTFDGbF0YU1yJXqQkVT5Ky-0e4"/>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-medium">#APH-015</p>
+<p class="font-bold text-on-surface">爱斯妥 (Estreva) 0.1% Gel</p>
+<p class="text-xs text-primary font-medium">¥ 210.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 bg-violet-100 text-violet-700 rounded text-[10px] font-bold">雌二醇</span>
+</td>
+<td class="px-6 py-5">
+<p class="font-bold text-on-surface">840 <span class="text-[10px] font-normal text-slate-400">/ 1000</span></p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium text-on-surface-variant">2,150</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-violet-50/30 transition-colors group border-b-0">
+<td class="px-6 py-5 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant/30" type="checkbox"/>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Medication packaging" class="w-full h-full object-cover" data-alt="elegant medical packaging set against a soft bokeh pharmacy background, high-end feel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZKZAuGtMnRVO6-JIbDbFCR5GPaCJ3XGqoFmO9gwy6yWCiQxyctM_DuX4_gqeZBNLL5a28QbVdeXN1PF9cJSwO4QN3VBxiYZ-rvVcCpY5q8v92AauhVRAXoCrWlWE_vR4Oi-vOhbXUZT7-fmPCinhmDJSNe07lEA9qI6R-BJuX30ovcHwGNPD4x9jT4SMdi3HzmZ-i_tOkoAlRBBzM1JffmE2CVH9icyZC83ZrOHn6RrdPo7VnOZbZ2ch-cWmFy2dgOSn5IeK0pY4"/>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-medium">#APH-201</p>
+<p class="font-bold text-on-surface">琪宁 (Progesterone) 100mg</p>
+<p class="text-xs text-primary font-medium">¥ 195.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">孕酮</span>
+</td>
+<td class="px-6 py-5">
+<p class="font-bold text-on-surface">1,240 <span class="text-[10px] font-normal text-slate-400">/ 1500</span></p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium text-on-surface-variant">540</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-all">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 bg-surface-container-low flex items-center justify-between">
+<p class="text-xs text-on-surface-variant">显示 1 到 5 项，共 124 项</p>
+<div class="flex items-center gap-1">
+<button class="p-2 rounded-full hover:bg-white transition-all"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="w-8 h-8 rounded-full bg-primary text-on-primary text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded-full hover:bg-white text-xs font-bold text-on-surface-variant">2</button>
+<button class="w-8 h-8 rounded-full hover:bg-white text-xs font-bold text-on-surface-variant">3</button>
+<button class="p-2 rounded-full hover:bg-white transition-all"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

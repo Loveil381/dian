@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffeef4",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#faf5ff",
+                        "on-error": "#ffefef",
+                        "on-secondary-fixed": "#581e43",
+                        "on-background": "#2f2e35",
+                        "on-tertiary-container": "#003f6a",
+                        "surface-container-high": "#e5e0ed",
+                        "error": "#b41340",
+                        "surface-dim": "#d7d2e0",
+                        "secondary-fixed-dim": "#fdabd7",
+                        "on-primary": "#f8f0ff",
+                        "tertiary-dim": "#165284",
+                        "on-surface": "#2f2e35",
+                        "primary-dim": "#5e26c7",
+                        "surface-container-highest": "#dfdbe8",
+                        "secondary-dim": "#793a60",
+                        "primary-container": "#ae8dff",
+                        "tertiary-container": "#93c5fd",
+                        "inverse-on-surface": "#9f9ba4",
+                        "tertiary-fixed": "#93c5fd",
+                        "outline": "#78757e",
+                        "primary-fixed": "#ae8dff",
+                        "on-primary-container": "#2b006e",
+                        "on-primary-fixed": "#000000",
+                        "tertiary": "#275e90",
+                        "primary-fixed-dim": "#a27cff",
+                        "inverse-primary": "#a078ff",
+                        "surface": "#faf5ff",
+                        "surface-tint": "#6a37d4",
+                        "surface-container-low": "#f4effa",
+                        "primary": "#6a37d4",
+                        "on-primary-fixed-variant": "#370086",
+                        "on-surface-variant": "#5d5a62",
+                        "on-tertiary-fixed": "#002949",
+                        "on-secondary-container": "#6f3257",
+                        "error-container": "#f74b6d",
+                        "on-error-container": "#510017",
+                        "surface-variant": "#dfdbe8",
+                        "background": "#faf5ff",
+                        "surface-container": "#ebe6f2",
+                        "secondary-fixed": "#ffbfe0",
+                        "inverse-surface": "#0e0d14",
+                        "error-dim": "#a70138",
+                        "secondary": "#87456c",
+                        "on-tertiary-fixed-variant": "#004878",
+                        "on-secondary-fixed-variant": "#7a3b61",
+                        "on-tertiary": "#ecf3ff",
+                        "secondary-container": "#ffbfe0",
+                        "outline-variant": "#afabb5",
+                        "tertiary-fixed-dim": "#85b7ee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tonal-shift-bg {
+            background: linear-gradient(180deg, rgba(250, 245, 255, 0.7) 0%, rgba(244, 239, 250, 0.7) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#FAF5FF]/70 backdrop-blur-md shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200 text-[#8B5CF6]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-xl text-[#2F2E35]">购物车 (3)</h1>
+</div>
+<button class="active:scale-95 duration-200 text-[#8B5CF6]">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-4 space-y-6 max-w-2xl mx-auto">
+<!-- Cart Items Section -->
+<section class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center gap-4 shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative">
+<div class="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Medicine box" class="w-full h-full object-cover" data-alt="Close-up of a premium minimalist medicine box with elegant typography on soft lavender background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwCkovNyh8zSM-95lC1XD30f220tg7vOlTlntuAPo9XgOp1j4_VWosYGAWo5hJl_8CLc0AsXk7ArLHPN_uDYL0vdUckXdOeaAIda9bO-Epu-Qrbpdel3AGKXfmVRMRn1ubZN7N2S2jMSPizQDQeSSF8b2YOLwKmGO3MNv4Hm0Ks2LOgIk-zKm5i6Qy7sG25i5qS955eja1Y4whbeY3OTfhC9gCOrdih5tgrQlPLuzWNxEIkarGjud2hYD_LGwAIrOPZx4ZeYArGU4"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">补佳乐 1mg</h3>
+<p class="text-sm text-outline font-light">1盒装</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-[#8B5CF6] font-semibold">¥118.00</span>
+<div class="flex items-center bg-surface-container-low rounded-full px-2 py-1 gap-3">
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="text-sm font-medium">1</span>
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+<button class="absolute top-4 right-4 text-outline-variant hover:text-error active:scale-90">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center gap-4 shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative">
+<div class="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Vitamins" class="w-full h-full object-cover" data-alt="Small amber glass bottle of pharmaceutical grade vitamins on a clean white marble surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG8y0pIDfnKXi11GApnI2Q1Ddvq-AwJOdA4rLZOC74XXh5AzRZ5Zdrq_8RoFiY65Ij6khXun_gBT6_f7mW5ousw2mqn3ehU7MY4aZ-jgGiL0Nx69Iiob0cAGEfRASpFdDtCB8SvjchIhGU47Ta_PNQPn7df_HhC8HQ-chfp9H8Y8M7bIlEo6cqnmf5Z02vH1SgU5udVzktyqx0qVXCpeJHz6zrPTK4_A7mrdIRATceiJH5qzIutUt7JdSbOSig8HpzARjok37risU"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">维生素E 软胶囊</h3>
+<p class="text-sm text-outline font-light">60粒/瓶</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-[#8B5CF6] font-semibold">¥82.00</span>
+<div class="flex items-center bg-surface-container-low rounded-full px-2 py-1 gap-3">
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="text-sm font-medium">1</span>
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+<button class="absolute top-4 right-4 text-outline-variant hover:text-error active:scale-90">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center gap-4 shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative">
+<div class="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Herbal Tea" class="w-full h-full object-cover" data-alt="Japanese style herbal tea sachets with delicate botanical illustrations in a soft aesthetic room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7qpfM2CuWe3UDEv-5Wq-PUtOY4M9hxHjqICu7WBjIhshICqrmRBImnbcg_CvRD0IEU8r8w-hPcTuriNuqv2Y78A8XkrZP-nzr9Wp5JeU4ZfLbup7iBCDaHkCt9pHU2rxM4NQIipSyhsvMoUVU85sqhewhZ7LFax-hmYffY5iZ44Vg02z5zJ1OQafEIYNQv3686PmM0eQyJg3D2wQnphrjlr2ALT6iyGYj9NJTHMq44ekDbGgwZEZ5-3cBoGluM-Ku5FhtQUH9gzo"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">魔女特调草本茶</h3>
+<p class="text-sm text-outline font-light">12包/盒</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-[#8B5CF6] font-semibold">¥60.00</span>
+<div class="flex items-center bg-surface-container-low rounded-full px-2 py-1 gap-3">
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="text-sm font-medium">1</span>
+<button class="w-6 h-6 flex items-center justify-center text-secondary active:scale-90"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+<button class="absolute top-4 right-4 text-outline-variant hover:text-error active:scale-90">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+</div>
+</section>
+<!-- Summary Row -->
+<div class="flex justify-between items-center py-4 px-2">
+<span class="text-on-surface-variant font-medium">共 3 件商品</span>
+<div class="text-right">
+<span class="text-sm text-outline block">小计:</span>
+<span class="text-2xl font-bold text-[#6A37D4]">¥260.00</span>
+</div>
+</div>
+<!-- Checkout Action -->
+<div class="fixed bottom-24 left-0 w-full px-6 z-40">
+<button class="w-full bg-gradient-to-tr from-[#6A37D4] to-[#AE8DFF] text-white py-4 rounded-full font-headline font-bold text-lg shadow-[0_12px_30px_rgba(106,55,212,0.3)] active:scale-[0.98] transition-transform">
+                去结算
+            </button>
+</div>
+<!-- Empty State Preview (Below Content) -->
+<div class="pt-16 pb-12 opacity-50 grayscale pointer-events-none">
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="relative w-48 h-48">
+<div class="absolute inset-0 bg-secondary-container rounded-full opacity-20 blur-2xl"></div>
+<img alt="Witch Character Illustration" class="relative z-10 w-full h-full object-contain" data-alt="Cute minimalist anime-style witch girl with a wide pointed hat peering into an empty woven basket, soft pastel colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWSdXVxAA0lEkg6etApSk2Hvz0qn3pxjAHq1cVvDsNAU1DMeg5oIhUl1RNrrMAA2cFgP5b12rENrK5eCa4bgtRvxv8COQE02EJuWK1a7udt842NHtv738q3V4jQxHgJyo0_B1dF-Av8AgsT2vd5JMeENfXZrCCjhRZeEqlMJwSV65WCpdZl9d7FSCh8okOjRnWSqhyEI7HMzYE30ptu272NKXwN9JZ_dXM16P7gY2I0jvdyVpvT_yNUXWLl7JYQzKt5uk0I8rIhJw"/>
+</div>
+<div>
+<h4 class="text-on-surface font-semibold">购物车空空的～去逛逛吧</h4>
+<p class="text-sm text-outline mt-1">发现属于你的愈愈之物</p>
+</div>
+<button class="bg-[#F9A8D4] text-white px-8 py-2 rounded-full text-sm font-medium">
+                    去逛逛
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-[#FAF5FF]/70 backdrop-blur-md rounded-t-[2.5rem] z-50 shadow-[0_-8px_30px_rgba(106,55,212,0.05)]">
+<a class="flex flex-col items-center justify-center text-[#87456C] p-2 hover:text-[#6A37D4] transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] uppercase tracking-tighter mt-1">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#87456C] p-2 hover:text-[#6A37D4] transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] uppercase tracking-tighter mt-1">分类</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-tr from-[#6A37D4] to-[#AE8DFF] text-white rounded-full p-3 mb-2 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] uppercase tracking-tighter hidden">购物车</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#87456C] p-2 hover:text-[#6A37D4] transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] uppercase tracking-tighter mt-1">我的</span>
+</a>
+</nav>
+</body></html>

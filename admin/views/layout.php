@@ -1,73 +1,165 @@
 <?php declare(strict_types=1); ?>
+<?php
+$tabLabels = [
+    'dashboard' => '仪表盘',
+    'products' => '商品管理',
+    'categories' => '分类管理',
+    'inventory' => '库存管理',
+    'orders' => '订单管理',
+    'users' => '用户管理',
+    'payment' => '支付设置',
+    'settings' => '系统设置',
+];
+$currentTabLabel = $tabLabels[$currentTab] ?? '后台';
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo shop_e($pageTitle); ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/design-tokens.css">
+    <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/admin.css">
     <link rel="stylesheet" href="assets/css/mobile.css">
 </head>
-<body>
-<header class="topbar">
-    <button class="menu-btn" id="menuBtn" type="button" aria-label="打开管理菜单">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-    </button>
-    <strong>魔女小店 / 管理后台</strong>
+<body class="admin-body">
+<header class="glass-nav admin-topbar">
+    <div class="admin-topbar-left">
+        <button class="btn-ghost admin-menu-btn" id="menuBtn" type="button" aria-label="打开后台导航">
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <div class="admin-topbar-brand">
+            <span class="badge badge-primary">Admin Control</span>
+            <div class="admin-topbar-copy">
+                <strong class="admin-topbar-title">魔女小店后台</strong>
+                <span class="admin-topbar-subtitle"><?php echo shop_e($currentTabLabel); ?></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-topbar-right">
+        <span class="badge admin-topbar-badge"><?php echo shop_e($currentTabLabel); ?></span>
+        <a class="btn-ghost admin-topbar-link" href="index.php?page=home">
+            <span class="material-symbols-outlined" aria-hidden="true">storefront</span>
+            <span>返回前台</span>
+        </a>
+    </div>
 </header>
 
-<div class="shell">
-    <div class="overlay" id="overlay"></div>
+<div class="admin-shell">
+    <div class="admin-overlay" id="overlay"></div>
 
-    <aside class="sidebar" id="sidebar" aria-label="管理菜单">
-        <div class="sidebar-header">
-            <div class="sidebar-title">管理后台</div>
-            <div class="sidebar-sub">首页看板、商品、分类、库存、订单、用户、插件和配置模块都已整理好。</div>
+    <aside class="admin-sidebar" id="sidebar" aria-label="后台导航">
+        <div class="admin-sidebar-head">
+            <p class="admin-sidebar-eyebrow">Phase 3 Ready</p>
+            <h1 class="admin-sidebar-title">运营中枢</h1>
+            <p class="admin-sidebar-note">商品、分类、订单、用户与支付配置在此统一管理，后台样式从本轮起仅写入 admin.css。</p>
         </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-group">
-                <h3>总览</h3>
-                <a class="nav-link <?php echo $currentTab === 'dashboard' ? 'active' : ''; ?>" href="index.php?page=admin&tab=dashboard"><span>首页看板</span><span>Dashboard</span></a>
+        <nav class="admin-sidebar-nav">
+            <div class="admin-nav-group">
+                <p class="admin-nav-group-title">概览</p>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'dashboard' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=dashboard" <?php echo $currentTab === 'dashboard' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">space_dashboard</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>仪表盘</strong>
+                        <small>Dashboard</small>
+                    </span>
+                </a>
             </div>
-            <div class="nav-group">
-                <h3>商品管理</h3>
-                <a class="nav-link <?php echo $currentTab === 'products' ? 'active' : ''; ?>" href="index.php?page=admin&tab=products"><span>商品维护</span><span>Products</span></a>
-                <a class="nav-link <?php echo $currentTab === 'categories' ? 'active' : ''; ?>" href="index.php?page=admin&tab=categories"><span>分类管理</span><span>Categories</span></a>
-                <a class="nav-link <?php echo $currentTab === 'inventory' ? 'active' : ''; ?>" href="index.php?page=admin&tab=inventory"><span>库存管理</span><span>Inventory</span></a>
+
+            <div class="admin-nav-group">
+                <p class="admin-nav-group-title">商品与库存</p>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'products' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=products" <?php echo $currentTab === 'products' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>商品管理</strong>
+                        <small>Products</small>
+                    </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'categories' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=categories" <?php echo $currentTab === 'categories' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">category</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>分类管理</strong>
+                        <small>Categories</small>
+                    </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'inventory' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=inventory" <?php echo $currentTab === 'inventory' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">warehouse</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>库存管理</strong>
+                        <small>Inventory</small>
+                    </span>
+                </a>
             </div>
-            <div class="nav-group">
-                <h3>业务模块</h3>
-                <a class="nav-link <?php echo $currentTab === 'orders' ? 'active' : ''; ?>" href="index.php?page=admin&tab=orders"><span>订单管理</span><span>Orders</span></a>
-                <a class="nav-link <?php echo $currentTab === 'users' ? 'active' : ''; ?>" href="index.php?page=admin&tab=users"><span>用户管理</span><span>Users</span></a>
+
+            <div class="admin-nav-group">
+                <p class="admin-nav-group-title">订单与用户</p>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'orders' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=orders" <?php echo $currentTab === 'orders' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>订单管理</strong>
+                        <small>Orders</small>
+                    </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'users' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=users" <?php echo $currentTab === 'users' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">group</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>用户管理</strong>
+                        <small>Users</small>
+                    </span>
+                </a>
             </div>
-            <div class="nav-group">
-                <h3>系统设置</h3>
-                <a class="nav-link <?php echo $currentTab === 'payment' ? 'active' : ''; ?>" href="index.php?page=admin&tab=payment"><span>支付管理</span><span>Payment</span></a>
-                <a class="nav-link <?php echo $currentTab === 'settings' ? 'active' : ''; ?>" href="index.php?page=admin&tab=settings"><span>系统状态</span><span>Settings</span></a>
+
+            <div class="admin-nav-group">
+                <p class="admin-nav-group-title">配置</p>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'payment' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=payment" <?php echo $currentTab === 'payment' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>支付设置</strong>
+                        <small>Payment</small>
+                    </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'settings' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=settings" <?php echo $currentTab === 'settings' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>系统设置</strong>
+                        <small>Settings</small>
+                    </span>
+                </a>
             </div>
         </nav>
+
+        <div class="admin-sidebar-foot">
+            <a class="btn-secondary admin-sidebar-store-link" href="index.php?page=home">
+                <span class="material-symbols-outlined" aria-hidden="true">north_west</span>
+                <span>查看前台首页</span>
+            </a>
+        </div>
     </aside>
 
-    <main class="main">
-        <?php if (is_array($flash)): ?>
-            <div class="flash <?php echo shop_e((string) ($flash['type'] ?? 'success')); ?>">
-                <?php echo shop_e((string) ($flash['message'] ?? '')); ?>
-            </div>
-        <?php endif; ?>
+    <main class="admin-main">
+        <div class="admin-main-inner">
+            <?php if (is_array($flash) && ($flash['message'] ?? '') !== ''): ?>
+                <div class="flash admin-flash <?php echo shop_e((string) ($flash['type'] ?? 'success')); ?>">
+                    <?php echo shop_e((string) ($flash['message'] ?? '')); ?>
+                </div>
+            <?php endif; ?>
 
-        <?php
-        $viewFile = __DIR__ . '/' . $currentTab . '.php';
-        if (file_exists($viewFile)) {
-            require $viewFile;
-        } else {
-            echo '<div class="flash error">未知标签页: ' . shop_e($currentTab) . '</div>';
-        }
-        ?>
+            <?php
+            $viewFile = __DIR__ . '/' . $currentTab . '.php';
+            if (file_exists($viewFile)) {
+                require $viewFile;
+            } else {
+                echo '<div class="flash error admin-flash">未找到后台页面：' . shop_e($currentTab) . '</div>';
+            }
+            ?>
+        </div>
     </main>
 </div>
 

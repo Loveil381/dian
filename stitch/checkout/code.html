@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>魔女小店 - 结算</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#6f3257",
+                    "error": "#b41340",
+                    "secondary-fixed-dim": "#fdabd7",
+                    "on-tertiary-container": "#003f6a",
+                    "outline-variant": "#afabb5",
+                    "surface-variant": "#dfdbe8",
+                    "surface-container": "#ebe6f2",
+                    "inverse-on-surface": "#9f9ba4",
+                    "surface-dim": "#d7d2e0",
+                    "secondary": "#87456c",
+                    "secondary-dim": "#793a60",
+                    "primary": "#6a37d4",
+                    "on-surface": "#2f2e35",
+                    "inverse-primary": "#a078ff",
+                    "on-background": "#2f2e35",
+                    "on-primary-container": "#2b006e",
+                    "on-primary-fixed": "#000000",
+                    "on-error-container": "#510017",
+                    "error-container": "#f74b6d",
+                    "on-secondary-fixed": "#581e43",
+                    "primary-fixed": "#ae8dff",
+                    "surface-bright": "#faf5ff",
+                    "tertiary-fixed-dim": "#85b7ee",
+                    "error-dim": "#a70138",
+                    "tertiary-container": "#93c5fd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ecf3ff",
+                    "on-surface-variant": "#5d5a62",
+                    "on-tertiary-fixed-variant": "#004878",
+                    "on-error": "#ffefef",
+                    "surface-tint": "#6a37d4",
+                    "inverse-surface": "#0e0d14",
+                    "surface": "#faf5ff",
+                    "primary-dim": "#5e26c7",
+                    "on-primary": "#f8f0ff",
+                    "tertiary-dim": "#165284",
+                    "on-primary-fixed-variant": "#370086",
+                    "primary-fixed-dim": "#a27cff",
+                    "surface-container-low": "#f4effa",
+                    "surface-container-high": "#e5e0ed",
+                    "secondary-fixed": "#ffbfe0",
+                    "surface-container-highest": "#dfdbe8",
+                    "secondary-container": "#ffbfe0",
+                    "tertiary-fixed": "#93c5fd",
+                    "on-secondary-fixed-variant": "#7a3b61",
+                    "background": "#faf5ff",
+                    "outline": "#78757e",
+                    "primary-container": "#ae8dff",
+                    "on-tertiary-fixed": "#002949",
+                    "tertiary": "#275e90",
+                    "on-secondary": "#ffeef4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans", "PingFang SC"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Be Vietnam Pro"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', 'PingFang SC', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-nav {
+            background: rgba(250, 245, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 left-0 w-full z-50 rounded-b-[2rem] glass-nav shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center justify-between h-16 px-6 w-full max-w-screen-md mx-auto">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F4EFFA] active:scale-[0.98] transition-all duration-300 text-[#6A37D4]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans','PingFang_SC'] font-bold text-lg tracking-wide text-[#2F2E35]">结算</h1>
+<div class="w-10"></div>
+</div>
+</header>
+<main class="max-w-screen-md mx-auto px-6 pt-24 space-y-8">
+<!-- Order Summary Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-secondary font-bold text-xl flex items-center gap-2">
+                    订单清单 <span class="text-xs font-normal opacity-60">✨</span>
+</h2>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 space-y-6 shadow-[0_8px_30px_rgba(106,55,212,0.04)]">
+<!-- Item 1 -->
+<div class="flex gap-4 items-center">
+<div class="w-20 h-20 rounded-DEFAULT bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="补佳乐 1mg" class="w-full h-full object-cover" data-alt="close up of a modern purple medicine tablet blister pack on a soft lavender textured paper surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxLQLikxE_yOiGkQHKCP1C5r2NWaY5fBVtNLyTc_1e_4qNHRTcNJCDnUuBrgJvU_31-v_4gucl9CRgKNpEl2eqcomYoz5LG6XeX7W8oq2c42m9ymWF7x6R8MVX1UuwvfRzWJIbVNC8nbZgypyy2Xo2LWdGhxcyr1aF5M0BYhD2gSdc6oYqYQW4apy0yOyRZ9Hw-2zxhVmMhNc5GSzPim71oqXjyntBG2iUpj-z4qJPPqKZ8hlqmKzUAkzBIcv9O75u1nHOgxzhGZ4"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-bold text-on-surface">补佳乐 1mg</h3>
+<p class="text-sm text-on-surface-variant mt-1">数量: x1</p>
+</div>
+<div class="text-primary font-bold">¥58.00</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4 items-center">
+<div class="w-20 h-20 rounded-DEFAULT bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="维生素E 软胶囊" class="w-full h-full object-cover" data-alt="golden translucent vitamin E softgels in an aesthetic heap on a clean light purple background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiOZlTUpDFeLkB8yX8aWrr02eIjxiylpgQ2IaYZuopo8JBJxRIf-MDxYiS44O9CCKskcpVHNvJmto2Zsr-_BK0T6YCB4bS0Ubri2VlWlAolLPEsQJ3SFBkUrQcFO2tu8aXHUHF1o_BdIu0FuG3NWKjlsUKN9Em8OpXeqahHMiQ-Jgw_rIY33FXAjaqGNou5eLnatOH8Ff6gvF2us4RU3PNkRBBWJmFbAho2KnpRmV9uhJ5Gbov0yt4KIFziz-2FgOgOVBJX-QLReU"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-bold text-on-surface">维生素E 软胶囊</h3>
+<p class="text-sm text-on-surface-variant mt-1">数量: x1</p>
+</div>
+<div class="text-primary font-bold">¥60.00</div>
+</div>
+</div>
+</section>
+<!-- Shipping Info Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-secondary font-bold text-xl">收货信息</h2>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 space-y-4 shadow-[0_8px_30px_rgba(106,55,212,0.04)]">
+<div class="space-y-2">
+<label class="text-xs font-semibold text-secondary ml-1">姓名</label>
+<input class="w-full px-5 py-4 bg-surface-container-low border-none rounded-DEFAULT focus:ring-2 focus:ring-primary-fixed focus:bg-white transition-all text-on-surface placeholder:text-outline-variant" placeholder="请输入收货人姓名" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold text-secondary ml-1">电话</label>
+<input class="w-full px-5 py-4 bg-surface-container-low border-none rounded-DEFAULT focus:ring-2 focus:ring-primary-fixed focus:bg-white transition-all text-on-surface placeholder:text-outline-variant" placeholder="请输入联系电话" type="tel"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold text-secondary ml-1">收货地址</label>
+<textarea class="w-full px-5 py-4 bg-surface-container-low border-none rounded-DEFAULT focus:ring-2 focus:ring-primary-fixed focus:bg-white transition-all text-on-surface placeholder:text-outline-variant resize-none" placeholder="请输入详细收货地址" rows="2"></textarea>
+</div>
+</div>
+</section>
+<!-- Payment Method Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-secondary font-bold text-xl">支付方式</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center justify-center p-4 bg-surface-container-lowest rounded-lg border-2 border-primary shadow-sm active:scale-[0.98] transition-all">
+<div class="w-10 h-10 flex items-center justify-center text-[#07C160] mb-2">
+<span class="material-symbols-outlined text-4xl" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<span class="text-sm font-bold text-on-surface">微信支付</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-surface-container-lowest rounded-lg border-2 border-transparent hover:border-surface-variant active:scale-[0.98] transition-all">
+<div class="w-10 h-10 flex items-center justify-center text-[#1677FF] mb-2">
+<span class="material-symbols-outlined text-4xl" data-icon="payments">payments</span>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">支付宝</span>
+</button>
+</div>
+</section>
+<!-- Warning Message Section -->
+<section>
+<div class="bg-secondary-container rounded-lg p-5 flex gap-3 items-start">
+<span class="material-symbols-outlined text-on-secondary-container mt-0.5" data-icon="info">info</span>
+<p class="text-on-secondary-container text-sm leading-relaxed font-medium">
+                    店主还未配置收款方式，请联系店主
+                </p>
+</div>
+</section>
+</main>
+<!-- Bottom Section -->
+<footer class="fixed bottom-0 left-0 w-full glass-nav p-6 pb-8 z-50">
+<div class="max-w-screen-md mx-auto flex flex-col gap-4">
+<div class="flex justify-between items-center px-2">
+<span class="text-secondary font-medium">订单合计</span>
+<span class="text-2xl font-bold text-primary font-headline">¥118.00</span>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 rounded-full font-bold text-lg shadow-[0_8px_20px_rgba(106,55,212,0.25)] hover:shadow-[0_12px_24px_rgba(106,55,212,0.3)] active:scale-[0.98] transition-all duration-300">
+                提交订单
+            </button>
+</div>
+</footer>
+</body></html>

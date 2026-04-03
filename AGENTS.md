@@ -53,3 +53,33 @@
 - 引入新的工具函数后，必须全局搜索并更新所有已有的同类调用点
 - 禁止硬编码占位数据标记为已完成
 - UI 元素不可交互 = 未完成
+## UI 改版规则（2026-04-03 新增）
+
+### 设计令牌
+- 所有颜色必须引用 `var(--color-*)` 变量，禁止硬编码 hex 值
+- 所有圆角必须引用 `var(--radius-*)`，禁止硬编码 px
+- 所有阴影必须引用 `var(--shadow-*)`
+- 所有字体必须引用 `var(--font-*)`
+
+### 改版铁律
+- 改造页面时，PHP 逻辑（变量、条件、循环、表单 action、CSRF）一个字都不能改
+- 只改 HTML 标签、CSS class、以及内联 style→class 的迁移
+- 每个页面的设计参照文件在 stitch/ 目录下，文件名见 STATUS.md
+- Material Symbols Outlined 替代所有 SVG 图标
+- 图标使用方式: <span class="material-symbols-outlined">icon_name</span>
+- 禁止引入 Tailwind CDN 或任何 CSS 框架
+
+### 文件加载顺序
+前台: design-tokens.css → components.css → site.css → mobile.css
+后台: design-tokens.css → components.css → admin.css → mobile.css
+
+### 验收标准
+- 改版后页面在 375px 宽度下无横向滚动
+- 所有按钮、链接、表单仍可正常交互
+- Flash 消息仍可正常显示
+- 购物车徽标数字仍正确显示
+
+## 修改粒度规则（2026-04-03 追加）
+- "改造"类任务（HTML 结构重写）：允许输出完整文件，提交后必须 `git diff --stat` 确认只改了预期文件。
+- "修复"类任务（改动 ≤ 10 行）：禁止整文件重写。使用 sed / 行级编辑 / 手动 patch，提交 diff 必须 ≤ 20 行。
+- 违反本规则的提交必须 revert 并重做。

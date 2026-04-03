@@ -8,6 +8,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
 
 require_once __DIR__ . '/../data/products.php';
 require_once __DIR__ . '/../includes/pagination.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -30,7 +31,7 @@ unset($_SESSION['admin_flash']);
 $products = shop_get_products();
 $categories = shop_get_categories();
 $users = shop_get_users();
-$plugins = shop_get_plugins();
+$plugins = [];
 
 $categoryOptions = shop_category_names();
 $editId = (int) ($_GET['edit'] ?? 0);
@@ -41,8 +42,8 @@ $inventoryEditId = (int) ($_GET['edit_inventory'] ?? 0);
 $editingInventory = $inventoryEditId > 0 ? shop_find_product($products, $inventoryEditId) : null;
 $userEditId = (int) ($_GET['edit_user'] ?? 0);
 $editingUser = $userEditId > 0 ? shop_find_user($users, $userEditId) : null;
-$pluginEditId = (int) ($_GET['edit_plugin'] ?? 0);
-$editingPlugin = $pluginEditId > 0 ? shop_find_plugin($plugins, $pluginEditId) : null;
+$pluginEditId = 0;
+$editingPlugin = null;
 
 require_once __DIR__ . '/controllers/actions.php';
 

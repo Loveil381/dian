@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/logger.php';
 
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ((int) ($_SESSION['login_lockout'] ?? 0) > time()) {
         $remaining = (int) ceil((((int) $_SESSION['login_lockout']) - time()) / 60);
-        $error = "登录尝试过多，请 {$remaining} 分钟后再试。";
+        $error = "登录失败次数过多，请 {$remaining} 分钟后再试。";
     } else {
         $prefix = get_db_prefix();
         $stmt = $pdo->prepare("SELECT id, password_hash FROM `{$prefix}admin_users` WHERE username = ? AND status = 1");
@@ -59,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ((int) $_SESSION['login_attempts'] >= 5) {
             $_SESSION['login_lockout'] = time() + 900;
             $_SESSION['login_attempts'] = 0;
-            shop_log('warning', '后台登录锁定', ['ip' => (string) ($_SERVER['REMOTE_ADDR'] ?? '')]);
-            $error = '登录尝试过多，请 15 分钟后再试。';
+            shop_log('warning', '后台登录触发锁定', ['ip' => (string) ($_SERVER['REMOTE_ADDR'] ?? '')]);
+            $error = '登录失败次数过多，请 15 分钟后再试。';
         } else {
             $error = '用户名或密码错误。';
         }

@@ -454,6 +454,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (typeof initialPayMethod !== 'undefined' && initialPayMethod) {
-        showQR(initialPayMethod);
+        const initialPayButton = document.querySelector(`.pay-method-btn[data-pay-method="${initialPayMethod}"]`);
+        if (initialPayButton instanceof HTMLElement) {
+            selectPayment(initialPayMethod, initialPayButton);
+        } else {
+            showQR(initialPayMethod);
+        }
     }
 });

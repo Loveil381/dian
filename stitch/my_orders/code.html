@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>我的订单 - 魔女小店</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-tertiary-fixed": "#002949",
+                "on-primary-container": "#2b006e",
+                "surface-dim": "#d7d2e0",
+                "on-error": "#ffefef",
+                "on-secondary-fixed-variant": "#7a3b61",
+                "tertiary": "#275e90",
+                "on-tertiary-container": "#003f6a",
+                "secondary-container": "#ffbfe0",
+                "on-tertiary": "#ecf3ff",
+                "tertiary-container": "#93c5fd",
+                "secondary-fixed-dim": "#fdabd7",
+                "outline-variant": "#afabb5",
+                "surface-container-highest": "#dfdbe8",
+                "on-surface-variant": "#5d5a62",
+                "on-background": "#2f2e35",
+                "outline": "#78757e",
+                "primary-fixed-dim": "#a27cff",
+                "on-secondary": "#ffeef4",
+                "error-dim": "#a70138",
+                "secondary": "#87456c",
+                "inverse-surface": "#0e0d14",
+                "surface": "#faf5ff",
+                "on-primary-fixed": "#000000",
+                "surface-container-high": "#e5e0ed",
+                "on-secondary-fixed": "#581e43",
+                "primary": "#6a37d4",
+                "on-primary": "#f8f0ff",
+                "error-container": "#f74b6d",
+                "primary-container": "#ae8dff",
+                "surface-container-lowest": "#ffffff",
+                "surface-container": "#ebe6f2",
+                "surface-container-low": "#f4effa",
+                "secondary-fixed": "#ffbfe0",
+                "on-primary-fixed-variant": "#370086",
+                "on-tertiary-fixed-variant": "#004878",
+                "on-surface": "#2f2e35",
+                "tertiary-dim": "#165284",
+                "surface-variant": "#dfdbe8",
+                "on-secondary-container": "#6f3257",
+                "on-error-container": "#510017",
+                "tertiary-fixed-dim": "#85b7ee",
+                "tertiary-fixed": "#93c5fd",
+                "inverse-on-surface": "#9f9ba4",
+                "primary-dim": "#5e26c7",
+                "error": "#b41340",
+                "surface-tint": "#6a37d4",
+                "surface-bright": "#faf5ff",
+                "inverse-primary": "#a078ff",
+                "background": "#faf5ff",
+                "secondary-dim": "#793a60",
+                "primary-fixed": "#ae8dff"
+            },
+            "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Plus Jakarta Sans", "PingFang SC"],
+                "body": ["Be Vietnam Pro", "PingFang SC"],
+                "label": ["Be Vietnam Pro", "PingFang SC"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-shift {
+            transition: background-color 0.3s ease;
+        }
+        .bg-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#FAF5FF]/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center h-16 px-4 w-full">
+<div class="flex-none p-2 active:scale-95 transition-transform hover:opacity-80">
+<span class="material-symbols-outlined text-violet-600 dark:text-violet-400">arrow_back</span>
+</div>
+<h1 class="flex-grow text-center font-headline font-bold text-lg tracking-wide text-on-background">我的订单</h1>
+<div class="flex-none w-10"></div> <!-- Spacer for balance -->
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 max-w-2xl mx-auto space-y-6">
+<!-- Tab Filter (Extended Component) -->
+<div class="flex space-x-2 overflow-x-auto no-scrollbar py-2">
+<button class="px-6 py-2 bg-primary text-on-primary rounded-full text-sm font-medium whitespace-nowrap shadow-md">全部</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap">待付款</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap">待收货</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap">已完成</button>
+</div>
+<!-- Order Card 1: Pending Payment -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(106,55,212,0.08)] relative overflow-hidden group">
+<div class="absolute top-4 right-4 text-xs">✨</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-[10px] text-outline tracking-wider font-medium">订单号: 20240315001</p>
+<p class="text-xs text-on-surface-variant mt-1">2024-03-15</p>
+</div>
+<span class="px-3 py-1 bg-[#FFF4E5] text-[#FF9800] rounded-full text-[11px] font-bold">待付款</span>
+</div>
+<div class="flex items-center space-x-4 py-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden bg-surface-container-low flex-shrink-0">
+<img alt="补佳乐 1mg" class="w-full h-full object-cover" data-alt="professional minimalist product photography of a clean white medicine box labeled Progynova on a soft lavender background soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIizVCeMpCYaca25PyE7SUjnPMYHaBZmn5sP-B0VK30yu6uu_ciwJHa1VBPRAgBnzI7xZnENItcubKC3cCuFXJR8UJM8k7Uc1jS_z4DVp5Z1nzA968S1R3rQ9UQzBEjPA7qFMoAQMpjkRb6jNUjzzTL9Cf-RuOoZ0WOq9UX_eAZhsrdyMMXdNGiqicINavT7BcRatq2bVH59DLr0LDlKUn6-PLNGYJ4Ntzj5m7utDJZww2ZJEe3HRryp9IZFH5yb-Gf5gYMVK124g"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline font-bold text-on-surface text-base">补佳乐 1mg</h3>
+<p class="text-xs text-outline mt-1 italic">高端女性健康调理</p>
+</div>
+</div>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-surface-container-low/50">
+<p class="text-sm font-bold text-primary">合计: ¥118.00</p>
+<div class="flex space-x-2">
+<button class="px-4 py-2 text-xs font-bold text-primary border border-primary-container rounded-full active:scale-95 transition-transform">取消订单</button>
+<button class="px-6 py-2 text-xs font-bold text-on-primary bg-gradient-to-br from-primary to-primary-container rounded-full shadow-lg shadow-primary/20 active:scale-95 transition-transform">立即支付</button>
+</div>
+</div>
+</div>
+<!-- Order Card 2: Shipped -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(106,55,212,0.08)] relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-[10px] text-outline tracking-wider font-medium">订单号: 20240312044</p>
+<p class="text-xs text-on-surface-variant mt-1">2024-03-12</p>
+</div>
+<span class="px-3 py-1 bg-[#E1F5FE] text-[#03A9F4] rounded-full text-[11px] font-bold">已发货</span>
+</div>
+<div class="flex items-center space-x-4 py-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden bg-surface-container-low flex-shrink-0">
+<img alt="魔法焕颜精华" class="w-full h-full object-cover" data-alt="elegant skincare serum bottle with minimalist label on a dreamy purple aesthetic background high end cosmetic photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtLyhG__2BH-vuOsL-O3-hZLRmTrZ1V1tC9UO9Og4F5Mz6yCUqa9trmsaRYxCy3jk1byeTSZGS1f2gkE9W4qTcKCt28D5t2a61vuV6E0sjequ2G5hh_4HMboYKTtirrlOiXqwygtErSpNhB25DSWueijsIJJcAp4L3mS9mrb0eDGSdN-JT_zGWcTVIGyCZacjxns9MEph38SIhWlDP33L0AuGcVJZiRISJOC5IetBYvKBravRjXo3skPt37Du1KuVqS4tKTS2HHcc"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline font-bold text-on-surface text-base">魔法焕颜精华 30ml</h3>
+<p class="text-xs text-outline mt-1 italic">自研修护配方</p>
+</div>
+</div>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-surface-container-low/50">
+<p class="text-sm font-bold text-primary">合计: ¥256.00</p>
+<div class="flex space-x-2">
+<button class="px-6 py-2 text-xs font-bold text-on-secondary bg-secondary-container rounded-full active:scale-95 transition-transform">查看物流</button>
+</div>
+</div>
+</div>
+<!-- Order Card 3: Completed -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(106,55,212,0.08)] relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-[10px] text-outline tracking-wider font-medium">订单号: 20240301012</p>
+<p class="text-xs text-on-surface-variant mt-1">2024-03-01</p>
+</div>
+<span class="px-3 py-1 bg-[#E8F5E9] text-[#4CAF50] rounded-full text-[11px] font-bold">已完成</span>
+</div>
+<div class="flex items-center space-x-4 py-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden bg-surface-container-low flex-shrink-0">
+<img alt="舒缓草本花茶" class="w-full h-full object-cover" data-alt="herbal tea bags in a beautifully designed pastel box surrounded by lavender flowers soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhjJSUivWC85UnCiy3Ct_81rIu588cqj5mVXoog_a9Y8Hjy9ZtzT9wEHKZPMDqncqHc3yOwFbLPaXBprd_8aKVvzqmUMWkr3XsYRF_vxhdQ3rp6SCEY2MO_P-K650fkZI6arwC5ZoZG-oX5BGsGOHo70iDYREWiAiga-ib10mUOxwKE8UMxnKgW8o8lCd2Rf6BI1RXV0UTmszj_hw9oDZgKpO3717dBV_P_BB-F2eXAKpWFhGxEhMMaZBUH9z5y0q0r6MlesZYffA"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline font-bold text-on-surface text-base">舒缓草本花茶 (12袋装)</h3>
+<p class="text-xs text-outline mt-1 italic">日本原装进口</p>
+</div>
+</div>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-surface-container-low/50">
+<p class="text-sm font-bold text-primary">合计: ¥89.00</p>
+<div class="flex space-x-2">
+<button class="px-6 py-2 text-xs font-bold text-on-surface-variant bg-surface-container-high rounded-full active:scale-95 transition-transform">再次购买</button>
+</div>
+</div>
+</div>
+<!-- Empty State Variant -->
+<div class="pt-12 pb-8 flex flex-col items-center justify-center text-center">
+<div class="w-40 h-40 mb-6 flex items-center justify-center relative">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+<img alt="还没有订单哦～" class="w-32 h-32 object-contain relative z-10" data-alt="watercolor illustration of a cute purple witch hat with sparkles and stars soft edges pastel palette isolated on white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3bxzzFjlJ7vlQ6EwsdumNi4Mrhm9fz4r9eSciEl3vHdo7fqLrnOBLagE8IUXHKtW9l2pld6_2qS78hlavwEMCRstuSU9_MMkVjY7iaHXM3mv-udr7QcD8RcCGgOQ3p3tnDLSORosBUX4NP6HJQsmfymzlV-aQFiSFQyQzKJL54s7SCiJckxsPEPIA0AiFAJmVwHiXUiaHZIAB_Stn2V2xRdit4EHxN34HzacmrPIV9g7A842C2J2M31WtdR0KcGHkgEMKiqwJjtg"/>
+</div>
+<h4 class="text-on-surface font-headline font-bold text-lg mb-2">还没有订单哦～</h4>
+<p class="text-on-surface-variant text-sm mb-8 px-12">快去探索魔女为您准备的神奇好物吧</p>
+<button class="px-12 py-3 bg-primary-container text-on-primary-container font-bold rounded-full shadow-lg shadow-primary/10 hover:opacity-80 transition-opacity active:scale-95">
+                去逛逛
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-6 pb-safe bg-[#FAF5FF]/70 dark:bg-zinc-900/70 backdrop-blur-xl rounded-t-xl z-50 shadow-[0_-8px_30px_rgba(106,55,212,0.05)]">
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 p-2 hover:text-violet-500 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="text-[10px] font-medium font-body">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 p-2 hover:text-violet-500 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+<span class="text-[10px] font-medium font-body">分类</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-violet-600 to-violet-400 text-white rounded-full p-2 w-12 h-12 mb-1 shadow-lg shadow-violet-200 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="hidden">订单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 p-2 hover:text-violet-500 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="text-[10px] font-medium font-body">我的</span>
+</a>
+</nav>
+<!-- Contextual FAB (Suppressed as per rules for Details/List screens, but here is the code structure if needed elsewhere) -->
+<!-- <button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+        <span class="material-symbols-outlined">help</span>
+    </button> -->
+</body></html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ethereal Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#9f9ba4",
+                        "outline-variant": "#afabb5",
+                        "surface-container-high": "#e5e0ed",
+                        "on-tertiary-fixed": "#002949",
+                        "on-background": "#2f2e35",
+                        "tertiary-fixed": "#93c5fd",
+                        "primary-dim": "#5e26c7",
+                        "on-primary": "#f8f0ff",
+                        "background": "#faf5ff",
+                        "primary-container": "#ae8dff",
+                        "on-secondary": "#ffeef4",
+                        "on-error": "#ffefef",
+                        "error-dim": "#a70138",
+                        "tertiary-dim": "#165284",
+                        "tertiary-fixed-dim": "#85b7ee",
+                        "on-tertiary": "#ecf3ff",
+                        "on-error-container": "#510017",
+                        "on-tertiary-container": "#003f6a",
+                        "primary-fixed": "#ae8dff",
+                        "primary": "#6a37d4",
+                        "on-primary-fixed-variant": "#370086",
+                        "tertiary-container": "#93c5fd",
+                        "surface-variant": "#dfdbe8",
+                        "on-secondary-container": "#6f3257",
+                        "error": "#b41340",
+                        "secondary-fixed-dim": "#fdabd7",
+                        "surface-container-highest": "#dfdbe8",
+                        "secondary-container": "#ffbfe0",
+                        "outline": "#78757e",
+                        "surface-container": "#ebe6f2",
+                        "on-tertiary-fixed-variant": "#004878",
+                        "secondary-fixed": "#ffbfe0",
+                        "on-surface": "#2f2e35",
+                        "tertiary": "#275e90",
+                        "secondary-dim": "#793a60",
+                        "surface-tint": "#6a37d4",
+                        "surface": "#faf5ff",
+                        "surface-dim": "#d7d2e0",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f4effa",
+                        "on-primary-container": "#2b006e",
+                        "surface-bright": "#faf5ff",
+                        "inverse-primary": "#a078ff",
+                        "primary-fixed-dim": "#a27cff",
+                        "on-secondary-fixed-variant": "#7a3b61",
+                        "on-surface-variant": "#5d5a62",
+                        "on-secondary-fixed": "#581e43",
+                        "inverse-surface": "#0e0d14",
+                        "error-container": "#f74b6d",
+                        "secondary": "#87456c",
+                        "on-primary-fixed": "#000000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/70 dark:bg-purple-950/70 backdrop-blur-xl shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-violet-700 dark:text-violet-200 tracking-tighter">Ethereal Admin</span>
+<div class="hidden md:flex items-center gap-6 text-sm font-medium">
+<a class="text-violet-700 dark:text-violet-300 font-bold border-b-2 border-violet-500 py-5" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:bg-violet-50/50 dark:hover:bg-violet-900/30 transition-colors px-3 py-2 rounded-lg" href="#">Inventory</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:bg-violet-50/50 dark:hover:bg-violet-900/30 transition-colors px-3 py-2 rounded-lg" href="#">Analytics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer p-2 rounded-full hover:bg-violet-50 transition-colors">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer p-2 rounded-full hover:bg-violet-50 transition-colors">settings</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Administrator Profile" data-alt="professional administrator profile headshot with soft studio lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPCnsL7kPnMdvZ-D6N62zIUxzcFz3dpXDABUW_YRMd87l6JRWWzxmFH3JvoULZZrzb_w5KYbvhFo9rEswl5iTggfwviK6hq1HZgmzu0d1jFp5gjky7KJS9gFZGlFBfbBqeXRkqfDS_PtJMJUrOx3qY2GtRVHVRuvQ5_a8ahEacBXRoSvN16i7HBGNZIJeRZl6hf_TQPyW9iVs1f9azTbdXxaMWMwLD82QJWH89eZyQ3geQ5a7EPocA2E4QPAYD7BuUKuMrZ0PP5l8"/>
+</div>
+</div>
+</nav>
+<main class="flex-grow pt-24 pb-12 px-8 max-w-7xl mx-auto w-full">
+<!-- Title Section -->
+<header class="mb-10">
+<p class="text-primary font-bold tracking-widest text-xs mb-2 uppercase">首页看板 / 管理后台</p>
+<h1 class="text-4xl font-extrabold text-on-surface tracking-tight">数据大盘与运行状态</h1>
+</header>
+<!-- Metric Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-[1rem] shadow-[0_12px_40px_rgba(106,55,212,0.06)] flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
+<span class="text-primary text-5xl font-extrabold mb-3 group-hover:scale-110 transition-transform">128</span>
+<span class="text-on-surface-variant text-sm font-medium">商品总数</span>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-[1rem] shadow-[0_12px_40px_rgba(106,55,212,0.06)] flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
+<span class="text-primary text-5xl font-extrabold mb-3 group-hover:scale-110 transition-transform">12</span>
+<span class="text-on-surface-variant text-sm font-medium">首页固定排序</span>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-[1rem] shadow-[0_12px_40px_rgba(106,55,212,0.06)] flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
+<span class="text-primary text-5xl font-extrabold mb-3 group-hover:scale-110 transition-transform">8</span>
+<span class="text-on-surface-variant text-sm font-medium">商品页固定排序</span>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-8 rounded-[1rem] shadow-[0_12px_40px_rgba(106,55,212,0.06)] flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
+<span class="text-primary text-5xl font-extrabold mb-3 group-hover:scale-110 transition-transform">3,456</span>
+<span class="text-on-surface-variant text-sm font-medium">全站累计销量</span>
+</div>
+</div>
+<!-- Platform Status Section -->
+<section class="bg-surface-container-low rounded-lg p-8 mb-12 relative overflow-hidden">
+<div class="flex items-center gap-4 mb-8">
+<h2 class="text-2xl font-bold text-on-surface">平台状态</h2>
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Status</span>
+<div class="ml-auto flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs text-on-surface-variant font-medium">实时监控中</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<!-- Status Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+<span class="w-3 h-3 bg-green-500 rounded-full"></span>
+</div>
+<div>
+<p class="text-sm text-on-surface-variant mb-0.5">数据库连接</p>
+<p class="font-bold text-on-surface">正常</p>
+</div>
+</div>
+<!-- Status Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+<span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+</div>
+<div>
+<p class="text-sm text-on-surface-variant mb-0.5">数据驱动</p>
+<p class="font-bold text-on-surface">MySQL 接管</p>
+</div>
+</div>
+</div>
+<!-- Rules List -->
+<div class="bg-white/40 p-6 rounded-lg">
+<h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4">当前分拣规则</h3>
+<ul class="space-y-3 text-sm text-slate-500">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-xs mt-0.5 text-primary-container">arrow_forward</span>
+<span>首要权重基于手动固定排序 (Pinned Index) 逻辑。</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-xs mt-0.5 text-primary-container">arrow_forward</span>
+<span>次要权重应用销量降序排列，每日 04:00 同步。</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-xs mt-0.5 text-primary-container">arrow_forward</span>
+<span>库存为零的商品自动下沉至列表末端。</span>
+</li>
+</ul>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="border-2 border-dashed border-error/20 rounded-lg p-10 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-2">危险区域</h2>
+<p class="text-slate-500 text-sm max-w-md mb-8">此操作不可逆，将清除所有当前数据并恢复默认配置。请确保您已备份重要数据。</p>
+<button class="bg-error hover:bg-error-dim text-white font-bold py-4 px-10 rounded-full transition-all active:scale-95 shadow-lg shadow-error/20">
+                恢复内置示例数据
+            </button>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-purple-50/50 dark:bg-purple-950/20 py-8 mt-auto">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto">
+<span class="font-be-vietnam-pro text-xs text-slate-500 mb-4 md:mb-0">© 2024 The Ethereal Apothecary Admin</span>
+<div class="flex gap-8">
+<a class="font-be-vietnam-pro text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-300 opacity-80 hover:opacity-100 transition-opacity underline" href="#">Documentation</a>
+<a class="font-be-vietnam-pro text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-300 opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-be-vietnam-pro text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-300 opacity-80 hover:opacity-100 transition-opacity" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

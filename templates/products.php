@@ -7,7 +7,7 @@ require_once __DIR__ . '/../data/products.php';
 
 $currentPage = 'products';
 $pageTitle = '全部商品';
-$pageDescription = '魔女小店全部商品，支持分类浏览与关键词搜索。';
+$pageDescription = '浏览魔女小店的全部上架商品，支持关键字和分类筛选。';
 
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $selected_category = trim((string) ($_GET['category'] ?? ''));
@@ -48,7 +48,7 @@ if ($pdo instanceof PDO) {
         $stmt->execute($params);
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
-        shop_log('error', '商品列表查询失败', ['message' => $exception->getMessage()]);
+        shop_log('error', '商品筛选查询失败', ['message' => $exception->getMessage()]);
         $categories = [];
         $products = [];
     }
@@ -56,73 +56,127 @@ if ($pdo instanceof PDO) {
 
 ob_start();
 ?>
-<section class="page-section">
-    <div class="page-header">
-        <div>
-            <div class="page-kicker">Product Gallery</div>
-            <h1 class="page-title">全部商品</h1>
-            <p class="page-subtitle">探索魔女小店精选好物，支持分类浏览与关键词搜索。</p>
+<main class="page-shell products-page">
+    <section class="card products-hero">
+        <div class="products-hero-copy">
+            <span class="badge badge-primary">Product Gallery</span>
+            <h1 class="products-title">全部商品</h1>
+            <p class="products-subtitle">浏览当前所有上架商品，也可以按关键字或分类快速筛选。</p>
         </div>
-    </div>
+        <div class="products-hero-stats">
+            <div class="products-stat card">
+                <span class="products-stat-label">当前结果</span>
+                <strong class="products-stat-value"><?php echo shop_e((string) count($products)); ?></strong>
+            </div>
+            <div class="products-stat card">
+                <span class="products-stat-label">分类数量</span>
+                <strong class="products-stat-value"><?php echo shop_e((string) count($categories)); ?></strong>
+            </div>
+        </div>
+    </section>
 
-    <div class="filter-card">
-        <form method="get" action="index.php" class="filter-form">
+    <section class="card products-filter-panel">
+        <div class="products-filter-head">
+            <div>
+                <h2 class="products-section-title">筛选商品</h2>
+                <p class="products-section-note">输入关键字或点击分类，快速找到想看的商品。</p>
+            </div>
+        </div>
+
+        <form method="get" action="index.php" class="products-filter-form">
             <input type="hidden" name="page" value="products">
-            <div class="filter-field">
-                <label for="productKeyword">关键词</label>
-                <input id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="输入商品名称或描述">
-            </div>
-            <div class="filter-field">
-                <label for="productCategory">分类</label>
-                <select id="productCategory" name="category">
-                    <option value="">全部分类</option>
-                    <?php foreach ($categories as $category): ?>
-                        <option value="<?php echo shop_e((string) ($category['name'] ?? '')); ?>" <?php echo $selected_category === (string) ($category['name'] ?? '') ? 'selected' : ''; ?>>
-                            <?php echo shop_e((string) ($category['name'] ?? '')); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">筛选商品</button>
-        </form>
-    </div>
+            <?php if ($selected_category !== ''): ?>
+                <input type="hidden" name="category" value="<?php echo shop_e($selected_category); ?>">
+            <?php endif; ?>
 
-    <div class="products-grid products-grid--compact" id="productsGrid">
-        <?php if ($products === []): ?>
-            <div class="empty-state">
-                <h3>未找到相关商品</h3>
-                <p>可以尝试调整关键词或切换分类。</p>
+            <div class="products-filter-field">
+                <label class="font-label products-filter-label" for="productKeyword">关键字</label>
+                <div class="products-filter-control">
+                    <span class="material-symbols-outlined products-filter-icon" aria-hidden="true">search</span>
+                    <input class="input products-filter-input" id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="搜索商品名称或描述">
+                </div>
             </div>
-        <?php else: ?>
-            <?php foreach ($products as $product): ?>
-                <?php
-                $product_id = (int) ($product['id'] ?? 0);
-                $product_name = (string) ($product['name'] ?? '');
-                $cover_image = (string) ($product['cover_image'] ?? '');
-                $product_price = (float) ($product['price'] ?? 0);
-                $product_sales = (int) ($product['sales'] ?? 0);
-                $detail_url = 'index.php?page=product_detail&id=' . $product_id;
-                ?>
-                <a class="product-card product-card--compact" href="<?php echo shop_e($detail_url); ?>">
-                    <div class="product-card__media">
-                        <?php if ($cover_image !== ''): ?>
-                            <img src="<?php echo shop_e($cover_image); ?>" alt="<?php echo shop_e($product_name); ?>">
-                        <?php else: ?>
-                            <div class="product-card__placeholder">暂无图片</div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="product-card__body">
-                        <h3><?php echo shop_e($product_name); ?></h3>
-                        <div class="product-card__meta">
-                            <span class="product-card__price"><?php echo shop_format_price($product_price); ?></span>
-                            <span class="product-card__sales"><?php echo shop_format_sales($product_sales); ?></span>
-                        </div>
-                    </div>
+
+            <div class="products-filter-actions">
+                <button type="submit" class="btn-primary">搜索</button>
+                <a href="index.php?page=products" class="btn-ghost">清空</a>
+            </div>
+        </form>
+
+        <?php if (!empty($categories)): ?>
+        <nav class="products-cat-pills" aria-label="分类筛选">
+            <a class="products-cat-pill <?php echo $selected_category === '' ? 'products-cat-pill--active' : ''; ?>"
+               href="index.php?page=products<?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">全部</a>
+            <?php foreach ($categories as $category): ?>
+                <?php $cat_name = (string) ($category['name'] ?? ''); ?>
+                <a class="products-cat-pill <?php echo $selected_category === $cat_name ? 'products-cat-pill--active' : ''; ?>"
+                   href="index.php?page=products&category=<?php echo urlencode($cat_name); ?><?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">
+                    <?php echo shop_e($cat_name); ?>
                 </a>
             <?php endforeach; ?>
+        </nav>
         <?php endif; ?>
-    </div>
-</section>
+    </section>
+
+    <section class="products-results">
+        <div class="products-results-head">
+            <div>
+                <h2 class="products-section-title">商品列表</h2>
+                <p class="products-section-note">共找到 <?php echo shop_e((string) count($products)); ?> 个可购买商品。</p>
+            </div>
+        </div>
+
+        <?php if ($products === []): ?>
+            <div class="card products-empty empty-state">
+                <span class="material-symbols-outlined products-empty-icon" aria-hidden="true">inventory_2</span>
+                <strong>暂无符合条件的商品</strong>
+                <p>可以尝试修改关键字，或者清空分类条件后重新查看。</p>
+            </div>
+        <?php else: ?>
+            <div class="product-grid products-catalog-grid" id="productsGrid">
+                <?php foreach ($products as $product): ?>
+                    <?php
+                    $product_id = (int) ($product['id'] ?? 0);
+                    $product_name = (string) ($product['name'] ?? '');
+                    $cover_image = (string) ($product['cover_image'] ?? '');
+                    $product_price = (float) ($product['price'] ?? 0);
+                    $product_sales = (int) ($product['sales'] ?? 0);
+                    $detail_url = 'index.php?page=product_detail&id=' . $product_id;
+                    $product_category = (string) ($product['category'] ?? '未分类');
+                    ?>
+                    <article class="card product-card products-card">
+                        <a class="product-card-link products-card-link" href="<?php echo shop_e($detail_url); ?>">
+                            <div class="products-card-media">
+                                <?php if ($cover_image !== ''): ?>
+                                    <img class="products-card-image" src="<?php echo shop_e($cover_image); ?>" alt="<?php echo shop_e($product_name); ?>">
+                                <?php else: ?>
+                                    <div class="products-card-placeholder">
+                                        <span class="material-symbols-outlined" aria-hidden="true">photo</span>
+                                        <span>暂无图片</span>
+                                    </div>
+                                <?php endif; ?>
+                                <span class="badge badge-primary products-card-badge"><?php echo shop_e($product_category); ?></span>
+                            </div>
+                            <div class="product-body products-card-body">
+                                <div class="products-card-title-row">
+                                    <h3 class="product-title products-card-title"><?php echo shop_e($product_name); ?></h3>
+                                </div>
+                                <p class="products-card-note">点击查看商品详情、规格、价格与下单入口。</p>
+                                <div class="product-meta products-card-meta">
+                                    <div>
+                                        <div class="product-price"><?php echo shop_format_price($product_price); ?></div>
+                                        <div class="product-sales"><?php echo shop_format_sales($product_sales); ?></div>
+                                    </div>
+                                    <span class="products-card-arrow material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+</main>
 <?php
 $products_content = trim((string) ob_get_clean());
 

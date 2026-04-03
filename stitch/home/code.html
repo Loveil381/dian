@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#f74b6d",
+                        "secondary": "#87456c",
+                        "on-primary-fixed": "#000000",
+                        "on-secondary-fixed": "#581e43",
+                        "inverse-surface": "#0e0d14",
+                        "on-surface-variant": "#5d5a62",
+                        "on-secondary-fixed-variant": "#7a3b61",
+                        "inverse-primary": "#a078ff",
+                        "primary-fixed-dim": "#a27cff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f4effa",
+                        "on-primary-container": "#2b006e",
+                        "surface-bright": "#faf5ff",
+                        "surface-tint": "#6a37d4",
+                        "surface": "#faf5ff",
+                        "surface-dim": "#d7d2e0",
+                        "secondary-fixed": "#ffbfe0",
+                        "on-surface": "#2f2e35",
+                        "tertiary": "#275e90",
+                        "secondary-container": "#ffbfe0",
+                        "outline": "#78757e",
+                        "tertiary-container": "#93c5fd",
+                        "surface-variant": "#dfdbe8",
+                        "on-secondary-container": "#6f3257",
+                        "error": "#b41340",
+                        "secondary-fixed-dim": "#fdabd7",
+                        "on-tertiary-container": "#003f6a",
+                        "primary": "#6a37d4",
+                        "primary-fixed": "#ae8dff",
+                        "on-primary-fixed-variant": "#370086",
+                        "on-error": "#ffefef",
+                        "error-dim": "#a70138",
+                        "tertiary-dim": "#165284",
+                        "on-tertiary": "#ecf3ff",
+                        "on-error-container": "#510017",
+                        "tertiary-fixed-dim": "#85b7ee",
+                        "primary-container": "#ae8dff",
+                        "on-secondary": "#ffeef4",
+                        "background": "#faf5ff",
+                        "on-background": "#2f2e35",
+                        "on-primary": "#f8f0ff",
+                        "tertiary-fixed": "#93c5fd",
+                        "primary-dim": "#5e26c7",
+                        "inverse-on-surface": "#9f9ba4",
+                        "outline-variant": "#afabb5",
+                        "on-tertiary-fixed": "#002949",
+                        "surface-container-high": "#e5e0ed"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#FAF5FF]/70 dark:bg-[#2F2E35]/70 backdrop-blur-md shadow-[0_12px_40px_rgba(106,55,212,0.08)] flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#8B5CF6] dark:text-[#AE8DFF] transition-transform active:scale-90" data-icon="menu">menu</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-black text-xl text-[#2F2E35] dark:text-[#FAF5FF] tracking-wide">魔女小店 ✨</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#8B5CF6] dark:text-[#AE8DFF] transition-transform active:scale-90" data-icon="search">search</span>
+<div class="relative">
+<span class="material-symbols-outlined text-[#8B5CF6] dark:text-[#AE8DFF] transition-transform active:scale-90" data-icon="shopping_cart">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">2</span>
+</div>
+</div>
+</header>
+<main class="pt-20 px-4 space-y-8">
+<!-- Hero Section: Watercolor Style -->
+<section class="relative overflow-hidden rounded-lg bg-surface-container-low p-1">
+<div class="relative h-48 w-full rounded-lg overflow-hidden">
+<img alt="Hero Banner" class="w-full h-full object-cover" data-alt="Soft pastel watercolor illustration of medicine bottles surrounded by lavender flowers and sparkles, dreamy aesthetic on off-white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaqnbdArYaRRqXXEl77TSGrRkeTTYleFy5bHz7GzhyDE7lk2HWlQtPPj8-QbqIQyDz1iymA0mLqkLXXhPwZd04XBN4B1qsr56bS8hYfAJuoZCKHUlDjHp_GBVsqf3xkVtmYBm8u65QeA0RXmurJ-YgPAoJX4w9O7ZVZuOlZioAQRlOWo3VtCUMM3USo4Hbcy5F2MFGmZ5TXLthRdZgVVTh3Z7STH35N1T9K0k6gufNenWwXqKxZBH2vRuf07s5AmZmQDjm2lEVgrs"/>
+<div class="absolute inset-0 bg-gradient-to-r from-[#FAF5FF]/60 to-transparent flex flex-col justify-center p-6">
+<span class="text-secondary font-semibold text-sm mb-1">店长推荐</span>
+<h2 class="text-2xl font-bold text-on-surface leading-tight">温暖身心的<br/>魔法处方</h2>
+</div>
+</div>
+</section>
+<!-- Categories / Quick Access -->
+<section class="grid grid-cols-4 gap-4 px-2">
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="spa">spa</span>
+</div>
+<span class="text-xs font-medium">草本补给</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined" data-icon="medical_information">medical_information</span>
+</div>
+<span class="text-xs font-medium">日常备药</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="face_retouching_natural">face_retouching_natural</span>
+</div>
+<span class="text-xs font-medium">皮肤护理</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<span class="text-xs font-medium">特供组合</span>
+</div>
+</section>
+<!-- Product Grid -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+<span class="text-primary-dim">热门商品</span>
+<span class="text-sm font-normal text-outline">✨ 精选好物</span>
+</h3>
+<span class="text-sm text-secondary font-medium">查看全部</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-3 rounded-DEFAULT shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative group transition-transform active:scale-95">
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-container-low mb-3">
+<img alt="补佳乐 1mg" class="w-full h-full object-cover" data-alt="Close-up of a small glass medicine bottle with a minimalist aesthetic label, surrounded by soft purple petals and warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy2LuYbyDPbBRdu8_NnsqRQB76RikgVTAGFU665FePoeqA3uRfAU5swICnU3N0nVgsnEOjrxCboAwGM3s6e6_r-ggC6QVqvNJTVCQAX0VwTWxQqxVqPtKiocExpgSYtj_ptwXeNGByvUM-yFHiXzmnhxbJzai_qCy0_VD5UORTB49Bl2TgsuzcIX2JdJN7SwFBV0Ljk2w-GpvSTEQb0PHR4yjAKEb1f6SKj_TzZyRQXkjkQXOfOjhqFcbAhjMVRoP0sTOi6YAEjD0"/>
+<button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-secondary shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="favorite" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<h4 class="text-sm font-bold text-on-surface line-clamp-1">补佳乐 1mg</h4>
+<p class="text-[10px] text-outline mb-2">基础调节系列</p>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">¥120.00</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-3 rounded-DEFAULT shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative group transition-transform active:scale-95">
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-container-low mb-3">
+<img alt="安得卡 50mg" class="w-full h-full object-cover" data-alt="Elegant pharmaceutical packaging with Japanese typography, soft pastel pink background, and ethereal lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg72FEHDKnDi6un-gauzHsfqOqsEtosM6LkW_t6mw5i4Y8P6uBlKVX7LpwKlRv0Sn1arygrNs6xwal6bcyDu8B8xEmHWxMQxC0aiJL4V2E8qohiyVsOT_LRr3wt2wu3di1YeRWpmp9XaM5P2wxlZYyreAZTSNIO8-jowZoIGiTeL01zxbM7EGP9sfO3SYIJXr4NJKaGzg0V0jni33GpoxoDrXEcVsPBZWywX860uy5ADitzFYkgXzoyrHtC1OBMdD7EVx1jZyndWY"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface line-clamp-1">安得卡 50mg</h4>
+<p class="text-[10px] text-outline mb-2">深度舒缓系列</p>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">¥245.00</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-3 rounded-DEFAULT shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative group transition-transform active:scale-95">
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-container-low mb-3">
+<img alt="色普龙 50mg" class="w-full h-full object-cover" data-alt="Minimalist blue medicine box on a clean aesthetic surface with soft morning light and a sprig of dried flowers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQeBsbDeehQXKryYZzwKfAtGiNS72mU2NNnddJLkUW08zrhaYJuzYLdNX8moYtF_6lAx6tKTnBfhcw9DyBRLAzTJKoQPmJUzwsoC0j7AcxLI4K6uQEf-f7NND8tBxZ7dBPGR23gIHkRWIOmTaLI_xURIQjhmYzYuAo9XXqPKuBZb3bSGPaMQ09wBDrgqEKHelpSuEG4i_6x0U_Ap5rTd3_rFnh_Mueb0_qLEqJEYPatvwRVNxnx_gVf5G9JYonC4aFHVARCcaFAiI"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface line-clamp-1">色普龙 50mg</h4>
+<p class="text-[10px] text-outline mb-2">专业呵护系列</p>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">¥198.00</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Card 4 (Bento Style/Featured) -->
+<div class="bg-secondary-container p-3 rounded-DEFAULT shadow-[0_8px_30px_rgba(106,55,212,0.04)] relative transition-transform active:scale-95">
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-white/40 mb-3">
+<img alt="内分泌调节组合" class="w-full h-full object-cover" data-alt="A curated gift set of pharmacy items and botanical samples in a soft wooden tray, warm cozy lighting, lifestyle photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDviEhCGwCcr5K_O_06nopwog7j5kckYptJj-MdTycfgj94jDUgrf3lAdA7KYrhKFWgN0BHeV1igDSb-IIbl3Gt8pM6-MLDdrgsF32pMi69-IiZZrtlOx9esKnSFw3CRyl4mgJCpeOoBpRT4eA5B58_LHMxjIwkO9NVRp6bVIn5qLh5tkT6d3eoQ3VVElp14w8iXS0U0AhC_tMpitDTF1we4ojfT4_COGCwDcjAB-zGBddFoWvFPkh8VborQeJWkBM_XEplDMk78I8"/>
+<div class="absolute top-2 left-2 bg-secondary text-white text-[10px] px-2 py-0.5 rounded-full">套装优惠</div>
+</div>
+<h4 class="text-sm font-bold text-on-secondary-container line-clamp-1">内分泌调节组合</h4>
+<p class="text-[10px] text-on-secondary-container/70 mb-2">全面平衡方案</p>
+<div class="flex justify-between items-center">
+<span class="text-on-secondary-container font-bold">¥520.00</span>
+<button class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+<span class="absolute top-1 right-1 text-xs opacity-50">✨</span>
+</div>
+</div>
+</section>
+<!-- Pharmacist Tip Section (Asymmetric) -->
+<section class="bg-tertiary-container/30 p-6 rounded-lg flex gap-4 items-center">
+<div class="flex-1">
+<h5 class="font-bold text-tertiary-fixed-dim mb-1">药师在线小课堂</h5>
+<p class="text-xs text-on-tertiary-container/80 leading-relaxed">每一个细微的变化都值得被温柔对待。如果您对用药有任何疑问，请随时点击咨询我们的在线药师。</p>
+</div>
+<div class="w-16 h-16 rounded-full bg-white flex-shrink-0 border-4 border-tertiary-container flex items-center justify-center overflow-hidden">
+<img alt="Pharmacist" class="w-full h-full object-cover" data-alt="Friendly professional pharmacist avatar with a kind smile, clean medical attire, soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmGA8zISe1Xj7B7f-LapVa8WR5LZqGV2gtaJ4o3_2TnhmayDCwOXCSXeNVPTo4ErE-DpynJiEODN_qfY_aq4zR7Qt7NCptLoR_cpmbM-HYmUNmL1BAdxGSIGQkC6DfcDHH3THyMiFtzBPxH70BVhNzj0Tq1oB-fwgDfjo7DYcXXdrMn2pLIkhtasTiPwMHzh1fSuGvShksjX8-fQmHL2Xe5TSEcx3KHX-eX5Ol-Y7bk611E7KiEmFZ9tMvOoGvxIsiJtw7bNr37UE"/>
+</div>
+</section>
+</main>
+<!-- FAB: Consult -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-primary to-primary-container text-white rounded-full shadow-lg flex items-center justify-center z-40 transition-transform active:scale-90">
+<span class="material-symbols-outlined text-2xl" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-3 pb-6 bg-[#FFFFFF]/70 dark:bg-[#2F2E35]/70 backdrop-blur-md rounded-t-[2rem] z-50 shadow-[0_-8px_30px_rgba(106,55,212,0.05)]">
+<a class="flex flex-col items-center justify-center bg-gradient-to-r from-[#6A37D4] to-[#AE8DFF] text-white rounded-full px-5 py-2 scale-98 active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-medium">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#87456C] dark:text-[#AFABB5] px-5 py-2 hover:bg-[#F4EFFA] dark:hover:bg-[#DFDBE8]/10 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-medium">商品</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#87456C] dark:text-[#AFABB5] px-5 py-2 hover:bg-[#F4EFFA] dark:hover:bg-[#DFDBE8]/10 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-medium">订单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#87456C] dark:text-[#AFABB5] px-5 py-2 hover:bg-[#F4EFFA] dark:hover:bg-[#DFDBE8]/10 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-medium">我的</span>
+</a>
+</nav>
+</body></html>
