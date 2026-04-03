@@ -1,3 +1,4 @@
+<?php declare(strict_types=1); ?>
 <?php
 $statusValue = (string) ($selectedProduct['status'] ?? 'on_sale');
 $skus = [];
@@ -17,10 +18,10 @@ $skuCount = count($skus);
     <div class="section-head">
         <div>
             <h2 class="section-title"><?php echo $editingProduct ? '编辑商品' : '新增商品'; ?></h2>
-            <p class="section-note">保留商品基础信息、图片、SKU、首页排序和商品页排序，适合完整管理商品资料。</p>
+            <p class="section-note">保留商品保存、SKU、图片上传、排序和批量操作逻辑，只整理后台排版结构。</p>
         </div>
         <div class="section-actions">
-            <span class="badge"><?php echo $editingProduct ? '编辑模式' : '新增模式'; ?></span>
+            <span class="badge"><?php echo $editingProduct ? '编辑中' : '新建'; ?></span>
         </div>
     </div>
 
@@ -81,19 +82,19 @@ $skuCount = count($skus);
 
                     <label class="field">
                         <span class="label">标签</span>
-                        <input type="text" name="tag" value="<?php echo shop_e((string) ($selectedProduct['tag'] ?? '')); ?>" placeholder="例如：爆款 / 新品">
+                        <input type="text" name="tag" value="<?php echo shop_e((string) ($selectedProduct['tag'] ?? '')); ?>" placeholder="例如：热卖 / 新品">
                     </label>
 
                     <label class="field">
                         <span class="label">首页排序</span>
                         <input type="number" min="0" name="home_sort" value="<?php echo (int) ($selectedProduct['home_sort'] ?? 0); ?>">
-                        <span class="help">0 = 按销量，数字越小越靠前</span>
+                        <span class="help">0 表示不参与首页优先排序。</span>
                     </label>
 
                     <label class="field">
-                        <span class="label">商品页排序</span>
+                        <span class="label">列表排序</span>
                         <input type="number" min="0" name="page_sort" value="<?php echo (int) ($selectedProduct['page_sort'] ?? 0); ?>">
-                        <span class="help">0 = 按销量，数字越小越靠前</span>
+                        <span class="help">0 表示不参与列表优先排序。</span>
                     </label>
 
                     <label class="field field-full">
@@ -104,19 +105,19 @@ $skuCount = count($skus);
 
                 <div class="admin-products-media">
                     <div class="field field-full">
-                        <span class="label">SKU 管理</span>
+                        <span class="label">SKU 信息</span>
                         <div id="sku-container" class="admin-products-sku-list" data-next-index="<?php echo $skuCount; ?>">
                             <?php foreach ($skus as $index => $sku): ?>
-                                <div class="admin-products-sku-item">
+                                <div class="sku-item admin-products-sku-item">
                                     <input type="text" name="sku[<?php echo $index; ?>][name]" value="<?php echo shop_e((string) ($sku['name'] ?? '')); ?>" placeholder="SKU 名称">
                                     <input type="number" name="sku[<?php echo $index; ?>][stock]" value="<?php echo (int) ($sku['stock'] ?? 0); ?>" placeholder="库存" min="0">
                                     <input type="number" name="sku[<?php echo $index; ?>][price]" value="<?php echo (float) ($sku['price'] ?? 0); ?>" placeholder="价格" step="0.01" min="0">
-                                    <button type="button" class="btn btn-danger btn-sm" data-sku-remove>移除</button>
+                                    <button type="button" class="btn btn-danger btn-sm" data-sku-remove>删除</button>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                         <div class="admin-products-sku-actions">
-                            <button type="button" class="btn btn-secondary btn-sm" data-add-sku>+ 添加 SKU</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-add-sku>+ 新增 SKU</button>
                         </div>
                     </div>
 
@@ -125,17 +126,15 @@ $skuCount = count($skus);
                         <textarea id="imagesTextarea" name="images" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"><?php echo shop_e(implode("\n", $selectedProduct['images'] ?? [])); ?></textarea>
                         <input type="file" id="imageUpload" class="admin-hidden-file" data-image-upload multiple accept="image/*">
                         <div class="admin-products-media-actions">
-                            <button type="button" class="btn btn-secondary btn-sm" data-trigger-click="imageUpload">上传文件</button>
-                            <button type="button" class="btn btn-secondary btn-sm" data-sync-gallery>刷新图库预览</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-trigger-click="imageUpload">上传图片</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-sync-gallery>刷新图片预览</button>
                         </div>
-                        <div id="galleryPreview" class="admin-products-gallery">
-                            <!-- 动态插入图片预览 -->
-                        </div>
+                        <div id="galleryPreview" class="admin-products-gallery"></div>
                     </label>
 
                     <label class="field field-full">
                         <span class="label">封面图片</span>
-                        <input type="text" id="coverImageInput" name="cover_image" value="<?php echo shop_e((string) ($selectedProduct['cover_image'] ?? '')); ?>" placeholder="图片地址">
+                        <input type="text" id="coverImageInput" name="cover_image" value="<?php echo shop_e((string) ($selectedProduct['cover_image'] ?? '')); ?>" placeholder="请输入封面图片地址">
                     </label>
 
                     <label class="field field-full">
@@ -146,11 +145,11 @@ $skuCount = count($skus);
             </div>
 
             <div class="actions">
-                <button class="btn btn-primary" type="submit"><?php echo $editingProduct ? '保存修改' : '新增商品'; ?></button>
+                <button class="btn btn-primary" type="submit"><?php echo $editingProduct ? '保存商品' : '创建商品'; ?></button>
                 <?php if ($editingProduct): ?>
                     <a class="btn btn-secondary" href="index.php?page=admin&tab=products">取消编辑</a>
                 <?php endif; ?>
-                <span class="help">保留全部图片、SKU 和排序字段，提交后会继续沿用当前商品管理逻辑。</span>
+                <span class="help">图片、SKU、封面地址与排序字段会继续沿用现有保存逻辑。</span>
             </div>
         </form>
     </div>
@@ -159,19 +158,19 @@ $skuCount = count($skus);
         <div class="section-head">
             <div>
                 <h3 class="section-title">排序预览</h3>
-                <p class="section-note">用于对比首页排序和商品页排序的最终展示顺序。</p>
+                <p class="section-note">用于快速对照首页排序和商品页排序的当前效果。</p>
             </div>
         </div>
 
         <div class="preview-grid">
             <div class="preview-card">
-                <div class="preview-title">首页预览</div>
+                <div class="preview-title">首页排序预览</div>
                 <ol class="preview-list">
                     <?php if (empty($homePreview)): ?>
                         <li class="preview-item">
                             <div>
                                 <strong>暂无商品</strong>
-                                <span>请先新增商品。</span>
+                                <span>请先设置首页排序商品。</span>
                             </div>
                         </li>
                     <?php else: ?>
@@ -179,7 +178,7 @@ $skuCount = count($skus);
                             <li class="preview-item">
                                 <div>
                                     <strong><?php echo shop_e((string) ($product['name'] ?? '')); ?></strong>
-                                    <span><?php echo shop_e(shop_sort_label($product, 'home_sort', '首页排序')); ?> · 销量 <?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
+                                    <span><?php echo shop_e(shop_sort_label($product, 'home_sort', '首页排序')); ?> / 销量 <?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
                                 </div>
                                 <div class="preview-meta"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></div>
                             </li>
@@ -189,13 +188,13 @@ $skuCount = count($skus);
             </div>
 
             <div class="preview-card">
-                <div class="preview-title">商品页预览</div>
+                <div class="preview-title">商品页排序预览</div>
                 <ol class="preview-list">
                     <?php if (empty($pagePreview)): ?>
                         <li class="preview-item">
                             <div>
                                 <strong>暂无商品</strong>
-                                <span>请先新增商品。</span>
+                                <span>请先设置列表排序商品。</span>
                             </div>
                         </li>
                     <?php else: ?>
@@ -203,7 +202,7 @@ $skuCount = count($skus);
                             <li class="preview-item">
                                 <div>
                                     <strong><?php echo shop_e((string) ($product['name'] ?? '')); ?></strong>
-                                    <span><?php echo shop_e(shop_sort_label($product, 'page_sort', '商品页排序')); ?> · 销量 <?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
+                                    <span><?php echo shop_e(shop_sort_label($product, 'page_sort', '列表排序')); ?> / 销量 <?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
                                 </div>
                                 <div class="preview-meta"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></div>
                             </li>
@@ -217,10 +216,10 @@ $skuCount = count($skus);
     <section class="admin-products-table panel section">
         <div class="section-head">
             <div>
-                <h3 class="section-title">商品管理列表</h3>
-                <p class="section-note">支持分类筛选、状态筛选、排序调整、批量操作和单条删除。</p>
+                <h3 class="section-title">商品列表</h3>
+                <p class="section-note">保留分类筛选、状态筛选、排序修改、批量操作与分页逻辑。</p>
             </div>
-            <span class="badge"><?php echo (int) ($productPagination['total'] ?? count($productRows)); ?> 件商品</span>
+            <span class="badge"><?php echo (int) ($productPagination['total'] ?? count($productRows)); ?> 个商品</span>
         </div>
 
         <form method="get" class="admin-products-filter-bar">
@@ -245,9 +244,9 @@ $skuCount = count($skus);
                     <option value="off_sale" <?php echo $productStatusFilter === 'off_sale' ? 'selected' : ''; ?>>下架</option>
                 </select>
             </label>
-            <button class="btn btn-secondary btn-sm" type="submit">应用筛选</button>
+            <button class="btn btn-secondary btn-sm" type="submit">筛选商品</button>
             <?php if ($productCategoryFilter !== '' || $productStatusFilter !== ''): ?>
-                <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=products">清空筛选</a>
+                <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=products">清除筛选</a>
             <?php endif; ?>
         </form>
 
@@ -259,14 +258,14 @@ $skuCount = count($skus);
                         <th style="width: 22%;">商品</th>
                         <th style="width: 12%;">分类 / 状态</th>
                         <th style="width: 10%;">销量 / 库存</th>
-                        <th style="width: 24%;">首页 / 商品页排序</th>
+                        <th style="width: 24%;">排序</th>
                         <th style="width: 20%;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($productRows)): ?>
                         <tr>
-                            <td colspan="6" class="meta" style="padding: 20px 10px;">暂无商品，请先在上方新增商品。</td>
+                            <td colspan="6" class="meta" style="padding: 20px 10px;">暂无商品，请先新增商品。</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($productRows as $product): ?>
@@ -309,18 +308,18 @@ $skuCount = count($skus);
                                                 <input type="number" min="0" name="home_sort" value="<?php echo (int) ($product['home_sort'] ?? 0); ?>">
                                             </label>
                                             <label class="field">
-                                                <span class="label">商品页排序</span>
+                                                <span class="label">列表排序</span>
                                                 <input type="number" min="0" name="page_sort" value="<?php echo (int) ($product['page_sort'] ?? 0); ?>">
                                             </label>
                                         </div>
-                                        <div class="help">0 表示按销量默认排序，数字越小越靠前。</div>
+                                        <div class="help">0 表示不参与优先排序。</div>
                                         <button class="btn btn-soft btn-sm" type="submit">保存排序</button>
                                     </form>
                                 </td>
                                 <td>
                                     <div class="row-actions">
                                         <a class="btn btn-secondary btn-sm" href="index.php?page=admin&tab=products&edit=<?php echo (int) ($product['id'] ?? 0); ?>">编辑</a>
-                                        <form method="post" data-confirm="确定要删除这件商品吗？">
+                                        <form method="post" data-confirm="确定删除这个商品吗？">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                             <input type="hidden" name="products_page" value="<?php echo (int) ($productPagination['current_page'] ?? 1); ?>">
@@ -346,10 +345,10 @@ $skuCount = count($skus);
             <input type="hidden" name="product_category" value="<?php echo shop_e($productCategoryFilter); ?>">
             <input type="hidden" name="product_status" value="<?php echo shop_e($productStatusFilter); ?>">
             <input type="hidden" name="admin_action" value="batch_product_action">
-            <span class="help">已选商品可批量变更状态或删除。</span>
+            <span class="help">先勾选商品，再执行批量上下架或删除。</span>
             <button class="btn btn-secondary btn-sm" type="submit" name="batch_action" value="on_sale">批量上架</button>
             <button class="btn btn-secondary btn-sm" type="submit" name="batch_action" value="off_sale">批量下架</button>
-            <button class="btn btn-danger btn-sm" type="submit" name="batch_action" value="delete" data-confirm-click="确定要删除已选商品吗？">批量删除</button>
+            <button class="btn btn-danger btn-sm" type="submit" name="batch_action" value="delete" data-confirm-click="确定删除选中的商品吗？">批量删除</button>
         </form>
 
         <?php echo shop_render_pagination($productPagination, $productPaginationUrl); ?>

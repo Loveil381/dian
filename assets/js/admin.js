@@ -43,15 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
     bindAdminProductSelection();
 
     if (document.getElementById('imagesTextarea')) {
-        setTimeout(syncGallery, 500);
+        setTimeout(syncGallery, 300);
     }
 });
 
 function bindAdminConfirmForms() {
     document.querySelectorAll('form[data-confirm]').forEach((form) => {
         form.addEventListener('submit', (event) => {
-            const message = form.getAttribute('data-confirm') || '确认继续执行吗？';
-            if (!confirm(message)) {
+            const message = form.getAttribute('data-confirm') || '确定继续当前操作吗？';
+            if (!window.confirm(message)) {
                 event.preventDefault();
             }
         });
@@ -61,8 +61,8 @@ function bindAdminConfirmForms() {
 function bindAdminConfirmButtons() {
     document.querySelectorAll('button[data-confirm-click]').forEach((button) => {
         button.addEventListener('click', (event) => {
-            const message = button.getAttribute('data-confirm-click') || '确认继续执行吗？';
-            if (!confirm(message)) {
+            const message = button.getAttribute('data-confirm-click') || '确定继续当前操作吗？';
+            if (!window.confirm(message)) {
                 event.preventDefault();
             }
         });
@@ -101,11 +101,9 @@ function bindAdminFileInputs() {
     document.querySelectorAll('input[data-payment-upload]').forEach((input) => {
         input.addEventListener('change', (event) => {
             const type = input.getAttribute('data-payment-upload');
-            if (!type) {
-                return;
+            if (type) {
+                uploadPaymentQr(event, type);
             }
-
-            uploadPaymentQr(event, type);
         });
     });
 }
@@ -127,7 +125,7 @@ function bindAdminSkuEvents() {
             return;
         }
 
-        const skuItem = removeButton.closest('.sku-item');
+        const skuItem = removeButton.closest('.sku-item, .admin-products-sku-item');
         if (skuItem instanceof HTMLElement) {
             skuItem.remove();
         }
@@ -174,7 +172,6 @@ function bindAdminProductSelection() {
     });
 }
 
-// 商品编辑相关函数。
 function addSkuItem() {
     const container = document.getElementById('sku-container');
     if (!container) {
@@ -182,10 +179,10 @@ function addSkuItem() {
     }
 
     const html = `
-        <div class="sku-item" style="display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <input type="text" name="sku[${skuIndex}][name]" placeholder="规格名" style="flex: 2;">
-            <input type="number" name="sku[${skuIndex}][stock]" placeholder="库存" style="flex: 1;" min="0" value="0">
-            <input type="number" name="sku[${skuIndex}][price]" placeholder="价格" style="flex: 1;" step="0.01" min="0" value="0">
+        <div class="sku-item admin-products-sku-item">
+            <input type="text" name="sku[${skuIndex}][name]" placeholder="SKU 名称">
+            <input type="number" name="sku[${skuIndex}][stock]" placeholder="库存" min="0" value="0">
+            <input type="number" name="sku[${skuIndex}][price]" placeholder="价格" step="0.01" min="0" value="0">
             <button type="button" class="btn btn-danger btn-sm" data-sku-remove>删除</button>
         </div>
     `;
@@ -193,6 +190,48 @@ function addSkuItem() {
     container.insertAdjacentHTML('beforeend', html);
     skuIndex += 1;
     container.dataset.nextIndex = String(skuIndex);
+}
+
+function getCsrfToken() {
+    const field = document.querySelector('input[name="_csrf_token"]');
+    return field instanceof HTMLInputElement ? field.value : '';
+}
+
+function getAdminUploadUrl() {
+    // 依赖根路由上下文：admin 页面经 /index.php?page=admin 加载，相对路径从根解析
+    return 'admin/upload.php';
+}
+
+async function postAdminUpload(formData) {
+    const csrfToken = getCsrfToken();
+    if (!csrfToken) {
+        throw new Error('缺少 CSRF 令牌，请刷新页面后重试。');
+    }
+
+    const response = await fetch(getAdminUploadUrl(), {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: formData
+    });
+
+    const rawText = await response.text();
+    let data = {};
+
+    if (rawText.trim() !== '') {
+        try {
+            data = JSON.parse(rawText);
+        } catch (error) {
+            throw new Error(response.ok ? '上传返回格式错误，请联系管理员。' : rawText.trim());
+        }
+    }
+
+    if (!response.ok || data.error) {
+        throw new Error(data.error || '上传失败，请联系管理员。');
+    }
+
+    return data;
 }
 
 function handleImageUpload(event) {
@@ -206,27 +245,20 @@ function handleImageUpload(event) {
         return;
     }
 
-    Array.from(input.files).forEach((file) => {
+    Array.from(input.files).forEach(async (file) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('upload.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.url) {
-                    const currentText = textarea.value.trim();
-                    textarea.value = currentText ? currentText + '\n' + data.url : data.url;
-                    syncGallery();
-                } else if (data.error) {
-                    alert(data.error);
-                }
-            })
-            .catch(() => {
-                alert('上传出错，请联系管理员。');
-            });
+        try {
+            const data = await postAdminUpload(formData);
+            if (data.url) {
+                const currentText = textarea.value.trim();
+                textarea.value = currentText ? currentText + '\n' + data.url : data.url;
+                syncGallery();
+            }
+        } catch (error) {
+            window.alert(error instanceof Error ? error.message : '上传出错，请联系管理员。');
+        }
     });
 
     input.value = '';
@@ -258,6 +290,7 @@ function syncGallery() {
 
             const img = document.createElement('img');
             img.src = url;
+            img.alt = '商品图片';
             img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
 
             const badge = document.createElement('div');
@@ -270,7 +303,6 @@ function syncGallery() {
         });
 }
 
-// 支付配置相关函数。
 function updateQrPreview(type) {
     const input = document.getElementById(type + '_qr');
     const preview = document.getElementById(type + '_preview');
@@ -284,7 +316,7 @@ function updateQrPreview(type) {
     if (url) {
         const image = document.createElement('img');
         image.src = url;
-        image.alt = '收款码';
+        image.alt = '支付二维码';
         image.style.width = '100%';
         image.style.height = '100%';
         image.style.objectFit = 'contain';
@@ -295,7 +327,7 @@ function updateQrPreview(type) {
     const emptyText = document.createElement('span');
     emptyText.style.color = '#94a3b8';
     emptyText.style.fontSize = '12px';
-    emptyText.innerText = '暂未配置收款码';
+    emptyText.innerText = '暂未设置二维码';
     preview.appendChild(emptyText);
 }
 
@@ -308,11 +340,7 @@ function uploadPaymentQr(event, type) {
     const formData = new FormData();
     formData.append('file', input.files[0]);
 
-    fetch('upload.php', {
-        method: 'POST',
-        body: formData
-    })
-        .then((response) => response.json())
+    postAdminUpload(formData)
         .then((data) => {
             if (data.url) {
                 const targetInput = document.getElementById(type + '_qr');
@@ -320,12 +348,10 @@ function uploadPaymentQr(event, type) {
                     targetInput.value = data.url;
                 }
                 updateQrPreview(type);
-            } else if (data.error) {
-                alert(data.error);
             }
         })
-        .catch(() => {
-            alert('上传收款码过程出错，请联系后台。');
+        .catch((error) => {
+            window.alert(error instanceof Error ? error.message : '上传二维码失败，请联系管理员。');
         });
 
     input.value = '';

@@ -63,7 +63,7 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
 
         <nav class="admin-sidebar-nav">
             <div class="admin-nav-group">
-                <p class="admin-nav-group-title">总览</p>
+                <p class="admin-nav-group-title">概览</p>
                 <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'dashboard' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=dashboard" <?php echo $currentTab === 'dashboard' ? 'aria-current="page"' : ''; ?>>
                     <span class="material-symbols-outlined" aria-hidden="true">space_dashboard</span>
                     <span class="admin-sidebar-link-copy">
@@ -156,7 +156,7 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
             if (file_exists($viewFile)) {
                 require $viewFile;
             } else {
-                echo '<div class="flash error admin-flash">未知标签页：' . shop_e($currentTab) . '</div>';
+                echo '<div class="flash error admin-flash">未找到后台页面：' . shop_e($currentTab) . '</div>';
             }
             ?>
         </div>

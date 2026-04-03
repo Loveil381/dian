@@ -18,7 +18,7 @@ if ($product === null) {
 }
 
 $pageTitle = '商品详情 - ' . (string) ($product['name'] ?? '');
-$pageDescription = '查看商品详情、规格与价格信息，支持立即购买和加入购物车。';
+$pageDescription = '查看商品详情、规格、价格与库存，并可直接加入购物车或立即购买。';
 $ogType = 'product';
 $display_image = trim((string) ($product['cover_image'] ?? ''));
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -77,7 +77,7 @@ if ($pdo instanceof PDO) {
             }
         }
     } catch (PDOException $exception) {
-        $_SESSION['flash_message'] = '支付配置读取失败，请稍后重试。';
+        $_SESSION['flash_message'] = '支付配置读取失败，请稍后再试。';
         shop_log('error', '商品详情读取支付配置失败', ['message' => $exception->getMessage()]);
     }
 }
@@ -117,7 +117,7 @@ include __DIR__ . '/header.php';
     <?php endif; ?>
 
     <article class="product-detail">
-        <section class="product-detail-gallery" aria-label="商品图片画廊">
+        <section class="product-detail-gallery" aria-label="商品图片区域">
             <div class="product-detail-gallery-frame">
                 <?php if ($display_image !== ''): ?>
                     <img id="productMainImage" class="product-detail-main-image" src="<?php echo shop_e($display_image); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '商品')); ?>">
@@ -154,14 +154,14 @@ include __DIR__ . '/header.php';
 
             <div class="product-detail-price-row">
                 <span id="mainPriceDisplay" class="product-detail-price text-price"><?php echo shop_format_price((float) ($default_sku['price'] ?? 0)); ?></span>
-                <span id="soldOutBadge" class="badge badge-error product-detail-soldout <?php echo (int) ($default_sku['stock'] ?? 0) <= 0 ? 'product-detail-soldout--visible' : ''; ?>">暂时缺货</span>
+                <span id="soldOutBadge" class="badge badge-error product-detail-soldout <?php echo (int) ($default_sku['stock'] ?? 0) <= 0 ? 'product-detail-soldout--visible' : ''; ?>">暂时售罄</span>
             </div>
 
             <?php if ($show_sku_selector): ?>
                 <section class="product-detail-sku" aria-label="规格选择">
                     <div class="product-detail-sku-title-row">
                         <strong class="product-detail-sku-title">选择规格</strong>
-                        <span class="product-detail-sku-tip text-muted">切换规格会同步更新价格与库存</span>
+                        <span class="product-detail-sku-tip text-muted">切换规格后会同步更新价格和库存。</span>
                     </div>
                     <div id="skuOptions" class="product-detail-sku-options">
                         <?php foreach ($skus as $index => $sku): ?>
@@ -258,7 +258,7 @@ include __DIR__ . '/header.php';
         </div>
 
         <?php if (!$has_payment): ?>
-            <p class="product-detail-modal-note">商家尚未配置支付方式，暂时无法下单。请联系商家。</p>
+            <p class="product-detail-modal-note">当前还没有可用的支付配置，请稍后再试或联系管理员。</p>
         <?php else: ?>
             <div class="popup-pay-options product-detail-pay-options">
                 <?php if ($wechat_qr !== ''): ?>
@@ -275,10 +275,10 @@ include __DIR__ . '/header.php';
 
                 <div class="product-detail-qr-wrapper">
                     <div id="wechatQR" class="popup-qr-box product-detail-hidden">
-                        <img src="<?php echo shop_e($wechat_qr); ?>" alt="微信支付收款码" class="popup-qr-image">
+                        <img src="<?php echo shop_e($wechat_qr); ?>" alt="微信支付二维码" class="popup-qr-image">
                     </div>
                     <div id="alipayQR" class="popup-qr-box product-detail-hidden">
-                        <img src="<?php echo shop_e($alipay_qr); ?>" alt="支付宝收款码" class="popup-qr-image">
+                        <img src="<?php echo shop_e($alipay_qr); ?>" alt="支付宝二维码" class="popup-qr-image">
                     </div>
                 </div>
             </div>
@@ -292,7 +292,7 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="sku_name" id="selectedSkuInput" value="<?php echo shop_e($default_sku_name); ?>">
                 <input type="hidden" name="sku_price" id="selectedPriceInput" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
                 <input type="hidden" name="pay_method" id="payMethodInput" value="">
-                <button type="submit" class="popup-submit-btn btn-primary">确认支付后提交订单</button>
+                <button type="submit" class="popup-submit-btn btn-primary">确认已支付并提交订单</button>
             </form>
         <?php endif; ?>
     </div>

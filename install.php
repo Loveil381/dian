@@ -15,14 +15,14 @@ if (file_exists($lock_path) || file_exists($config_path)) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>魔女小店安装状态</title>
+        <title>魔女小店已安装</title>
         <link rel="stylesheet" href="assets/css/site.css">
     </head>
     <body class="auth-page">
     <main class="page-shell">
         <section class="auth-card auth-card--wide">
             <h1 class="auth-title">系统已安装</h1>
-            <p class="auth-description">检测到现有配置文件或安装锁文件。如需重新安装，请先手动删除 <code>config/database.php</code> 与 <code>config/installed.lock</code>。</p>
+            <p class="auth-description">检测到已有安装配置文件。如需重新安装，请先删除 <code>config/database.php</code> 和 <code>config/installed.lock</code>。</p>
             <div class="auth-links">
                 <a class="auth-link" href="index.php">返回首页</a>
             </div>
@@ -56,11 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($form['host'] === '' || $form['name'] === '' || $form['user'] === '') {
-        $error = '请完整填写数据库主机、数据库名和用户名。';
+        $error = '请填写数据库主机、数据库名和用户名。';
     } elseif ($form['prefix'] !== '' && !preg_match('/^[a-zA-Z0-9_]+$/', $form['prefix'])) {
         $error = '表前缀只能包含字母、数字和下划线。';
     } elseif ($form['admin_user'] === '' || strlen($form['admin_password']) < 6) {
-        $error = '请填写管理员用户名，且管理员密码至少需要 6 位。';
+        $error = '请设置管理员用户名，并确保管理员密码至少 6 位。';
     } elseif (!file_exists($schema_path)) {
         $error = '未找到数据库结构文件 database/schema.sql。';
     } else {
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $schema_sql = str_replace('{prefix}', $form['prefix'], $schema_sql);
 
             if (str_contains($schema_sql, '{prefix}')) {
-                throw new RuntimeException('表前缀占位符替换失败，请检查 database/schema.sql 文件编码（需为 UTF-8 无 BOM）。');
+                throw new RuntimeException('表前缀替换失败，请检查 database/schema.sql 是否为 UTF-8 无 BOM 格式。');
             }
 
             $statements = array_filter(array_map('trim', explode(';', $schema_sql)));
@@ -122,14 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config_content .= 'return ' . var_export($config, true) . ";\n";
 
             if (file_put_contents($config_path, $config_content) === false) {
-                throw new RuntimeException('配置文件写入失败。');
+                throw new RuntimeException('写入数据库配置文件失败。');
             }
 
             if (file_put_contents($lock_path, "installed_at=" . date('c') . "\n") === false) {
-                throw new RuntimeException('安装锁文件写入失败。');
+                throw new RuntimeException('写入安装锁文件失败。');
             }
 
-            $success = '安装完成，数据库和管理员账号已初始化。';
+            $success = '安装成功，数据库和管理员账号已经创建完成。';
         } catch (Throwable $exception) {
             if ($pdo instanceof PDO && $pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="page-shell">
     <section class="auth-card auth-card--wide">
         <h1 class="auth-title">安装向导</h1>
-        <p class="auth-description">填写数据库连接信息后，系统会生成配置文件、执行数据库建表，并创建首个管理员账号。</p>
+        <p class="auth-description">填写数据库连接信息和管理员账号，提交后系统会自动完成初始化。</p>
 
         <?php if ($error !== ''): ?>
             <div class="auth-alert auth-alert--error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($success !== ''): ?>
             <div class="auth-alert auth-alert--success"><?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?></div>
             <div class="auth-links">
-                <a class="auth-link" href="index.php">前往首页</a>
+                <a class="auth-link" href="index.php">返回首页</a>
                 <a class="auth-link" href="admin/index.php">进入后台</a>
             </div>
         <?php else: ?>
@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="auth-label" for="name">数据库名</label>
                 <input class="auth-input" id="name" name="name" value="<?php echo htmlspecialchars($form['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
-                <label class="auth-label" for="user">数据库用户</label>
+                <label class="auth-label" for="user">数据库用户名</label>
                 <input class="auth-input" id="user" name="user" value="<?php echo htmlspecialchars($form['user'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
                 <label class="auth-label" for="password">数据库密码</label>

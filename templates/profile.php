@@ -53,7 +53,7 @@ if ($isLoggedIn && $pdo instanceof PDO) {
             $userAddress = (string) ($row['address'] ?? '');
         }
     } catch (PDOException $e) {
-        shop_log('error', '个人中心数据操作失败', ['message' => $e->getMessage()]);
+        shop_log('error', '个人中心数据查询失败', ['message' => $e->getMessage()]);
     }
 }
 
@@ -76,7 +76,7 @@ include __DIR__ . '/header.php';
                 <div class="profile-hero-copy">
                     <span class="badge badge-primary">个人中心</span>
                     <h1 class="profile-hero-title"><?php echo shop_e($userName); ?></h1>
-                    <p class="profile-hero-meta">ID: <?php echo shop_e($userId); ?> | 用户名: <?php echo shop_e($userUsername); ?></p>
+                    <p class="profile-hero-meta">ID: <?php echo shop_e($userId); ?> | 用户名：<?php echo shop_e($userUsername); ?></p>
                 </div>
             <?php else: ?>
                 <a href="index.php?page=auth&action=register" class="profile-guest-entry">
@@ -85,7 +85,7 @@ include __DIR__ . '/header.php';
                     </div>
                     <div class="profile-hero-copy">
                         <span class="badge">访客模式</span>
-                        <h1 class="profile-hero-title">访客用户</h1>
+                        <h1 class="profile-hero-title">游客用户</h1>
                         <p class="profile-hero-meta">IP: <?php echo shop_e((string) ($_SERVER['REMOTE_ADDR'] ?? '未知')); ?></p>
                     </div>
                     <span class="material-symbols-outlined profile-guest-arrow" aria-hidden="true">arrow_forward</span>
@@ -114,12 +114,12 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="action" value="save_profile">
 
                 <div class="profile-field">
-                    <label class="font-label profile-field-label" for="profile_name">姓名</label>
-                    <input class="input" id="profile_name" type="text" name="name" value="<?php echo shop_e($userName); ?>" placeholder="请输入收货姓名">
+                    <label class="font-label profile-field-label" for="profile_name">收货人</label>
+                    <input class="input" id="profile_name" type="text" name="name" value="<?php echo shop_e($userName); ?>" placeholder="请输入收货人姓名">
                 </div>
 
                 <div class="profile-field">
-                    <label class="font-label profile-field-label" for="profile_phone">电话</label>
+                    <label class="font-label profile-field-label" for="profile_phone">手机号</label>
                     <input class="input" id="profile_phone" type="text" name="phone" value="<?php echo shop_e($userPhone); ?>" placeholder="请输入联系电话">
                 </div>
 
@@ -144,14 +144,14 @@ include __DIR__ . '/header.php';
                 <a href="index.php?page=products" class="profile-shortcut">
                     <div class="profile-shortcut-copy">
                         <strong>继续购物</strong>
-                        <span>浏览商品并继续下单</span>
+                        <span>浏览全部商品并继续下单</span>
                     </div>
                     <span class="material-symbols-outlined profile-shortcut-arrow" aria-hidden="true">arrow_forward</span>
                 </a>
                 <a href="index.php?page=orders" class="profile-shortcut">
                     <div class="profile-shortcut-copy">
                         <strong>我的订单</strong>
-                        <span>查看订单进度与历史记录</span>
+                        <span>查看订单状态与历史记录</span>
                     </div>
                     <span class="material-symbols-outlined profile-shortcut-arrow" aria-hidden="true">arrow_forward</span>
                 </a>

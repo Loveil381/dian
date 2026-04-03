@@ -7,7 +7,7 @@ require_once __DIR__ . '/../data/products.php';
 
 $currentPage = 'products';
 $pageTitle = '全部商品';
-$pageDescription = '魔女小店全部商品列表，支持关键词与分类筛选。';
+$pageDescription = '浏览魔女小店的全部上架商品，支持关键字和分类筛选。';
 
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $selected_category = trim((string) ($_GET['category'] ?? ''));
@@ -61,7 +61,7 @@ ob_start();
         <div class="products-hero-copy">
             <span class="badge badge-primary">Product Gallery</span>
             <h1 class="products-title">全部商品</h1>
-            <p class="products-subtitle">探索魔女小店全部在售商品，按关键词或分类快速筛选你想要的商品。</p>
+            <p class="products-subtitle">浏览当前所有上架商品，也可以按关键字或分类快速筛选。</p>
         </div>
         <div class="products-hero-stats">
             <div class="products-stat card">
@@ -79,11 +79,11 @@ ob_start();
         <div class="products-filter-head">
             <div>
                 <h2 class="products-section-title">筛选商品</h2>
-                <p class="products-section-note">保留现有筛选逻辑，快速定位名称、描述或分类。</p>
+                <p class="products-section-note">输入关键字或切换分类，帮助你更快找到想看的商品。</p>
             </div>
             <div class="products-filter-tags">
                 <span class="badge <?php echo $selected_category !== '' ? 'badge-primary' : ''; ?>"><?php echo $selected_category !== '' ? shop_e($selected_category) : '全部分类'; ?></span>
-                <span class="badge"><?php echo $keyword !== '' ? '关键词：' . shop_e($keyword) : '未输入关键词'; ?></span>
+                <span class="badge"><?php echo $keyword !== '' ? '关键字：' . shop_e($keyword) : '未输入关键字'; ?></span>
             </div>
         </div>
 
@@ -91,10 +91,10 @@ ob_start();
             <input type="hidden" name="page" value="products">
 
             <div class="products-filter-field">
-                <label class="font-label products-filter-label" for="productKeyword">关键词</label>
+                <label class="font-label products-filter-label" for="productKeyword">关键字</label>
                 <div class="products-filter-control">
                     <span class="material-symbols-outlined products-filter-icon" aria-hidden="true">search</span>
-                    <input class="input products-filter-input" id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="输入商品名称或描述">
+                    <input class="input products-filter-input" id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="搜索商品名称或描述">
                 </div>
             </div>
 
@@ -114,8 +114,8 @@ ob_start();
             </div>
 
             <div class="products-filter-actions">
-                <button type="submit" class="btn-primary">筛选商品</button>
-                <a href="index.php?page=products" class="btn-ghost">重置条件</a>
+                <button type="submit" class="btn-primary">应用筛选</button>
+                <a href="index.php?page=products" class="btn-ghost">清空条件</a>
             </div>
         </form>
     </section>
@@ -124,7 +124,7 @@ ob_start();
         <div class="products-results-head">
             <div>
                 <h2 class="products-section-title">商品列表</h2>
-                <p class="products-section-note">共找到 <?php echo shop_e((string) count($products)); ?> 件在售商品。</p>
+                <p class="products-section-note">共找到 <?php echo shop_e((string) count($products)); ?> 个可购买商品。</p>
             </div>
         </div>
 
@@ -132,7 +132,7 @@ ob_start();
             <div class="card products-empty empty-state">
                 <span class="material-symbols-outlined products-empty-icon" aria-hidden="true">inventory_2</span>
                 <strong>暂无符合条件的商品</strong>
-                <p>可以尝试更换关键词，或清空分类条件后重新查看全部商品。</p>
+                <p>可以尝试修改关键字，或者清空分类条件后重新查看。</p>
             </div>
         <?php else: ?>
             <div class="product-grid products-catalog-grid" id="productsGrid">
@@ -144,7 +144,7 @@ ob_start();
                     $product_price = (float) ($product['price'] ?? 0);
                     $product_sales = (int) ($product['sales'] ?? 0);
                     $detail_url = 'index.php?page=product_detail&id=' . $product_id;
-                    $product_category = (string) ($product['category'] ?? '精选商品');
+                    $product_category = (string) ($product['category'] ?? '未分类');
                     ?>
                     <article class="card product-card products-card">
                         <a class="product-card-link products-card-link" href="<?php echo shop_e($detail_url); ?>">
@@ -163,7 +163,7 @@ ob_start();
                                 <div class="products-card-title-row">
                                     <h3 class="product-title products-card-title"><?php echo shop_e($product_name); ?></h3>
                                 </div>
-                                <p class="products-card-note">点击查看详情、价格与下单信息。</p>
+                                <p class="products-card-note">点击查看商品详情、规格、价格与下单入口。</p>
                                 <div class="product-meta products-card-meta">
                                     <div>
                                         <div class="product-price"><?php echo shop_format_price($product_price); ?></div>

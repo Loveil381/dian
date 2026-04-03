@@ -19,9 +19,9 @@ include __DIR__ . '/header.php';
 <main class="page-shell home-shell">
     <section class="card-hero home-hero">
         <div class="home-hero-copy">
-            <span class="badge badge-primary">首页概览</span>
-            <h1 class="home-hero-title">轻盈选品，安心下单</h1>
-            <p class="home-hero-note">按首页排序与销量优先展示，帮助顾客更快找到热门商品，也让搜索结果更清晰地呈现在眼前。</p>
+            <span class="badge badge-primary">首页精选</span>
+            <h1 class="home-hero-title">把喜欢的商品带回家</h1>
+            <p class="home-hero-note">这里会优先展示首页排序靠前的商品，你也可以直接搜索关键字，快速找到想看的内容。</p>
         </div>
 
         <div class="home-metrics-grid">
@@ -39,15 +39,15 @@ include __DIR__ . '/header.php';
             </div>
             <div class="card-metric home-metric-card">
                 <strong class="metric-value"><?php echo shop_format_sales((int) $metrics['sales']); ?></strong>
-                <span class="home-metric-label">总销量</span>
+                <span class="home-metric-label">累计销量</span>
             </div>
         </div>
     </section>
 
     <?php if ($keyword !== ''): ?>
         <div class="home-search-result">
-            <span class="badge badge-primary">搜索关键词：<?php echo shop_e($keyword); ?></span>
-            <span class="home-search-result-text">共找到 <?php echo count($sortedProducts); ?> 件商品。</span>
+            <span class="badge badge-primary">搜索关键字：<?php echo shop_e($keyword); ?></span>
+            <span class="home-search-result-text">共找到 <?php echo count($sortedProducts); ?> 个商品。</span>
         </div>
     <?php endif; ?>
 
@@ -55,21 +55,20 @@ include __DIR__ . '/header.php';
         <div class="home-section-heading">
             <div class="home-section-copy">
                 <h2 class="home-section-title">首页商品推荐</h2>
-                <p class="home-section-note">按首页排序与销量优先展示，帮助顾客更快找到热门商品。</p>
+                <p class="home-section-note">以下内容会根据首页排序优先展示，方便你快速浏览当前主推商品。</p>
             </div>
-            <span class="badge badge-primary"><?php echo count($sortedProducts); ?> 件</span>
+            <span class="badge badge-primary"><?php echo count($sortedProducts); ?> 个</span>
         </div>
 
         <?php if (empty($sortedProducts)): ?>
             <div class="home-empty-state">
                 <span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>
                 <strong class="home-empty-title">暂无商品</strong>
-                <p class="home-empty-note text-muted">商家正在上架中，请稍后再来。</p>
+                <p class="home-empty-note text-muted">当前还没有上架商品，稍后再来看看吧。</p>
             </div>
         <?php else: ?>
             <div class="home-product-grid">
                 <?php foreach ($sortedProducts as $product): ?>
-                    <?php $categoryInfo = shop_get_category_info((string) ($product['category'] ?? '')); ?>
                     <article class="card home-product-card">
                         <a class="home-product-link" href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>">
                             <?php
@@ -86,7 +85,7 @@ include __DIR__ . '/header.php';
                                 </div>
 
                                 <h3 class="home-product-title"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h3>
-                                <p class="home-product-date text-muted">上架于 <?php echo shop_short_date((string) ($product['published_at'] ?? date('Y-m-d H:i:s'))); ?></p>
+                                <p class="home-product-date text-muted">上架时间：<?php echo shop_short_date((string) ($product['published_at'] ?? date('Y-m-d H:i:s'))); ?></p>
 
                                 <div class="home-product-meta">
                                     <div class="home-product-meta-group">

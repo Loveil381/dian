@@ -9,7 +9,7 @@ require_once __DIR__ . '/../data/products.php';
 
 $order_no = trim((string) ($_GET['order_no'] ?? ''));
 if ($order_no === '') {
-    shop_error_page(404, '订单不存在或已被移除。');
+    shop_error_page(404, '订单号不能为空。');
 }
 
 $orders = shop_get_orders();
@@ -27,7 +27,7 @@ if (!shop_user_can_view_order($order, $user_id, $my_order_nos)) {
 $pay_method_label = match ((string) ($order['pay_method'] ?? '')) {
     'wechat' => '微信支付',
     'alipay' => '支付宝',
-    default => (string) ($order['pay_method'] !== '' ? $order['pay_method'] : '未记录'),
+    default => (string) (($order['pay_method'] ?? '') !== '' ? $order['pay_method'] : '未记录'),
 };
 
 $order_status_options = shop_order_status_options();
@@ -66,7 +66,7 @@ include __DIR__ . '/header.php';
             <div class="checkout-section-heading">
                 <div class="checkout-section-title-wrap">
                     <span class="material-symbols-outlined checkout-section-icon" aria-hidden="true">shopping_bag</span>
-                    <h2 class="checkout-section-title">商品清单</h2>
+                    <h2 class="checkout-section-title">商品明细</h2>
                 </div>
             </div>
 
@@ -79,7 +79,7 @@ include __DIR__ . '/header.php';
                         <div class="checkout-item-content">
                             <div class="checkout-item-title"><?php echo shop_e((string) $item['name']); ?></div>
                             <div class="checkout-item-meta-row">
-                                <span class="badge"><?php echo shop_e((string) ($item['sku_name'] !== '' ? $item['sku_name'] : '默认规格')); ?></span>
+                                <span class="badge"><?php echo shop_e((string) (($item['sku_name'] ?? '') !== '' ? $item['sku_name'] : '默认规格')); ?></span>
                                 <span class="text-muted">商品 ID: <?php echo (int) $item['product_id']; ?></span>
                                 <span class="text-muted">数量 × <?php echo (int) $item['quantity']; ?></span>
                             </div>
@@ -100,16 +100,16 @@ include __DIR__ . '/header.php';
 
             <div class="order-detail-info-card">
                 <div class="order-detail-info-row">
-                    <span class="order-detail-info-label">姓名</span>
-                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['customer'] !== '' ? $order['customer'] : '游客')); ?></span>
+                    <span class="order-detail-info-label">收货人</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) (($order['customer'] ?? '') !== '' ? $order['customer'] : '游客')); ?></span>
                 </div>
                 <div class="order-detail-info-row">
-                    <span class="order-detail-info-label">电话</span>
-                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['phone'] !== '' ? $order['phone'] : '未填写')); ?></span>
+                    <span class="order-detail-info-label">手机号</span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) (($order['phone'] ?? '') !== '' ? $order['phone'] : '未填写')); ?></span>
                 </div>
                 <div class="order-detail-info-row">
                     <span class="order-detail-info-label">地址</span>
-                    <span class="order-detail-info-value"><?php echo shop_e((string) ($order['address'] !== '' ? $order['address'] : '未填写')); ?></span>
+                    <span class="order-detail-info-value"><?php echo shop_e((string) (($order['address'] ?? '') !== '' ? $order['address'] : '未填写')); ?></span>
                 </div>
             </div>
         </section>
@@ -136,7 +136,7 @@ include __DIR__ . '/header.php';
                     <span class="order-detail-info-value"><?php echo shop_e($pay_method_label); ?></span>
                 </div>
                 <div class="order-detail-info-row">
-                    <span class="order-detail-info-label">总价</span>
+                    <span class="order-detail-info-label">总金额</span>
                     <span class="order-detail-info-value text-price"><?php echo shop_format_price((float) $order['total']); ?></span>
                 </div>
             </div>

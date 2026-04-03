@@ -3,7 +3,7 @@
 
 <?php if ($showFooter): ?>
 <footer class="site-footer">
-    &copy; 2026 魔女小店，保留所有权利
+    &copy; 2026 魔女小店，愿你轻松挑到喜欢的商品
 </footer>
 <?php endif; ?>
 

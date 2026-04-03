@@ -1,10 +1,11 @@
+<?php declare(strict_types=1); ?>
 <?php $order_status_options = shop_order_status_options(); ?>
 
 <section class="admin-orders-shell">
     <div class="section-head">
         <div>
             <h2 class="section-title">订单管理</h2>
-            <p class="section-note">保留订单状态筛选、状态更新和删除操作，便于后台快速处理售后与发货流程。</p>
+            <p class="section-note">查看订单商品、金额、状态和用户信息，并保留原有状态更新与删除逻辑。</p>
         </div>
         <div class="section-actions">
             <span class="badge"><?php echo (int) ($orderPagination['total'] ?? count($orderRows)); ?> 笔订单</span>
@@ -26,9 +27,9 @@
                     <?php endforeach; ?>
                 </select>
             </label>
-            <button class="btn btn-secondary btn-sm" type="submit">应用筛选</button>
+            <button class="btn btn-secondary btn-sm" type="submit">筛选订单</button>
             <?php if ($orderStatusFilter !== ''): ?>
-                <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=orders">清空筛选</a>
+                <a class="btn btn-soft btn-sm" href="index.php?page=admin&tab=orders">清除筛选</a>
             <?php endif; ?>
         </form>
     </div>
@@ -38,9 +39,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="width: 22%;">订单 / 时间</th>
-                        <th style="width: 28%;">商品明细</th>
-                        <th style="width: 15%;">买家 / 配送</th>
+                        <th style="width: 22%;">订单号 / 时间</th>
+                        <th style="width: 28%;">商品信息</th>
+                        <th style="width: 15%;">用户 / 物流</th>
                         <th style="width: 15%;">金额 / 状态</th>
                         <th style="width: 20%;">操作</th>
                     </tr>
@@ -65,9 +66,9 @@
                                             <div>
                                                 <?php echo shop_e((string) ($item['name'] ?? '商品')); ?>
                                                 <?php if ((string) ($item['sku_name'] ?? '') !== ''): ?>
-                                                    <span class="meta">（<?php echo shop_e((string) $item['sku_name']); ?>）</span>
+                                                    <span class="meta"> / <?php echo shop_e((string) $item['sku_name']); ?></span>
                                                 <?php endif; ?>
-                                                <span class="meta">× <?php echo (int) ($item['quantity'] ?? 1); ?></span>
+                                                <span class="meta"> × <?php echo (int) ($item['quantity'] ?? 1); ?></span>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
@@ -76,7 +77,7 @@
                                     <?php if (!empty($order['user_id'])): ?>
                                         <div class="name">UID: <?php echo (int) ($order['user_id'] ?? 0); ?></div>
                                     <?php else: ?>
-                                        <div class="name">访客订单</div>
+                                        <div class="name">游客订单</div>
                                     <?php endif; ?>
                                     <div class="meta"><?php echo shop_e((string) ($order['express_company'] ?? '')); ?></div>
                                 </td>
@@ -108,7 +109,7 @@
                                             <button class="btn btn-soft btn-sm" type="submit">更新状态</button>
                                         </form>
 
-                                        <form method="post" data-confirm="确定要删除这笔订单吗？">
+                                        <form method="post" data-confirm="确定删除这笔订单吗？">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
                                             <input type="hidden" name="orders_page" value="<?php echo (int) ($orderPagination['current_page'] ?? 1); ?>">

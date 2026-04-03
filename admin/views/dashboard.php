@@ -1,3 +1,4 @@
+<?php declare(strict_types=1); ?>
 <?php
 $homePreview = $homePreview ?? [];
 $pagePreview = $pagePreview ?? [];
@@ -5,9 +6,9 @@ $pagePreview = $pagePreview ?? [];
 <div class="admin-dashboard" id="admin-dashboard">
     <section class="card-hero admin-dashboard-hero">
         <div class="admin-dashboard-hero-copy">
-            <span class="badge badge-primary">后台总览 / Dashboard</span>
-            <h1 class="admin-dashboard-title">数据与运营状态总览</h1>
-            <p class="admin-dashboard-desc">快速查看商品结构、排序命中与累计销量，并继续推进 Phase 3 后台页面改版。</p>
+            <span class="badge badge-primary">Phase 3 Ready</span>
+            <h1 class="admin-dashboard-title">后台运营概览</h1>
+            <p class="admin-dashboard-desc">集中查看商品、排序、文件存储与后台运行状态，便于继续推进后台管理改版。</p>
         </div>
         <div class="admin-dashboard-hero-meta">
             <span class="badge"><?php echo shop_e($storageState); ?></span>
@@ -42,8 +43,8 @@ $pagePreview = $pagePreview ?? [];
         <section class="card admin-dashboard-panel">
             <div class="admin-dashboard-panel-head">
                 <div>
-                    <h2 class="admin-dashboard-section-title">平台状态</h2>
-                    <p class="admin-dashboard-section-note">当前后台基于文件数据与数据库状态同步运行，便于 Phase 3 期间持续迭代。</p>
+                    <h2 class="admin-dashboard-section-title">当前状态</h2>
+                    <p class="admin-dashboard-section-note">这里显示数据库与文件目录状态，方便确认后台运行环境是否正常。</p>
                 </div>
                 <span class="badge badge-primary">Status</span>
             </div>
@@ -60,15 +61,15 @@ $pagePreview = $pagePreview ?? [];
                     <span class="material-symbols-outlined" aria-hidden="true">folder_managed</span>
                     <div>
                         <strong><?php echo shop_e($fileState); ?></strong>
-                        <p>文件存储状态</p>
+                        <p>上传目录状态</p>
                     </div>
                 </article>
             </div>
 
             <ul class="admin-dashboard-rule-list">
-                <li>首页排序值越小越靠前，`0` 表示未参与首页推荐排序。</li>
-                <li>列表排序使用 `page_sort`，与首页排序互不干扰。</li>
-                <li>重置演示数据会恢复默认商品与排序，仅建议在测试环境使用。</li>
+                <li>首页排序使用 `home_sort`，大于 0 的商品会进入首页优先区域。</li>
+                <li>列表排序使用 `page_sort`，大于 0 的商品会优先展示。</li>
+                <li>修改商品后可以在右侧预览区快速查看排序效果。</li>
             </ul>
         </section>
 
@@ -76,7 +77,7 @@ $pagePreview = $pagePreview ?? [];
             <div class="admin-dashboard-panel-head">
                 <div>
                     <h2 class="admin-dashboard-section-title">首页预览</h2>
-                    <p class="admin-dashboard-section-note">当前首页优先展示的前 6 个商品。</p>
+                    <p class="admin-dashboard-section-note">展示当前首页优先的前 6 个商品。</p>
                 </div>
                 <span class="badge"><?php echo shop_e((string) count($homePreview)); ?> 项</span>
             </div>
@@ -84,7 +85,7 @@ $pagePreview = $pagePreview ?? [];
             <?php if ($homePreview === []): ?>
                 <div class="admin-dashboard-empty">
                     <span class="material-symbols-outlined" aria-hidden="true">home</span>
-                    <p>暂无首页推荐商品。</p>
+                    <p>暂未设置首页优先商品。</p>
                 </div>
             <?php else: ?>
                 <ul class="admin-dashboard-preview-list">
@@ -108,7 +109,7 @@ $pagePreview = $pagePreview ?? [];
             <div class="admin-dashboard-panel-head">
                 <div>
                     <h2 class="admin-dashboard-section-title">列表预览</h2>
-                    <p class="admin-dashboard-section-note">当前商品列表优先展示的前 6 个商品。</p>
+                    <p class="admin-dashboard-section-note">展示当前商品页优先的前 6 个商品。</p>
                 </div>
                 <span class="badge"><?php echo shop_e((string) count($pagePreview)); ?> 项</span>
             </div>
@@ -116,7 +117,7 @@ $pagePreview = $pagePreview ?? [];
             <?php if ($pagePreview === []): ?>
                 <div class="admin-dashboard-empty">
                     <span class="material-symbols-outlined" aria-hidden="true">grid_view</span>
-                    <p>暂无列表优先商品。</p>
+                    <p>暂未设置列表优先商品。</p>
                 </div>
             <?php else: ?>
                 <ul class="admin-dashboard-preview-list">
@@ -144,15 +145,15 @@ $pagePreview = $pagePreview ?? [];
                 </div>
             </div>
 
-            <form method="post" class="admin-dashboard-danger-form" data-confirm="确认恢复默认示例数据？这会重置当前商品与排序。">
+            <form method="post" class="admin-dashboard-danger-form" data-confirm="确定恢复默认演示数据吗？当前商品、分类和排序会被覆盖。">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" name="tab" value="<?php echo shop_e($currentTab); ?>">
                 <input type="hidden" name="admin_action" value="reset_products">
                 <button class="btn-danger" type="submit">
                     <span class="material-symbols-outlined" aria-hidden="true">warning</span>
-                    <span>重置演示数据库</span>
+                    <span>重置演示数据</span>
                 </button>
-                <p class="admin-dashboard-danger-note">建议先完成本地备份，再执行此操作。</p>
+                <p class="admin-dashboard-danger-note">此操作会覆盖当前演示商品与排序配置，请谨慎执行。</p>
             </form>
         </section>
     </div>

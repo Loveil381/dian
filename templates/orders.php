@@ -55,7 +55,7 @@ include __DIR__ . '/header.php';
         <div class="orders-header-copy">
             <span class="badge badge-primary">订单中心</span>
             <h1 class="orders-title">我的订单</h1>
-            <p class="orders-subtitle">查看购买记录、物流进度和最近的下单动态。</p>
+            <p class="orders-subtitle">这里会集中展示你当前可查看的订单状态和总览信息。</p>
         </div>
         <div class="badge badge-primary orders-count-badge">共 <?php echo count($orders); ?> 笔订单</div>
     </section>
@@ -80,8 +80,8 @@ include __DIR__ . '/header.php';
             <div class="orders-empty">
                 <span class="material-symbols-outlined orders-empty-icon" aria-hidden="true">receipt_long</span>
                 <h2 class="orders-empty-title">还没有订单记录</h2>
-                <p class="orders-empty-copy">先去挑选一些喜欢的商品吧，订单生成后会展示在这里。</p>
-                <a href="index.php?page=products" class="btn-primary orders-empty-action">去购物</a>
+                <p class="orders-empty-copy">先去挑几件喜欢的商品吧，完成下单后这里会显示你的订单状态。</p>
+                <a href="index.php?page=products" class="btn-primary orders-empty-action">去逛商品</a>
             </div>
         <?php else: ?>
             <div class="orders-list">

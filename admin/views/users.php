@@ -1,11 +1,12 @@
+<?php declare(strict_types=1); ?>
 <section class="admin-users-shell">
     <div class="section-head">
         <div>
             <h2 class="section-title">用户管理</h2>
-            <p class="section-note">查看注册用户、识别管理员身份，并在这里快速切换用户状态。</p>
+            <p class="section-note">查看用户账号、邮箱、角色与当前状态，支持直接封禁或恢复。</p>
         </div>
         <div class="section-actions">
-            <span class="badge"><?php echo (int) ($userPagination['total'] ?? count($userRows)); ?> 名用户</span>
+            <span class="badge"><?php echo (int) ($userPagination['total'] ?? count($userRows)); ?> 位用户</span>
         </div>
     </div>
 
@@ -14,7 +15,7 @@
             <div class="section-head">
                 <div>
                     <h3 class="section-title">用户列表</h3>
-                    <p class="section-note">保留原有用户记录和状态切换逻辑，方便继续做风控或禁用处理。</p>
+                    <p class="section-note">保留原有分页和状态切换逻辑，方便继续做后台运营处理。</p>
                 </div>
             </div>
 
@@ -31,7 +32,7 @@
                     <tbody>
                         <?php if (empty($userRows)): ?>
                             <tr>
-                                <td colspan="4" class="meta" style="padding: 20px 10px;">暂无用户注册。</td>
+                                <td colspan="4" class="meta" style="padding: 20px 10px;">暂无用户数据。</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($userRows as $user): ?>
@@ -42,13 +43,13 @@
                                     </td>
                                     <td>
                                         <div class="name"><?php echo shop_e((string) ($user['username'] ?? '未命名用户')); ?></div>
-                                        <div class="meta"><?php echo shop_e((string) ($user['email'] ?? '无邮箱')); ?></div>
+                                        <div class="meta"><?php echo shop_e((string) ($user['email'] ?? '未填写邮箱')); ?></div>
                                     </td>
                                     <td>
                                         <?php if ((string) ($user['role'] ?? 'user') === 'admin'): ?>
                                             <span class="admin-user-role admin-user-role-admin">管理员</span>
                                         <?php else: ?>
-                                            <span class="admin-user-role admin-user-role-user">普通买家</span>
+                                            <span class="admin-user-role admin-user-role-user">普通用户</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -59,7 +60,7 @@
                                             <input type="hidden" name="id" value="<?php echo (int) ($user['id'] ?? 0); ?>">
                                             <input type="hidden" name="status" value="<?php echo (string) ($user['status'] ?? 'active') === 'active' ? 'banned' : 'active'; ?>">
                                             <?php if ((string) ($user['status'] ?? 'active') === 'active'): ?>
-                                                <button class="btn btn-danger btn-sm" type="submit" data-confirm-click="确定要禁用这个用户吗？">禁用用户</button>
+                                                <button class="btn btn-danger btn-sm" type="submit" data-confirm-click="确定要封禁这个用户吗？">封禁用户</button>
                                             <?php else: ?>
                                                 <button class="btn btn-secondary btn-sm" type="submit" data-confirm-click="确定要恢复这个用户吗？">恢复用户</button>
                                             <?php endif; ?>

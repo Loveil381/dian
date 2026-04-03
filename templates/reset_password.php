@@ -26,8 +26,8 @@ if ($pdo instanceof PDO && $token !== '') {
         $stmt->execute([$hashed]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (Throwable $exception) {
-        shop_log('error', '验证重置密码 token 失败', ['message' => $exception->getMessage()]);
-        $error = '重置链接验证失败，请稍后重试。';
+        shop_log('error', '查询重置密码 token 失败', ['message' => $exception->getMessage()]);
+        $error = '重置链接校验失败，请稍后重试。';
     }
 } elseif ($token === '') {
     $error = '重置链接无效，请重新申请。';
@@ -44,11 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === '') {
     } elseif (!is_array($user)) {
         $error = '重置链接已失效，请重新申请。';
     } elseif ($new_password === '' || $confirm_password === '') {
-        $error = '请输入完整的新密码。';
+        $error = '请输入并确认新密码。';
     } elseif (strlen($new_password) < 6) {
-        $error = '新密码至少需要 6 位。';
+        $error = '新密码长度不能少于 6 位。';
     } elseif (!hash_equals($new_password, $confirm_password)) {
-        $error = '两次输入的新密码不一致。';
+        $error = '两次输入的密码不一致。';
     } else {
         try {
             $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
@@ -81,9 +81,9 @@ include __DIR__ . '/header.php';
                 <p class="auth-brand-note">Reset Access</p>
                 <h1 class="auth-title">重置密码</h1>
                 <?php if (is_array($user)): ?>
-                    <p class="auth-description">请为邮箱 <strong><?php echo shop_e((string) ($user['email'] ?? '')); ?></strong> 设置新的登录密码。</p>
+                    <p class="auth-description">正在为邮箱 <strong><?php echo shop_e((string) ($user['email'] ?? '')); ?></strong> 设置新的登录密码。</p>
                 <?php else: ?>
-                    <p class="auth-description">重置链接需要在有效期内使用，失效后请重新申请新的密码重置链接。</p>
+                    <p class="auth-description">重置链接需要在有效期内使用，如果提示失效，请重新申请新的重置链接。</p>
                 <?php endif; ?>
             </div>
 
@@ -126,15 +126,15 @@ include __DIR__ . '/header.php';
                         </div>
                         <div class="reset-password-tip">
                             <span class="material-symbols-outlined" aria-hidden="true">timer</span>
-                            <span>请在链接过期前完成设置</span>
+                            <span>请在链接有效期内完成操作</span>
                         </div>
                     </div>
                 </div>
             <?php else: ?>
                 <div class="card reset-password-empty">
                     <span class="material-symbols-outlined reset-password-empty-icon" aria-hidden="true">error</span>
-                    <h2 class="reset-password-empty-title">链接不可用</h2>
-                    <p class="reset-password-empty-copy">当前重置链接无效、已过期或已使用，请返回忘记密码页面重新申请。</p>
+                    <h2 class="reset-password-empty-title">链接无法使用</h2>
+                    <p class="reset-password-empty-copy">当前重置链接无效、已过期或已使用，请重新申请新的重置链接。</p>
                 </div>
             <?php endif; ?>
 
