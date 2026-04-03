@@ -112,61 +112,129 @@ include __DIR__ . '/header.php';
 ?>
 
 <main class="page-shell auth-page">
-    <section class="auth-card">
-        <h1 class="auth-title"><?php echo $action === 'login' ? '用户登录' : '用户注册'; ?></h1>
-
-        <?php if (is_array($flash) && ($flash['message'] ?? '') !== ''): ?>
-            <div class="auth-alert <?php echo ($flash['type'] ?? 'success') === 'error' ? 'auth-alert--error' : 'auth-alert--success'; ?>">
-                <?php echo shop_e((string) ($flash['message'] ?? '')); ?>
+    <section class="card-hero auth-card">
+        <div class="auth-shell">
+            <div class="auth-brand">
+                <div class="auth-brand-mark">
+                    <span class="material-symbols-outlined auth-brand-icon" aria-hidden="true">auto_awesome</span>
+                </div>
+                <p class="auth-brand-note">欢迎来到魔女小店</p>
+                <h1 class="auth-title"><?php echo $action === 'login' ? '欢迎回来' : '创建你的魔法账户'; ?></h1>
+                <p class="auth-description"><?php echo $action === 'login' ? '进入你的治愈工坊，继续管理订单与收货信息。' : '注册后即可同步保存订单记录、地址信息与账户资料。'; ?></p>
             </div>
-        <?php endif; ?>
 
-        <?php if ($error !== ''): ?>
-            <div class="auth-alert auth-alert--error"><?php echo shop_e($error); ?></div>
-        <?php endif; ?>
+            <div class="auth-tabs" aria-label="登录注册切换">
+                <a href="index.php?page=auth&action=login" class="<?php echo $action === 'login' ? 'btn-primary' : 'btn-ghost'; ?> auth-tab">登录</a>
+                <a href="index.php?page=auth&action=register" class="<?php echo $action === 'register' ? 'btn-primary' : 'btn-ghost'; ?> auth-tab">注册</a>
+            </div>
 
-        <?php if ($success !== ''): ?>
-            <div class="auth-alert auth-alert--success"><?php echo shop_e($success); ?></div>
-        <?php endif; ?>
+            <div class="auth-messages">
+                <?php if (is_array($flash) && ($flash['message'] ?? '') !== ''): ?>
+                    <div class="flash <?php echo ($flash['type'] ?? 'success') === 'error' ? 'error' : 'success'; ?>">
+                        <?php echo shop_e((string) ($flash['message'] ?? '')); ?>
+                    </div>
+                <?php endif; ?>
 
-        <?php if ($action === 'login'): ?>
-            <form method="post" action="index.php?page=auth&action=login" class="auth-form">
-                <?php echo csrf_field(); ?>
-                <label class="auth-label" for="login_id">用户名 / 邮箱 / ID</label>
-                <input class="auth-input" id="login_id" type="text" name="login_id" required placeholder="请输入用户名、邮箱或 ID">
+                <?php if ($error !== ''): ?>
+                    <div class="flash error"><?php echo shop_e($error); ?></div>
+                <?php endif; ?>
 
-                <label class="auth-label" for="password">密码</label>
-                <input class="auth-input" id="password" type="password" name="password" required placeholder="请输入密码">
+                <?php if ($success !== ''): ?>
+                    <div class="flash success"><?php echo shop_e($success); ?></div>
+                <?php endif; ?>
+            </div>
 
-                <button class="auth-btn" type="submit">登录</button>
+            <?php if ($action === 'login'): ?>
+                <form method="post" action="index.php?page=auth&action=login" class="auth-form">
+                    <?php echo csrf_field(); ?>
 
-                <div class="auth-links auth-links--split">
-                    <a class="auth-link" href="index.php?page=forgot_password">忘记密码？</a>
-                    <span>还没有账号？<a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
-                </div>
-            </form>
-        <?php else: ?>
-            <form method="post" action="index.php?page=auth&action=register" class="auth-form">
-                <?php echo csrf_field(); ?>
-                <label class="auth-label" for="username">用户名</label>
-                <input class="auth-input" id="username" type="text" name="username" required placeholder="请输入用户名">
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="login_id">用户名 / 邮箱 / ID</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">person</span>
+                            <input class="input auth-input" id="login_id" type="text" name="login_id" required placeholder="请输入用户名、邮箱或 ID">
+                        </div>
+                    </div>
 
-                <label class="auth-label" for="name">昵称</label>
-                <input class="auth-input" id="name" type="text" name="name" required placeholder="请输入昵称">
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="password">密码</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">lock</span>
+                            <input class="input auth-input" id="password" type="password" name="password" required placeholder="请输入密码">
+                        </div>
+                    </div>
 
-                <label class="auth-label" for="email">邮箱</label>
-                <input class="auth-input" id="email" type="email" name="email" required placeholder="请输入邮箱">
+                    <div class="auth-links auth-links--split auth-links--actions">
+                        <label class="auth-remember">
+                            <input class="auth-checkbox-input" type="checkbox">
+                            <span class="auth-checkbox"></span>
+                            <span>记住我</span>
+                        </label>
+                        <a class="auth-link" href="index.php?page=forgot_password">忘记密码？</a>
+                    </div>
 
-                <label class="auth-label" for="register_password">密码</label>
-                <input class="auth-input" id="register_password" type="password" name="password" required placeholder="请输入密码">
+                    <button class="btn-primary auth-btn auth-submit" type="submit">立即登录</button>
 
-                <button class="auth-btn" type="submit">注册</button>
+                    <div class="auth-links auth-links--center">
+                        <span>还没有账号？<a class="auth-link" href="index.php?page=auth&action=register">立即注册</a></span>
+                    </div>
+                </form>
+            <?php else: ?>
+                <form method="post" action="index.php?page=auth&action=register" class="auth-form">
+                    <?php echo csrf_field(); ?>
 
-                <div class="auth-links">
-                    <span>已有账号？<a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
-                </div>
-            </form>
-        <?php endif; ?>
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="username">用户名</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">person</span>
+                            <input class="input auth-input" id="username" type="text" name="username" required placeholder="请输入用户名">
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="name">昵称</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">badge</span>
+                            <input class="input auth-input" id="name" type="text" name="name" required placeholder="请输入昵称">
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="email">邮箱</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">mail</span>
+                            <input class="input auth-input" id="email" type="email" name="email" required placeholder="请输入邮箱">
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="register_password">密码</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">lock</span>
+                            <input class="input auth-input" id="register_password" type="password" name="password" required placeholder="请输入密码">
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="font-label auth-label" for="register_password_confirm">确认密码</label>
+                        <div class="auth-field-control">
+                            <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">verified_user</span>
+                            <input class="input auth-input" id="register_password_confirm" type="password" name="password_confirm" required placeholder="请再次输入密码">
+                        </div>
+                    </div>
+
+                    <button class="btn-primary auth-btn auth-submit" type="submit">注册账号</button>
+
+                    <div class="auth-links auth-links--center">
+                        <span>已有账号？<a class="auth-link" href="index.php?page=auth&action=login">返回登录</a></span>
+                    </div>
+                </form>
+            <?php endif; ?>
+
+            <footer class="auth-footer">
+                <p class="auth-privacy">我们尊重并保护你的隐私，账户信息仅用于订单与服务流程。</p>
+            </footer>
+        </div>
     </section>
 </main>
 
