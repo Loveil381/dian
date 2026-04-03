@@ -32,7 +32,7 @@ $skuCount = count($skus);
             </div>
         </div>
 
-        <form method="post" class="admin-products-form">
+        <form method="post" enctype="multipart/form-data" class="admin-products-form">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
             <input type="hidden" name="admin_action" value="save_product">
