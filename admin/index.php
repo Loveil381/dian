@@ -8,6 +8,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
 
 require_once __DIR__ . '/../data/products.php';
 require_once __DIR__ . '/../includes/pagination.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
