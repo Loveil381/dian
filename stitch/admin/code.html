@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', 'PingFang SC', sans-serif;
+            background-color: #f6f7fb;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#dfdbe8",
+                      "on-surface": "#2f2e35",
+                      "outline": "#78757e",
+                      "surface-container": "#ebe6f2",
+                      "on-tertiary": "#ecf3ff",
+                      "on-background": "#2f2e35",
+                      "on-tertiary-fixed": "#002949",
+                      "inverse-surface": "#0e0d14",
+                      "primary-dim": "#5e26c7",
+                      "secondary": "#87456c",
+                      "surface-container-low": "#f4effa",
+                      "on-secondary-fixed": "#581e43",
+                      "surface-bright": "#faf5ff",
+                      "secondary-fixed": "#ffbfe0",
+                      "on-tertiary-container": "#003f6a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#510017",
+                      "tertiary-dim": "#165284",
+                      "secondary-fixed-dim": "#fdabd7",
+                      "error-container": "#f74b6d",
+                      "tertiary-fixed-dim": "#85b7ee",
+                      "primary": "#6a37d4",
+                      "primary-fixed": "#ae8dff",
+                      "surface-dim": "#d7d2e0",
+                      "tertiary-container": "#93c5fd",
+                      "surface": "#faf5ff",
+                      "surface-container-high": "#e5e0ed",
+                      "on-primary-container": "#2b006e",
+                      "inverse-primary": "#a078ff",
+                      "surface-tint": "#6a37d4",
+                      "on-secondary": "#ffeef4",
+                      "error-dim": "#a70138",
+                      "primary-container": "#ae8dff",
+                      "on-secondary-container": "#6f3257",
+                      "on-primary-fixed-variant": "#370086",
+                      "background": "#faf5ff",
+                      "surface-variant": "#dfdbe8",
+                      "on-surface-variant": "#5d5a62",
+                      "on-primary": "#f8f0ff",
+                      "on-secondary-fixed-variant": "#7a3b61",
+                      "primary-fixed-dim": "#a27cff",
+                      "on-tertiary-fixed-variant": "#004878",
+                      "inverse-on-surface": "#9f9ba4",
+                      "tertiary": "#275e90",
+                      "error": "#b41340",
+                      "secondary-container": "#ffbfe0",
+                      "secondary-dim": "#793a60",
+                      "tertiary-fixed": "#93c5fd",
+                      "on-primary-fixed": "#000000",
+                      "outline-variant": "#afabb5",
+                      "on-error": "#ffefef"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Be Vietnam Pro"],
+                      "label": ["Be Vietnam Pro"]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="min-h-screen text-on-surface">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-6 h-16 bg-white/70 backdrop-blur-md z-40 shadow-[0_12px_40px_rgba(106,55,212,0.08)]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-violet-700 font-headline">魔女小店 / 管理后台</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden md:block">
+<input class="bg-surface-container-low border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="搜索库存项目..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-400" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-violet-50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-violet-50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-white">
+<img alt="Administrator Avatar" data-alt="close up profile photo of a professional administrative user avatar icon in a soft minimalist style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDf9dIO0DgEG3KzjxKKypG5gXvUssVlYL2xdUMcrx4JRBPDShNAhNq8qgPzR6aZeehsqg0JJCg7LTYWXmqSfaMtOR5tmPThGqffSoW1q7HXfhA8SF05kDYc7fh7Akb2cPbYnVnICehKvNnfFQwFNBElQ-MfLLmP550diwip5LnXAe5BMBljaTLOnK8SsnuR5huB2CaXyXg68HWuhwSqvNN3tJm1_qNS67lD78yl6d8-LB_yKPFCcpy7vgIDjpnmyjjLDTK03nOVAYE"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-50 bg-[#1e1b4b] flex flex-col py-6 space-y-2 shadow-2xl">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary" data-icon="auto_fix_high" style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+</div>
+<div>
+<h1 class="text-white text-lg font-bold leading-tight">魔女小店</h1>
+<p class="text-slate-400 text-xs tracking-widest uppercase">Admin Console</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="dashboard">dashboard</span>
+<span class="font-medium">首页看板 Dashboard</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="inventory_2">inventory_2</span>
+<span class="font-medium">商品维护 Products</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="category">category</span>
+<span class="font-medium">分类管理 Categories</span>
+</a>
+<!-- Active Tab -->
+<a class="bg-violet-600 text-white rounded-xl mx-2 flex items-center px-4 py-3 shadow-[0_0_15px_rgba(139,92,246,0.4)]" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="layers" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-medium">库存管理 Inventory</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-medium">订单管理 Orders</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="group">group</span>
+<span class="font-medium">用户管理 Users</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="payments">payments</span>
+<span class="font-medium">支付管理 Payments</span>
+</a>
+<a class="text-slate-300 hover:bg-white/10 rounded-xl mx-2 flex items-center px-4 py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 group-hover:translate-x-1 transition-transform" data-icon="analytics">analytics</span>
+<span class="font-medium">系统状态 Status</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+<p class="text-xs text-slate-400 mb-2">当前存储空间</p>
+<div class="w-full bg-white/10 h-1.5 rounded-full mb-2">
+<div class="bg-primary-container h-1.5 rounded-full w-3/4"></div>
+</div>
+<p class="text-[10px] text-white/60">已使用 75% - 1.2TB / 1.6TB</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 space-y-8">
+<!-- Section 1: Low Stock Dashboard -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<h2 class="text-2xl font-bold font-headline text-on-surface">缺货看板</h2>
+<span class="bg-error-container text-on-error-container text-xs font-bold px-2.5 py-0.5 rounded-full border border-error/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                        4 个告急项目
+                    </span>
+</div>
+<button class="text-primary font-semibold text-sm hover:underline">查看全部告急</button>
+</div>
+<!-- Low Stock Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Low Stock Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_12px_40px_rgba(106,55,212,0.08)] flex flex-col justify-between border-l-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<div class="space-y-1">
+<h3 class="font-bold text-on-surface">星尘眼影 - 月光银</h3>
+<p class="text-xs text-slate-400">分类: 魔法彩妆</p>
+</div>
+<span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-medium">#SKU-001</span>
+</div>
+<div class="flex items-end justify-between">
+<div class="space-y-1">
+<p class="text-xs text-secondary font-medium">剩余库存</p>
+<p class="text-2xl font-bold text-error">12 <span class="text-sm font-normal">件</span></p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-400">本月销量: 482</p>
+<p class="text-[10px] text-primary bg-primary-container/20 px-1.5 py-0.5 rounded mt-1">销量排行: 03</p>
+</div>
+</div>
+</div>
+<!-- Low Stock Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_12px_40px_rgba(106,55,212,0.08)] flex flex-col justify-between border-l-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<div class="space-y-1">
+<h3 class="font-bold text-on-surface">复愈药水 (大)</h3>
+<p class="text-xs text-slate-400">分类: 治愈魔药</p>
+</div>
+<span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-medium">#SKU-204</span>
+</div>
+<div class="flex items-end justify-between">
+<div class="space-y-1">
+<p class="text-xs text-secondary font-medium">剩余库存</p>
+<p class="text-2xl font-bold text-error">28 <span class="text-sm font-normal">件</span></p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-400">本月销量: 125</p>
+<p class="text-[10px] text-primary bg-primary-container/20 px-1.5 py-0.5 rounded mt-1">销量排行: 12</p>
+</div>
+</div>
+</div>
+<!-- Low Stock Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_12px_40px_rgba(106,55,212,0.08)] flex flex-col justify-between border-l-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<div class="space-y-1">
+<h3 class="font-bold text-on-surface">薰衣草梦境香薰</h3>
+<p class="text-xs text-slate-400">分类: 居家治愈</p>
+</div>
+<span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-medium">#SKU-112</span>
+</div>
+<div class="flex items-end justify-between">
+<div class="space-y-1">
+<p class="text-xs text-secondary font-medium">剩余库存</p>
+<p class="text-2xl font-bold text-error">5 <span class="text-sm font-normal">件</span></p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-400">本月销量: 890</p>
+<p class="text-[10px] text-primary bg-primary-container/20 px-1.5 py-0.5 rounded mt-1">销量排行: 01</p>
+</div>
+</div>
+</div>
+<!-- Empty State (Conditional Mockup) -->
+<div class="hidden">
+<div class="col-span-full bg-white/50 border-2 border-dashed border-slate-200 rounded-lg p-10 flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="check_circle">check_circle</span>
+<p class="text-sm">一切良好，暂无商品库存告急。</p>
+</div>
+</div>
+<!-- Action Card -->
+<div class="bg-primary/5 border border-primary/10 p-5 rounded-lg flex flex-col items-center justify-center text-center space-y-3 group cursor-pointer hover:bg-primary/10 transition-colors">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="add_business">add_business</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">补货单录入</p>
+<p class="text-[10px] text-primary/60">快速生成供应商采购申请</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Inventory Management -->
+<section class="bg-white rounded-[12px] shadow-[0_12px_40px_rgba(106,55,212,0.08)] overflow-hidden">
+<div class="p-6 border-b border-slate-50 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold font-headline">库存管理</h2>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low text-primary rounded-full text-xs font-semibold">
+<span class="material-symbols-outlined text-[16px]" data-icon="inventory">inventory</span>
+                        总库存项目: 2,481
+                    </div>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="file_download">file_download</span>
+                        导出报表
+                    </button>
+</div>
+</div>
+<!-- Form Area -->
+<div class="p-6 bg-slate-50/50">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 ml-1">商品名称</label>
+<input class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary shadow-sm" placeholder="输入商品名..." type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 ml-1">商品分类</label>
+<select class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary shadow-sm appearance-none">
+<option>魔法彩妆</option>
+<option>治愈魔药</option>
+<option>法杖周边</option>
+<option>居家治愈</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 ml-1">库存数量</label>
+<input class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary shadow-sm" placeholder="0" type="number"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 ml-1">价格 (Mona)</label>
+<input class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary shadow-sm" placeholder="0.00" type="number"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 ml-1">状态</label>
+<select class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary shadow-sm">
+<option>正常销售</option>
+<option>下架维护</option>
+<option>预售中</option>
+</select>
+</div>
+<div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-primary/30 transition-all flex items-center justify-center gap-2 active:scale-95" type="submit">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+                            入库商品 / 保存
+                        </button>
+</div>
+</form>
+</div>
+<!-- Table Area -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-slate-50">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">商品号与名称</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">分类</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">库存基数</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">累销</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">价格</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Product Thumbnail" data-alt="close up aesthetic product shot of a magic lipstick with golden celestial engravings and soft purple lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6ZaRUKC3LTgxs5ykaHKbmPVbl_q1G_gr_WT7598SYBAkBfUMQz49djNIlGvx7LHTf-9rpzviopAaDEr6996-RFKKhfM1V0fAu1KKyidBafldox7BHQjd0Ld5ed6gWhJvIcWEPOF4ZMJJNL0bARyCRZ-MVwdc6zV6Vb64gmbC7yv_CUOgOm51cFwco1joMnJIbPlUU3RBXav8apofYRUwUk-4G7kpZKHzzUeU8JzSlC7MAJ4-Bs9RkXYMnbLV9SRQZep64lYLZPQc"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">#SKU-001 星尘眼影 - 月光银</div>
+<div class="text-[10px] text-slate-400">上次入库: 2023.10.24</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-violet-50 text-violet-700 px-3 py-1 rounded-full text-xs font-medium">魔法彩妆</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-error font-bold text-lg">12</span>
+<span class="text-xs text-slate-400 ml-1">件</span>
+</td>
+<td class="px-6 py-5">
+<div class="text-on-surface font-medium">4,281</div>
+<div class="text-[10px] text-emerald-500 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]" data-icon="trending_up">trending_up</span>
+                                    12% 环比增长
+                                </div>
+</td>
+<td class="px-6 py-5 font-bold text-on-surface">128.00 M</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete_sweep">delete_sweep</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Product Thumbnail" data-alt="minimalist aesthetic photo of a small blue potion bottle with a white label on a clean marble surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASqi-JstD0xKX7URlhE3I3rTJncxdhZfGk_SC4gFrdO_9GQHLwubbTiGpPN12-Q4Pl0_u09ZBDjercqua05qTAa9nauU9wVTkK5YWcjOnuZNEC7xaEjkG0vPwpTw-bkiux1dxhwuvYpfTR_vy7t40PtzswUbuDLSYT6raVMudPkkO8BEO0f53wR_ZdTDPoAt0ZzeROHP68HVYZYvBhc3vdn6TBeDexYI5Cc6UR6zARKYCj9gjKGVKLEzy2CgLSk_UqtJ7LPi43B_g"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">#SKU-205 暗夜净化洗发水</div>
+<div class="text-[10px] text-slate-400">上次入库: 2023.10.20</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">治愈魔药</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-on-surface font-bold text-lg">1,240</span>
+<span class="text-xs text-slate-400 ml-1">件</span>
+</td>
+<td class="px-6 py-5">
+<div class="text-on-surface font-medium">890</div>
+<div class="text-[10px] text-slate-400 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]" data-icon="trending_flat">trending_flat</span>
+                                    持平
+                                </div>
+</td>
+<td class="px-6 py-5 font-bold text-on-surface">85.00 M</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete_sweep">delete_sweep</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Product Thumbnail" data-alt="elegant purple scented candle with a subtle flame in a dark cozy room setting with bokeh lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZT7Kpe0ESy2j-74m634aLAmRGmDlATAfXxQS25sMM_ubDo8M4_upIpYNCJ9XxaP9jlvQyctRRrQm1-0Nil0upcNL54nB2XZJ0sT1z1aAaWyCp5WQyB4jBlC5z9w1J48neQg8UYu9gekaRitT-ZO9sIPK4K53Ki6EPmVH5gfL9ErAv6q-To0sUUVGlmF0R9nP6CG5JSDdFDtISFJ7gVIUr6XlKqdRUYsTpIfYvejPu7JrknbHnU1dJHU81YBKFt-1wAO8KECfOvxI"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">#SKU-112 薰衣草梦境香薰</div>
+<div class="text-[10px] text-slate-400">上次入库: 2023.10.15</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-pink-50 text-pink-700 px-3 py-1 rounded-full text-xs font-medium">居家治愈</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-error font-bold text-lg">5</span>
+<span class="text-xs text-slate-400 ml-1">件</span>
+</td>
+<td class="px-6 py-5">
+<div class="text-on-surface font-medium">3,120</div>
+<div class="text-[10px] text-emerald-500 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]" data-icon="trending_up">trending_up</span>
+                                    24% 环比增长
+                                </div>
+</td>
+<td class="px-6 py-5 font-bold text-on-surface">59.00 M</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete_sweep">delete_sweep</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Shell -->
+<div class="p-6 border-t border-slate-50 flex items-center justify-between">
+<p class="text-sm text-slate-400">显示 1 到 10 条，共 2,481 条记录</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold shadow-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 transition-all font-bold">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 transition-all font-bold">3</button>
+<span class="px-2 text-slate-400">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 transition-all font-bold">248</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary to-primary-dim text-white rounded-full shadow-[0_8px_30px_rgba(106,55,212,0.4)] flex items-center justify-center group hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[28px]" data-icon="print">print</span>
+<!-- Tooltip Label -->
+<span class="absolute right-16 bg-on-surface text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            打印当前库存单
+        </span>
+</button>
+</body></html>

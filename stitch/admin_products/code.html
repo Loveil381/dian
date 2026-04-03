@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#002949",
+                        "on-surface": "#2f2e35",
+                        "on-error-container": "#510017",
+                        "on-background": "#2f2e35",
+                        "tertiary-container": "#93c5fd",
+                        "on-tertiary-container": "#003f6a",
+                        "tertiary-fixed": "#93c5fd",
+                        "primary-dim": "#5e26c7",
+                        "background": "#faf5ff",
+                        "surface-container": "#ebe6f2",
+                        "primary-fixed-dim": "#a27cff",
+                        "on-secondary": "#ffeef4",
+                        "secondary-container": "#ffbfe0",
+                        "inverse-on-surface": "#9f9ba4",
+                        "on-primary-container": "#2b006e",
+                        "on-primary-fixed-variant": "#370086",
+                        "secondary-dim": "#793a60",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#fdabd7",
+                        "surface-variant": "#dfdbe8",
+                        "on-error": "#ffefef",
+                        "surface": "#faf5ff",
+                        "tertiary-dim": "#165284",
+                        "error": "#b41340",
+                        "secondary-fixed": "#ffbfe0",
+                        "outline-variant": "#afabb5",
+                        "surface-tint": "#6a37d4",
+                        "error-container": "#f74b6d",
+                        "primary-fixed": "#ae8dff",
+                        "tertiary": "#275e90",
+                        "surface-container-highest": "#dfdbe8",
+                        "primary-fixed": "#ae8dff",
+                        "tertiary": "#275e90",
+                        "on-surface-variant": "#5d5a62",
+                        "surface-container-low": "#f4effa",
+                        "error-dim": "#a70138",
+                        "outline": "#78757e",
+                        "on-secondary-fixed": "#581e43",
+                        "on-primary-fixed": "#000000",
+                        "secondary": "#87456c",
+                        "inverse-primary": "#a078ff",
+                        "on-tertiary-fixed-variant": "#004878",
+                        "on-secondary-fixed-variant": "#7a3b61",
+                        "surface-container-high": "#e5e0ed",
+                        "surface-bright": "#faf5ff",
+                        "on-primary": "#f8f0ff",
+                        "inverse-surface": "#0e0d14",
+                        "surface-dim": "#d7d2e0",
+                        "primary": "#6a37d4",
+                        "on-secondary-container": "#6f3257",
+                        "tertiary-fixed-dim": "#85b7ee",
+                        "on-tertiary": "#ecf3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', 'PingFang SC', sans-serif;
+            background-color: #faf5ff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dfdbe8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar -->
+<aside class="bg-purple-950 dark:bg-slate-950 h-screen w-64 fixed left-0 top-0 z-50 shadow-xl shadow-purple-900/20 flex flex-col h-full py-6 font-['Plus_Jakarta_Sans','PingFang_SC'] text-sm tracking-wide">
+<div class="px-6 mb-8">
+<h1 class="text-2xl font-bold text-white tracking-widest mb-1">魔女小店</h1>
+<p class="text-purple-300/60 text-xs uppercase tracking-tighter">系统管理后台</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-purple-200/70 hover:text-white mx-2 hover:bg-purple-800/30 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>总览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-purple-800/50 text-white rounded-xl mx-2 scale-95 active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>商品管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-purple-200/70 hover:text-white mx-2 hover:bg-purple-800/30 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>业务管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-purple-200/70 hover:text-white mx-2 hover:bg-purple-800/30 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>系统设置</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary-container text-on-primary-container py-3 rounded-full font-bold flex items-center justify-center gap-2 mb-6 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>添加新商品</span>
+</button>
+<div class="pt-6 border-t border-white/10">
+<a class="flex items-center gap-3 px-4 py-3 text-purple-200/70 hover:text-white mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>退出登录</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="sticky top-0 right-0 w-[calc(100%-16rem)] ml-64 bg-white/70 backdrop-blur-md z-40 flex justify-between items-center px-8 py-4 w-full shadow-sm shadow-purple-500/5 font-['Plus_Jakarta_Sans','PingFang_SC'] font-medium">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-purple-900">魔女小店 Admin</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<nav class="flex gap-6">
+<a class="text-purple-700 font-bold border-b-2 border-purple-500 cursor-pointer" href="#">商品列表</a>
+<a class="text-slate-500 hover:text-purple-500 transition-colors cursor-pointer" href="#">库存分析</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center bg-surface-container-low px-4 py-2 rounded-full w-64">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full ml-2" placeholder="搜索商品名称..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-outline">
+<button class="hover:text-primary transition-colors cursor-pointer relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img alt="Administrator" class="w-full h-full object-cover" data-alt="professional portrait of a confident asian businesswoman in modern office attire with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtw4oBJBUs5dD00lbGuUQKACE8ceUOkROAT34abgcZ5olDsIJClaQ6C2hqEALKbTUUNmtx6x8UbvejlbUzUfV10cOboMUnjqOw0O5VwWpwF3ZqgNoSbYlDLNwzMzKmebbzVPAQGzfmTXry1t8xEqVHg4J_aeq7OQQ5HTpuL2CzqNu3z5w07qhSvGB0eK8O4NdVu6CJwY6u7lTdyJQ7N9Q6AqCwUcwklwQz1IRYlbBcJ2Wn5gvXNWCf0puNOpF3dhA6VM2HeAlY35c"/>
+</div>
+</div>
+</div>
+</header>
+<main class="ml-64 p-8 space-y-8 max-w-7xl mx-auto">
+<!-- Panel 1: 编辑商品 -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-6 border-b border-surface-container flex justify-between items-center bg-surface-container-low/30">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold text-on-surface">编辑商品</h2>
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20 flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        Active
+                    </span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-outline-variant text-outline rounded-full text-sm font-medium hover:bg-surface-container transition-colors">取消编辑</button>
+<button class="px-6 py-2 bg-gradient-to-r from-primary to-primary-fixed text-white rounded-full text-sm font-bold shadow-md shadow-primary/20 hover:opacity-90 transition-opacity">保存修改</button>
+</div>
+</div>
+<div class="p-8">
+<form class="grid grid-cols-12 gap-8">
+<!-- Basic Info -->
+<div class="col-span-12 space-y-6">
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品名称</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all" type="text" value="月光精粹草本修护精华液"/>
+</div>
+<div class="col-span-3">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品分类</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all appearance-none">
+<option>面部护肤</option>
+<option>身体护理</option>
+<option>魔力药水</option>
+</select>
+</div>
+<div class="col-span-3">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品状态</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all">
+<option>上架</option>
+<option>下架</option>
+</select>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">销量</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all" type="number" value="1284"/>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">价格 (¥)</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all" type="text" value="298.00"/>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">库存</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all" type="number" value="85"/>
+</div>
+<div class="col-span-6 grid grid-cols-4 gap-4">
+<div class="col-span-4">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">标签</label>
+</div>
+<input class="bg-surface-container-low border-none rounded-xl px-3 py-2 text-sm" type="text" value="天然无添加"/>
+<input class="bg-surface-container-low border-none rounded-xl px-3 py-2 text-sm" type="text" value="魔女推荐"/>
+<input class="bg-surface-container-low border-none rounded-xl px-3 py-2 text-sm" type="text" value="夜间修复"/>
+<input class="bg-surface-container-low border-dashed border-2 border-outline-variant/30 rounded-xl px-3 py-2 text-sm text-center" placeholder="+添加" type="text"/>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">首页排序</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3" type="number" value="1"/>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品页排序</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3" type="number" value="5"/>
+</div>
+<div class="col-span-2">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">发布时间</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm" type="date" value="2023-11-24"/>
+</div>
+</div>
+<!-- SKU Section -->
+<div class="bg-surface-container-low/50 rounded-2xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="layers">layers</span>
+                                    规格设置 (SKU)
+                                </h3>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:underline" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="add_circle">add_circle</span>
+                                    添加规格
+                                </button>
+</div>
+<div class="space-y-3">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" placeholder="规格名称" type="text" value="30ml 标准装"/></div>
+<div class="col-span-3"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" placeholder="库存" type="number" value="50"/></div>
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" placeholder="价格" type="text" value="298.00"/></div>
+<div class="col-span-1 text-center"><button class="text-error-dim hover:text-error" type="button"><span class="material-symbols-outlined" data-icon="delete">delete</span></button></div>
+</div>
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="text" value="50ml 家庭装"/></div>
+<div class="col-span-3"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="number" value="25"/></div>
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="text" value="458.00"/></div>
+<div class="col-span-1 text-center"><button class="text-error-dim hover:text-error" type="button"><span class="material-symbols-outlined" data-icon="delete">delete</span></button></div>
+</div>
+<div class="grid grid-cols-12 gap-4 items-center opacity-60">
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="text" value="10ml 旅行装"/></div>
+<div class="col-span-3"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="number" value="10"/></div>
+<div class="col-span-4"><input class="w-full bg-white border-none rounded-lg px-4 py-2 text-sm" type="text" value="128.00"/></div>
+<div class="col-span-1 text-center"><button class="text-error-dim hover:text-error" type="button"><span class="material-symbols-outlined" data-icon="delete">delete</span></button></div>
+</div>
+</div>
+</div>
+<!-- Media Section -->
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-7">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品多图</label>
+<div class="bg-surface-container-low rounded-2xl p-4">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-sm mb-4 min-h-[80px] custom-scrollbar" placeholder="图片URL，每行一个...">https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&amp;fit=crop&amp;q=80&amp;w=800
+https://images.unsplash.com/photo-1594465919760-441fe5908ab0?auto=format&amp;fit=crop&amp;q=80&amp;w=800</textarea>
+<div class="flex gap-3">
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-white relative group">
+<img alt="product view 1" class="w-full h-full object-cover" data-alt="aesthetic glass bottle of purple herbal elixir with gold cap on reflective surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDieopWL3eQPLiBtH7Ij-JhbTX0pPM7BRBiH_W8fTG3PqbxkhJg6eSJ0pp0dDErP5r_eHgTn-PY3jHIA0pVcrh2HTAONew-5UQjMl9GdbWV3iEylJDXy3n8doyuLHjDlQiu0qTpxG6LseMQ6VjE1_3uKrYorMUuDxoAkf-Og-7dQy5QbWNF_X07hAXsSuegx2QMezuqxfae7Z1uLnJpWkGBy4uNtnvuhmF0pN-XMNJJS7sj5RKOPxcxqbOwuqgOT-KC5hbo7L1c264"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"><span class="material-symbols-outlined text-white text-sm" data-icon="close">close</span></div>
+</div>
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-white relative group">
+<img alt="product view 2" class="w-full h-full object-cover" data-alt="close up of serum droplets and lavender sprigs on a minimalist purple background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKvkoV4pHZIIP5qG1I02L9UtAaasZg-USOAvVldDXT6FOCns32jHjW-NcshWjP-OflbxXUAIgKLllSe53aDR402yBSXKBC2cDMe_xsJ1e6F5yyL67JkFu_WBLpRfYrQWAwLqi4v5xWApEByfxQ0ejCOq9tFTuBKxvNX5mx5MAAIkAx0FBwVj9OB3wwbAL_L9IL2kfpGrcuX2HUjZEIOCPsC6GWpqgRvHGm2LnMLC_IonYCnHO8n6p8IpHWX8ngY2qQE6irMA6IAlc"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"><span class="material-symbols-outlined text-white text-sm" data-icon="close">close</span></div>
+</div>
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-white bg-white/50 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+</div>
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-white bg-white/50 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+</div>
+<button class="w-16 h-16 rounded-xl border-2 border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-primary hover:bg-white/50 transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="upload">upload</span>
+<span class="text-[10px] font-bold">上传</span>
+</button>
+</div>
+</div>
+</div>
+<div class="col-span-5">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">封面图片</label>
+<div class="flex gap-4">
+<div class="w-32 h-32 rounded-2xl overflow-hidden shadow-sm bg-surface-container-low">
+<img alt="Cover" class="w-full h-full object-cover" data-alt="luxurious product shot of a skincare bottle with dreamy bokeh and lavender petals" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnTdG1Zwqxws6timvf0l69bEr1UatSLpcNE80nKHECkjue5O0pAotNRwE_H0IdpAT7a6axiGvJ2ulJcpziog9la0E2IPxj-xUUQOKxjq1MB7Mn5SHfAoJNXDvgxXM3-UUEUb8PNEtJPqNxjfcHtib0u1vpCZlg3UJFmktGv7dxFFyyAG-ZMTl4XI9yav-JmX6W8t3dYIOP5jseMAj6vU1CjcUBL_dBCKXq-ka5BMeSQv4XOz7E_fsfb1dWXxdUh7pcwM0KCTGk_kM"/>
+</div>
+<div class="flex-1 space-y-3">
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-2 text-xs" type="text" value="https://example.com/cover.jpg"/>
+<button class="w-full py-2 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold hover:opacity-90" type="button">更换封面</button>
+<p class="text-[10px] text-outline italic">推荐比例 1:1, 建议尺寸 800x800 px</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12">
+<label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2">商品描述</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-2xl px-6 py-4 focus:bg-white focus:ring-2 focus:ring-primary-fixed/30 transition-all custom-scrollbar" rows="4">萃取自高山薰衣草与月见草精华，结合魔女秘制平衡配方，专为熬夜倦容设计。深度修护受损屏障，让肌肤在睡梦中重焕光彩...</textarea>
+</div>
+</div>
+</form>
+</div>
+</section>
+<!-- Panel 2: 商品列表 -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm">
+<!-- Filter Bar -->
+<div class="p-6 bg-surface-container-low/30 border-b border-surface-container flex justify-between items-center">
+<div class="flex items-center gap-6">
+<h2 class="text-xl font-bold text-on-surface">商品列表</h2>
+<div class="flex items-center gap-3">
+<select class="bg-white border-none rounded-full px-4 py-2 text-sm text-outline shadow-sm focus:ring-1 focus:ring-primary">
+<option>所有分类</option>
+<option>面部护肤</option>
+<option>身体护理</option>
+</select>
+<select class="bg-white border-none rounded-full px-4 py-2 text-sm text-outline shadow-sm focus:ring-1 focus:ring-primary">
+<option>所有状态</option>
+<option>上架</option>
+<option>下架</option>
+</select>
+<button class="bg-primary text-white px-6 py-2 rounded-full text-sm font-bold shadow-md shadow-primary/10 hover:opacity-90">应用筛选</button>
+</div>
+</div>
+<div class="text-sm text-outline">
+                    共 <span class="font-bold text-on-surface">128</span> 件商品
+                </div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-6 py-4 w-12"><input class="rounded text-primary focus:ring-primary" type="checkbox"/></th>
+<th class="px-6 py-4 text-xs font-bold text-outline uppercase tracking-widest">商品</th>
+<th class="px-6 py-4 text-xs font-bold text-outline uppercase tracking-widest">分类/状态</th>
+<th class="px-6 py-4 text-xs font-bold text-outline uppercase tracking-widest">销量/库存</th>
+<th class="px-6 py-4 text-xs font-bold text-outline uppercase tracking-widest">排序 (首页/详情)</th>
+<th class="px-6 py-4 text-xs font-bold text-outline uppercase tracking-widest text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-5"><input class="rounded text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Prod" class="w-full h-full object-cover" data-alt="aesthetic product shot of a skincare bottle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL4qFaWqLCmv9C66krbXSe2_YxjnH9Npyr5w31RfePaMOQApHu_O-wQEqHPmm-yT0Pk_3Caulskkg4Plj_4-1Lu1s_yoLswlKEj6ixrlCeOLMiv3UBrf_kUnYCSojQ6xE0V3PAenX4QfeYUA5aYT0d21N1Xowr2PlsX4PKIZtt8HMGVB2oeUXG__xONsfcto-O9JeAEtR_vh8rPTnRb2OEB_GlrQorgcihVMdRz8i3mS2ohJXJqeSziDU4a7kua-5m8UwKVOMWiLs"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-sm">月光精粹草本修护精华液</p>
+<p class="text-xs text-outline italic">¥298.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="space-y-1">
+<span class="text-xs px-2 py-0.5 bg-tertiary-container text-on-tertiary-container rounded">面部护肤</span>
+<div><span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">已上架</span></div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-xs">
+<p><span class="text-outline">销量:</span> <span class="font-bold">1284</span></p>
+<p><span class="text-outline">库存:</span> <span class="font-bold text-error-dim">85</span></p>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex gap-2">
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="1"/>
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="5"/>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-primary/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-error-dim hover:bg-error/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-5"><input class="rounded text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Prod" class="w-full h-full object-cover" data-alt="minimalist white cream jar with pink label on pastel purple surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj7DZ4wd6vyWyznfTgTCC8-D3cUMGWhfV-qzrX_WofG9WA1bQ_HvutjGLaJzNhNE36et9SpgyyEp_LLCFJw8jQnn8QonZDi1K5l9mohsAjT9vyfFLW6twbPruLO5IzMIC41UP2lZkLBrGM6Uo4QI5ZlcJXsLvLApYgpl3f8E33r23BgKQwVidNXf2vddbUr3x5DCYk0R3kkY_qK_SHOR3Ns9cisMzWA8I-1TrbKZsoDMFt5zMEeMym1arjrPg0yIzw1NAwjRPKZ08"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-sm">星空玫瑰舒缓面膜</p>
+<p class="text-xs text-outline italic">¥189.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="space-y-1">
+<span class="text-xs px-2 py-0.5 bg-tertiary-container text-on-tertiary-container rounded">面部护肤</span>
+<div><span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">已上架</span></div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-xs">
+<p><span class="text-outline">销量:</span> <span class="font-bold">856</span></p>
+<p><span class="text-outline">库存:</span> <span class="font-bold">320</span></p>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex gap-2">
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="2"/>
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="12"/>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-primary/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-error-dim hover:bg-error/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-5"><input class="rounded text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Prod" class="w-full h-full object-cover" data-alt="set of small colored liquid bottles arranged neatly in a wooden display" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs8GMYwUyEasDYNGyl3bynCEQbVBD_UbYjsmeOkL6__q6E17FOUFF-rfEShKijVjoeFL0WrasYm6cy2ABYjdTEIeU4chXjXel54c72WGNW7SM_QYWvm0kP3juolWTVMVPYnzRklrkQD0xoOvbx0qFXnbfHHtr6f36qTU39jW-w0XiCfXaU9vsl19r-UXf0XQJ-ZBcDATPkNhAQO9Rv-ul_NUMyY4Sx7YbIf-BIUMqRilVdx2mv4PdTj6BCS2qKwaVUpuumob77noE"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-sm">魔女实验室盲盒</p>
+<p class="text-xs text-outline italic">¥99.00</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="space-y-1">
+<span class="text-xs px-2 py-0.5 bg-tertiary-container text-on-tertiary-container rounded">魔力药水</span>
+<div><span class="text-[10px] font-bold text-outline bg-surface-container px-2 py-0.5 rounded-full border border-outline-variant">已下架</span></div>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-xs">
+<p><span class="text-outline">销量:</span> <span class="font-bold">3219</span></p>
+<p><span class="text-outline">库存:</span> <span class="font-bold">0</span></p>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex gap-2">
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="0"/>
+<input class="w-12 bg-surface-container-low border-none rounded px-2 py-1 text-xs text-center" type="number" value="99"/>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-primary/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-error-dim hover:bg-error/10 transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Batch Actions & Pagination -->
+<div class="p-6 bg-surface-container-low/30 flex justify-between items-center rounded-b-xl">
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant text-outline rounded-lg text-xs font-bold hover:bg-white transition-colors">批量上架</button>
+<button class="px-4 py-2 border border-outline-variant text-outline rounded-lg text-xs font-bold hover:bg-white transition-colors">批量下架</button>
+<button class="px-4 py-2 border border-error-dim/30 text-error-dim rounded-lg text-xs font-bold hover:bg-error/5 transition-colors">批量删除</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white text-outline"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white text-xs font-bold text-outline">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white text-xs font-bold text-outline">3</button>
+<span class="text-outline px-2">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white text-xs font-bold text-outline">12</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white text-outline"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB Suppression: Hide FAB on admin/table screens as per mandate -->
+<!-- Shell Visibility: TopNavBar and SideNavBar shown as this is a top-level destination -->
+</body></html>
