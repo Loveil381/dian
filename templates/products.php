@@ -79,16 +79,15 @@ ob_start();
         <div class="products-filter-head">
             <div>
                 <h2 class="products-section-title">筛选商品</h2>
-                <p class="products-section-note">输入关键字或切换分类，帮助你更快找到想看的商品。</p>
-            </div>
-            <div class="products-filter-tags">
-                <span class="badge <?php echo $selected_category !== '' ? 'badge-primary' : ''; ?>"><?php echo $selected_category !== '' ? shop_e($selected_category) : '全部分类'; ?></span>
-                <span class="badge"><?php echo $keyword !== '' ? '关键字：' . shop_e($keyword) : '未输入关键字'; ?></span>
+                <p class="products-section-note">输入关键字或点击分类，快速找到想看的商品。</p>
             </div>
         </div>
 
         <form method="get" action="index.php" class="products-filter-form">
             <input type="hidden" name="page" value="products">
+            <?php if ($selected_category !== ''): ?>
+                <input type="hidden" name="category" value="<?php echo shop_e($selected_category); ?>">
+            <?php endif; ?>
 
             <div class="products-filter-field">
                 <label class="font-label products-filter-label" for="productKeyword">关键字</label>
@@ -98,26 +97,25 @@ ob_start();
                 </div>
             </div>
 
-            <div class="products-filter-field">
-                <label class="font-label products-filter-label" for="productCategory">分类</label>
-                <div class="products-filter-control products-filter-control--select">
-                    <span class="material-symbols-outlined products-filter-icon" aria-hidden="true">tune</span>
-                    <select class="input products-filter-select" id="productCategory" name="category">
-                        <option value="">全部分类</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo shop_e((string) ($category['name'] ?? '')); ?>" <?php echo $selected_category === (string) ($category['name'] ?? '') ? 'selected' : ''; ?>>
-                                <?php echo shop_e((string) ($category['name'] ?? '')); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-
             <div class="products-filter-actions">
-                <button type="submit" class="btn-primary">应用筛选</button>
-                <a href="index.php?page=products" class="btn-ghost">清空条件</a>
+                <button type="submit" class="btn-primary">搜索</button>
+                <a href="index.php?page=products" class="btn-ghost">清空</a>
             </div>
         </form>
+
+        <?php if (!empty($categories)): ?>
+        <nav class="products-cat-pills" aria-label="分类筛选">
+            <a class="products-cat-pill <?php echo $selected_category === '' ? 'products-cat-pill--active' : ''; ?>"
+               href="index.php?page=products<?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">全部</a>
+            <?php foreach ($categories as $category): ?>
+                <?php $cat_name = (string) ($category['name'] ?? ''); ?>
+                <a class="products-cat-pill <?php echo $selected_category === $cat_name ? 'products-cat-pill--active' : ''; ?>"
+                   href="index.php?page=products&category=<?php echo urlencode($cat_name); ?><?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">
+                    <?php echo shop_e($cat_name); ?>
+                </a>
+            <?php endforeach; ?>
+        </nav>
+        <?php endif; ?>
     </section>
 
     <section class="products-results">

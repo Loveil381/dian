@@ -12,6 +12,8 @@ $allProducts = shop_get_products();
 $visibleProducts = shop_filter_products($allProducts, $keyword);
 $sortedProducts = shop_sort_products_for_home($visibleProducts);
 $metrics = shop_product_dashboard_metrics($allProducts);
+$homeCategories = array_slice(shop_get_categories(), 0, 4);
+$homeCatIcons = ['spa', 'medication', 'face_retouching_natural', 'auto_awesome'];
 
 include __DIR__ . '/header.php';
 ?>
@@ -43,6 +45,18 @@ include __DIR__ . '/header.php';
             </div>
         </div>
     </section>
+
+    <?php if (!empty($homeCategories)): ?>
+    <nav class="home-quick-categories" aria-label="品类快捷入口">
+        <?php foreach ($homeCategories as $i => $cat): ?>
+            <a class="home-quick-cat-item"
+               href="index.php?page=products&category=<?php echo urlencode((string) ($cat['name'] ?? '')); ?>">
+                <span class="home-quick-cat-icon home-quick-cat-icon--<?php echo $i % 4; ?> material-symbols-outlined" aria-hidden="true"><?php echo shop_e($homeCatIcons[$i] ?? 'category'); ?></span>
+                <span class="home-quick-cat-label"><?php echo shop_e((string) ($cat['name'] ?? '')); ?></span>
+            </a>
+        <?php endforeach; ?>
+    </nav>
+    <?php endif; ?>
 
     <?php if ($keyword !== ''): ?>
         <div class="home-search-result">
