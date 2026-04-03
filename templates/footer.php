@@ -1,8 +1,19 @@
 <!-- templates/footer.php -->
 <?php $showFooter = $showFooter ?? true; ?>
 
+<style>
+    .site-footer {
+        background: var(--color-surface-container-low);
+        color: var(--color-on-surface-variant);
+        padding: var(--space-lg);
+        padding-bottom: 80px;
+        text-align: center;
+        font-size: var(--text-caption);
+    }
+</style>
+
 <?php if ($showFooter): ?>
-<footer style="padding: 24px; text-align: center; color: #94a3b8; font-size: 14px; margin-top: 40px;">
+<footer class="site-footer">
     &copy; 2026 魔女小店，保留所有权利
 </footer>
 <?php endif; ?>

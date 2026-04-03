@@ -1,0 +1,122 @@
+/* design-tokens.css — 从 Stitch 设计系统提取的设计令牌 */
+/* 禁止在此文件中添加组件样式 */
+/* 最后更新: 2026-04-03 */
+
+:root {
+  /* 品牌主色 */
+  --color-primary: #6a37d4;
+  --color-primary-dim: #5e26c7;
+  --color-primary-container: #ae8dff;
+  --color-primary-fixed: #ae8dff;
+  --color-primary-fixed-dim: #a27cff;
+  --color-on-primary: #f8f0ff;
+  --color-on-primary-container: #2b006e;
+  --color-on-primary-fixed: #000000;
+  --color-on-primary-fixed-variant: #370086;
+  --color-inverse-primary: #a078ff;
+
+  /* 次要色 */
+  --color-secondary: #87456c;
+  --color-secondary-dim: #793a60;
+  --color-secondary-container: #ffbfe0;
+  --color-secondary-fixed: #ffbfe0;
+  --color-secondary-fixed-dim: #fdabd7;
+  --color-on-secondary: #ffeef4;
+  --color-on-secondary-container: #6f3257;
+  --color-on-secondary-fixed: #581e43;
+  --color-on-secondary-fixed-variant: #7a3b61;
+
+  /* 第三色 */
+  --color-tertiary: #275e90;
+  --color-tertiary-dim: #165284;
+  --color-tertiary-container: #93c5fd;
+  --color-tertiary-fixed: #93c5fd;
+  --color-tertiary-fixed-dim: #85b7ee;
+  --color-on-tertiary: #ecf3ff;
+  --color-on-tertiary-container: #003f6a;
+  --color-on-tertiary-fixed: #002949;
+  --color-on-tertiary-fixed-variant: #004878;
+
+  /* 错误色 */
+  --color-error: #b41340;
+  --color-error-dim: #a70138;
+  --color-error-container: #f74b6d;
+  --color-on-error: #ffefef;
+  --color-on-error-container: #510017;
+
+  /* 表面系统 */
+  --color-background: #faf5ff;
+  --color-on-background: #2f2e35;
+  --color-surface: #faf5ff;
+  --color-surface-dim: #d7d2e0;
+  --color-surface-bright: #faf5ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f4effa;
+  --color-surface-container: #ebe6f2;
+  --color-surface-container-high: #e5e0ed;
+  --color-surface-container-highest: #dfdbe8;
+  --color-surface-variant: #dfdbe8;
+  --color-surface-tint: #6a37d4;
+  --color-on-surface: #2f2e35;
+  --color-on-surface-variant: #5d5a62;
+  --color-inverse-surface: #0e0d14;
+  --color-inverse-on-surface: #9f9ba4;
+
+  /* 轮廓 */
+  --color-outline: #78757e;
+  --color-outline-variant: #afabb5;
+
+  /* 功能色 */
+  --color-success: #34d399;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #fbbf24;
+  --color-warning-bg: #fffbeb;
+  --color-info: #60a5fa;
+  --color-info-bg: #eff6ff;
+  --color-price: #f87171;
+
+  /* 圆角 */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
+
+  /* 阴影 */
+  --shadow-sm: 0 2px 8px rgba(139,92,246,0.04);
+  --shadow-md: 0 8px 24px rgba(139,92,246,0.06);
+  --shadow-lg: 0 20px 40px rgba(139,92,246,0.08);
+  --shadow-glow: 0 0 0 3px rgba(139,92,246,0.15);
+  --shadow-ethereal: 0 12px 40px rgba(106,55,212,0.08);
+
+  /* 字体 */
+  --font-headline: 'Plus Jakarta Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Be Vietnam Pro', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-label: 'Be Vietnam Pro', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display: 'LXGW WenKai', 'PingFang SC', sans-serif;
+
+  /* 字号 */
+  --text-display: 2rem;
+  --text-h1: 1.625rem;
+  --text-h2: 1.25rem;
+  --text-body: 0.9375rem;
+  --text-caption: 0.8125rem;
+  --text-badge: 0.75rem;
+
+  /* 间距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* 玻璃效果 */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-blur: blur(20px);
+
+  /* 动效 */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+}
