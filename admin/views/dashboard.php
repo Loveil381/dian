@@ -1,3 +1,7 @@
+<?php
+$homePreview = $homePreview ?? [];
+$pagePreview = $pagePreview ?? [];
+?>
 <div class="admin-dashboard" id="admin-dashboard">
     <section class="card-hero admin-dashboard-hero">
         <div class="admin-dashboard-hero-copy">
