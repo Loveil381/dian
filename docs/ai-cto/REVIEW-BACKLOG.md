@@ -12,13 +12,10 @@
 - Q-19.1 install.php prefix 缺少输入格式校验 -> ✅ 已修复
 - M-10 admin 登录暴力破解保护 -> ✅ 已修复
 - m-4 路由 404 处理 -> ✅ 已修复
-
-## 留待 UI 改版
-
-- M-2 checkout / orders / cart 内联样式待 CSS 类化 -> ⏳ UI 改版时处理
-- M-4 checkout / orders / cart 内联样式待 CSS 类化 -> ⏳ UI 改版时处理
-- M-7 admin 页面内联样式统一 -> ⏳ 后续统一
-- M-8 admin 页面内联样式统一 -> ⏳ 后续统一
+- M-2 checkout / orders / cart 内联样式待 CSS 类化 -> ✅ UI 改版已处理
+- M-4 checkout / orders / cart 内联样式待 CSS 类化 -> ✅ UI 改版已处理
+- M-7 admin 页面内联样式统一 -> ✅ Phase 3 已处理
+- M-8 admin 页面内联样式统一 -> ✅ Phase 3 已处理
 
 ## 部署后执行
 

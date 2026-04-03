@@ -1,10 +1,9 @@
 # AI CTO 状态
 
-> 轮次: Round #28 | 质量分: 9.1/10 | 进度: 代码 100% + UI 改版 Phase 2 完成，Phase 3 准备中
+> 轮次: Round #29 | 质量分: 9.2/10 | 进度: 代码 100% + UI 改版全部完成，交付就绪
 
 ## 活跃分支
-- `improve/stitch-design` — 设计稿（25/25 完成）
-- `feature/ui-overhaul` — UI 改版
+- `feature/ui-overhaul` — UI 改版（Phase 1-3 + 全局润色已完成）
 
 ## 已完成
 - [x] 全部 PHP 功能代码（Round #1-#21）
@@ -27,12 +26,12 @@
 - [x] Fix: auth.php 注册密码确认校验
 - [x] Fix: STATUS.md 同步
 
-## 待办 — Phase 2 剩余前台页面
+## 已完成 — Phase 2 前台页面
 - [x] P9: templates/products.php ← stitch/all_products
 - [x] P10: templates/forgot_password.php ← stitch/forgot_password
 - [x] P11: templates/reset_password.php ← stitch/reset_password
 
-## 待办 — Phase 3 后台页面
+## 已完成 — Phase 3 后台页面
 - [x] Prep: admin.css 承接后台改版样式；AGENTS.md 增补粒度规则；site.css 约 73KB，Phase 3 后台样式禁止继续写入
 - [x] P12: admin/views/layout.php ← stitch/admin_dashboard_panel (导航)
 - [x] P13: admin/views/dashboard.php ← stitch/admin_dashboard_panel
@@ -41,9 +40,17 @@
 - [x] P15: admin/views/inventory.php ← stitch/inventory_management
 - [x] P16: admin/views/products.php ← stitch/product_management
 - [x] P17: admin/views/orders.php ← stitch/order_management
-- [ ] P18: admin/views/users.php ← stitch/user_management
-- [ ] P19: admin/views/payment.php ← stitch/payment_settings
-- [ ] P20: admin/views/settings.php ← stitch/system_settings
+- [x] P18: admin/views/users.php ← stitch/user_management
+- [x] P19: admin/views/payment.php ← stitch/payment_settings
+- [x] P20: admin/views/settings.php ← stitch/system_settings
+
+## 已完成 — Round #29 全局润色
+- [x] 前后台 23 文件文案/标签统一润色
+- [x] admin views 补充 declare(strict_types=1)
+- [x] upload.php CSRF 加固 + finfo MIME 检测
+- [x] admin.js 上传逻辑集中化 + CSRF 集成
+- [x] order_detail.php 5 处 null 合并修复
+- [x] settings.php autocomplete 属性修正
 
 ## 待办 — 部署后
 - [ ] Ops-1: 生产 SMTP 集成
