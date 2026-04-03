@@ -1,6 +1,6 @@
 # AI CTO 状态
 
-> 轮次: Round #25 | 质量分: 9.4/10 | 进度: 代码 100% + UI 改版 Phase 2 完成
+> 轮次: Round #26 | 质量分: 9.5/10 | 进度: 代码 100% + UI 改版 Phase 2 完成，Phase 3 准备中
 
 ## 活跃分支
 - `improve/stitch-design` — 设计稿（25/25 完成）
@@ -22,17 +22,18 @@
 - [x] P7: orders.php 改版
 - [x] P8: order_detail.php 改版
 
-## 进行中 — Round #25 修复
-- [ ] Fix: profile.php inline style → flash 组件类
-- [ ] Fix: auth.php 注册密码确认校验
-- [ ] Fix: STATUS.md 同步
+## 已完成 — Round #25 修复
+- [x] Fix: profile.php inline style → flash 组件类
+- [x] Fix: auth.php 注册密码确认校验
+- [x] Fix: STATUS.md 同步
 
 ## 待办 — Phase 2 剩余前台页面
-- [ ] P9: templates/products.php ← stitch/all_products
-- [ ] P10: templates/forgot_password.php ← stitch/forgot_password
-- [ ] P11: templates/reset_password.php ← stitch/reset_password
+- [x] P9: templates/products.php ← stitch/all_products
+- [x] P10: templates/forgot_password.php ← stitch/forgot_password
+- [x] P11: templates/reset_password.php ← stitch/reset_password
 
 ## 待办 — Phase 3 后台页面
+- [ ] Prep: admin.css 承接后台改版样式；AGENTS.md 增补粒度规则；site.css 约 73KB，Phase 3 后台样式禁止继续写入
 - [ ] P12: admin/views/layout.php ← stitch/admin_dashboard_panel (导航)
 - [ ] P13: admin/views/dashboard.php ← stitch/admin_dashboard_panel
 - [ ] P14: admin/views/categories.php ← stitch/category_management
