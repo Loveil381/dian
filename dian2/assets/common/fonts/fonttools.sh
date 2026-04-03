@@ -1,1 +1,0 @@
-fonttools subset HarmonyOS_Sans_SC_Medium.ttf --text-file="./ttf.txt" --output-file="harm.ttf"
