@@ -1,5 +1,5 @@
 function shopFormatSitePrice(price) {
-    return '￥' + Number(price).toLocaleString('zh-CN', {
+    return '¥' + Number(price).toLocaleString('zh-CN', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -14,14 +14,14 @@ function shopUpdateProductActionState(stock, price) {
             buyBtn.disabled = true;
             buyBtn.classList.add('btn--disabled');
             buyBtn.classList.remove('btn--active');
-            buyBtn.innerText = '库存不足';
+            buyBtn.textContent = '暂时缺货';
         }
 
         if (cartBtn) {
             cartBtn.disabled = true;
             cartBtn.classList.add('btn--disabled');
             cartBtn.classList.remove('btn--active');
-            cartBtn.innerText = '库存不足';
+            cartBtn.textContent = '暂时缺货';
         }
 
         return;
@@ -31,14 +31,14 @@ function shopUpdateProductActionState(stock, price) {
         buyBtn.disabled = false;
         buyBtn.classList.remove('btn--disabled');
         buyBtn.classList.add('btn--active');
-        buyBtn.innerText = '立即购买 ' + shopFormatSitePrice(price);
+        buyBtn.textContent = '立即购买 ' + shopFormatSitePrice(price);
     }
 
     if (cartBtn) {
         cartBtn.disabled = false;
         cartBtn.classList.remove('btn--disabled');
         cartBtn.classList.remove('btn--active');
-        cartBtn.innerText = '加入购物车';
+        cartBtn.textContent = '加入购物车';
     }
 }
 
@@ -52,7 +52,7 @@ function selectSku(index, name, price, stock) {
 
     const mainPriceDisplay = document.getElementById('mainPriceDisplay');
     if (mainPriceDisplay) {
-        mainPriceDisplay.innerText = shopFormatSitePrice(price);
+        mainPriceDisplay.textContent = shopFormatSitePrice(price);
     }
 
     const soldOutBadge = document.getElementById('soldOutBadge');
@@ -62,7 +62,7 @@ function selectSku(index, name, price, stock) {
 
     const stockDisplay = document.getElementById('stockDisplay');
     if (stockDisplay) {
-        stockDisplay.innerText = stock.toLocaleString('zh-CN');
+        stockDisplay.textContent = stock.toLocaleString('zh-CN');
     }
 
     shopUpdateProductActionState(stock, price);
@@ -79,7 +79,7 @@ function selectSku(index, name, price, stock) {
 
     const popupPriceDisplay = document.getElementById('popupPriceDisplay');
     if (popupPriceDisplay) {
-        popupPriceDisplay.innerText = shopFormatSitePrice(price);
+        popupPriceDisplay.textContent = shopFormatSitePrice(price);
     }
 
     const cartSkuName = document.getElementById('cartSkuName');
@@ -98,11 +98,11 @@ function showAlert(message) {
     const alertPopup = document.getElementById('alertPopup');
 
     if (!alertMsg || !alertPopup) {
-        alert(message);
+        window.alert(message);
         return;
     }
 
-    alertMsg.innerText = message;
+    alertMsg.textContent = message;
     alertPopup.style.display = 'flex';
 }
 
@@ -115,12 +115,12 @@ function hideAlert() {
 
 function showPaymentPopup() {
     if (typeof hasPayment !== 'undefined' && !hasPayment) {
-        showAlert('商品暂未配置支付方式，请稍后再试。');
+        showAlert('当前未配置支付方式，请联系管理员。');
         return;
     }
 
     if (typeof requireAddress !== 'undefined' && requireAddress && typeof hasUserInfo !== 'undefined' && !hasUserInfo) {
-        showAlert('请先完善收货信息，再进行下单。');
+        showAlert('请先完善收货信息后再继续支付。');
         return;
     }
 
@@ -154,7 +154,7 @@ function showPaymentPopup() {
     }
 
     if (popupPriceDisplay && typeof currentPrice !== 'undefined') {
-        popupPriceDisplay.innerText = shopFormatSitePrice(currentPrice);
+        popupPriceDisplay.textContent = shopFormatSitePrice(currentPrice);
     }
 }
 
@@ -163,6 +163,20 @@ function hidePaymentPopup() {
     if (paymentPopup) {
         paymentPopup.style.display = 'none';
     }
+}
+
+function selectPayment(method, element) {
+    document.querySelectorAll('.pay-method-btn').forEach((button) => {
+        if (button instanceof HTMLElement) {
+            button.classList.toggle('pay-method-btn--selected', button === element);
+        }
+    });
+
+    if (typeof initialPayMethod !== 'undefined') {
+        initialPayMethod = method;
+    }
+
+    showQR(method);
 }
 
 function showQR(method) {
@@ -186,7 +200,7 @@ function showQR(method) {
     }
 
     if (popupPriceDisplay && typeof currentPrice !== 'undefined') {
-        popupPriceDisplay.innerText = shopFormatSitePrice(currentPrice);
+        popupPriceDisplay.textContent = shopFormatSitePrice(currentPrice);
     }
 
     if (wechatQR) {
@@ -207,7 +221,7 @@ function submitOrder() {
     }
 
     if (!payMethodInput.value) {
-        alert('请选择支付方式后再提交。');
+        window.alert('请先选择支付方式。');
         return;
     }
 
@@ -216,7 +230,7 @@ function submitOrder() {
         return;
     }
 
-    if (confirm('确认已完成支付并提交订单吗？')) {
+    if (window.confirm('确认已完成支付并提交订单吗？')) {
         form.submit();
     }
 }
@@ -314,9 +328,9 @@ function shopBindFooterEvents() {
     const menuBtn = document.getElementById('menuBtn');
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
+
     const closeMobileNav = () => {
         document.body.classList.remove('mobile-nav-open');
-
         if (menuBtn) {
             menuBtn.setAttribute('aria-expanded', 'false');
         }
@@ -341,7 +355,7 @@ function shopBindFooterEvents() {
             }
 
             event.preventDefault();
-            alert('请输入搜索关键词。');
+            window.alert('请输入搜索关键词。');
         });
     }
 
@@ -378,11 +392,9 @@ function shopBindProductGallery() {
         mainImage.src = target.src;
 
         thumbList.querySelectorAll('[data-product-thumb="1"]').forEach((thumb) => {
-            if (!(thumb instanceof HTMLElement)) {
-                return;
+            if (thumb instanceof HTMLElement) {
+                thumb.classList.remove('product-detail-thumb--active');
             }
-
-            thumb.classList.remove('product-detail-thumb--active');
         });
 
         target.classList.add('product-detail-thumb--active');
@@ -421,6 +433,11 @@ function shopBindProductDetailActions() {
             hideAlert();
         } else if (action === 'show-qr') {
             showQR(actionButton.dataset.payMethod || '');
+        } else if (action === 'select-payment') {
+            const method = actionButton.dataset.payMethod || '';
+            selectPayment(method, actionButton);
+        } else if (action === 'submit-order') {
+            submitOrder();
         }
     });
 }

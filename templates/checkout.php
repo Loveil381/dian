@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -6,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/logger.php';
 require_once __DIR__ . '/../data/products.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -81,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pdo = get_db_connection();
     $prefix = get_db_prefix();
-    if (!$pdo) {
+    if (!$pdo instanceof PDO) {
         $_SESSION['flash_message'] = '数据库连接失败，请稍后重试。';
         header('Location: index.php?page=cart');
         exit;
@@ -113,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_stock = $pdo->prepare("UPDATE `{$prefix}products` SET stock = stock - ? WHERE id = ? AND stock >= ?");
             $stmt_stock->execute([$quantity, $product_id, $quantity]);
             if ($stmt_stock->rowCount() === 0) {
-                throw new RuntimeException('商品 ' . ($name !== '' ? $name : '未知商品') . ' 库存不足，无法下单。');
+                throw new RuntimeException('商品库存不足，无法下单。');
             }
         }
 
@@ -124,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $customer_name,
             $customer_phone,
             $customer_address,
-            'paid',
+            'pending',
             $pay_method,
             $total,
             shop_encode_order_items($order_items),
@@ -138,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['my_orders'] = [];
         }
         $_SESSION['my_orders'][] = $order_no;
-        $_SESSION['flash_message'] = '订单已创建，等待商家发货。';
+        $_SESSION['flash_message'] = '订单已提交，请等待商家确认收款。';
 
         header('Location: index.php?page=orders');
         exit;
@@ -146,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
-        error_log('[shop] 结算下单失败: ' . $exception->getMessage());
+        shop_log('error', '结算下单失败', ['message' => $exception->getMessage()]);
         $_SESSION['flash_message'] = $exception instanceof RuntimeException ? $exception->getMessage() : '订单提交失败，请稍后再试。';
         header('Location: index.php?page=cart');
         exit;
@@ -161,7 +163,7 @@ if ($cart === []) {
 
 $pdo = get_db_connection();
 $prefix = get_db_prefix();
-if (!$pdo) {
+if (!$pdo instanceof PDO) {
     $_SESSION['flash_message'] = '数据库连接失败，请稍后重试。';
     header('Location: index.php?page=cart');
     exit;
@@ -179,29 +181,29 @@ unset($_SESSION['checkout_selected_pay_method']);
 
 try {
     $stmt = $pdo->query("SELECT `key`, `value` FROM `{$prefix}settings` WHERE `key` IN ('wechat_qr', 'alipay_qr', 'require_address')");
-    while ($row = $stmt->fetch()) {
-        if ($row['key'] === 'wechat_qr') {
-            $wechat_qr = (string) $row['value'];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if (($row['key'] ?? '') === 'wechat_qr') {
+            $wechat_qr = (string) ($row['value'] ?? '');
         }
-        if ($row['key'] === 'alipay_qr') {
-            $alipay_qr = (string) $row['value'];
+        if (($row['key'] ?? '') === 'alipay_qr') {
+            $alipay_qr = (string) ($row['value'] ?? '');
         }
-        if ($row['key'] === 'require_address') {
-            $require_address = ($row['value'] === '1');
+        if (($row['key'] ?? '') === 'require_address') {
+            $require_address = ((string) ($row['value'] ?? '0')) === '1';
         }
     }
 
     if ($is_logged_in) {
         $stmt_user = $pdo->prepare("SELECT phone, address FROM `{$prefix}users` WHERE id = ?");
         $stmt_user->execute([$_SESSION['user_id']]);
-        $user_data = $stmt_user->fetch();
-        if ($user_data) {
-            $user_phone = (string) ($user_data['phone'] ?? '');
-            $user_address = (string) ($user_data['address'] ?? '');
+        $user_data = $stmt_user->fetch(PDO::FETCH_ASSOC);
+        if (is_array($user_data)) {
+            $user_phone = trim((string) ($user_data['phone'] ?? ''));
+            $user_address = trim((string) ($user_data['address'] ?? ''));
         }
     }
 } catch (Throwable $exception) {
-    error_log('[shop] 读取结算配置失败: ' . $exception->getMessage());
+    shop_log('error', '读取结算配置失败', ['message' => $exception->getMessage()]);
     $_SESSION['flash_message'] = '结算信息加载失败，请稍后重试。';
     header('Location: index.php?page=cart');
     exit;
@@ -289,13 +291,13 @@ include __DIR__ . '/header.php';
                 <?php else: ?>
                     <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
                         <?php if ($wechat_qr !== ''): ?>
-                            <button type="button" class="pay-method-btn" data-pay-method="wechat" onclick="selectPayment('wechat', this)" style="flex: 1; min-width: 180px; padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; background: #ffffff; cursor: pointer;">
+                            <button type="button" class="pay-method-btn" data-action="select-payment" data-pay-method="wechat" style="flex: 1; min-width: 180px; padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; background: #ffffff; cursor: pointer;">
                                 <strong style="color: #10b981;">微信支付</strong>
                             </button>
                         <?php endif; ?>
 
                         <?php if ($alipay_qr !== ''): ?>
-                            <button type="button" class="pay-method-btn" data-pay-method="alipay" onclick="selectPayment('alipay', this)" style="flex: 1; min-width: 180px; padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; background: #ffffff; cursor: pointer;">
+                            <button type="button" class="pay-method-btn" data-action="select-payment" data-pay-method="alipay" style="flex: 1; min-width: 180px; padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; background: #ffffff; cursor: pointer;">
                                 <strong style="color: #0ea5e9;">支付宝</strong>
                             </button>
                         <?php endif; ?>
@@ -313,7 +315,7 @@ include __DIR__ . '/header.php';
                 <?php endif; ?>
             </div>
 
-            <button type="button" id="submitOrderBtn" onclick="submitOrder()" style="width: 100%; padding: 15px; border: none; border-radius: 12px; background: #2563eb; color: #ffffff; font-size: 18px; font-weight: 700; cursor: pointer; <?php echo !$has_payment ? 'opacity: 0.5; pointer-events: none;' : ''; ?>">
+            <button type="button" id="submitOrderBtn" data-action="submit-order" style="width: 100%; padding: 15px; border: none; border-radius: 12px; background: #2563eb; color: #ffffff; font-size: 18px; font-weight: 700; cursor: pointer; <?php echo !$has_payment ? 'opacity: 0.5; pointer-events: none;' : ''; ?>">
                 确认已支付并提交订单
             </button>
         </form>

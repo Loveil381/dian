@@ -8,6 +8,6 @@ Header always set X-XSS-Protection "1; mode=block"
 RewriteEngine On
 
 RewriteRule ^admin/?$ index.php?page=admin [R=301,L]
-RewriteRule ^(config|includes|data|docs)(/|$) - [F,L,NC]
+RewriteRule ^(config|includes|data|docs|database|logs)(/|$) - [F,L,NC]
 RewriteRule ^assets/uploads/.*\.(php|phtml|phar|cgi|pl|py|sh)$ - [F,L,NC]
 </IfModule>
