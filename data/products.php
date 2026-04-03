@@ -247,6 +247,30 @@ function shop_find_product(array $products, int $id): ?array
     return null;
 }
 
+function shop_get_product_by_id(int $id): ?array
+{
+    if ($id <= 0) {
+        return null;
+    }
+
+    $pdo = get_db_connection();
+    $prefix = get_db_prefix();
+    if ($pdo instanceof PDO) {
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM `{$prefix}products` WHERE id = ? LIMIT 1");
+            $stmt->execute([$id]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (is_array($row)) {
+                return shop_normalize_product($row, (int) ($row['id'] ?? $id));
+            }
+        } catch (PDOException $e) {
+            shop_log_exception('按 ID 读取商品失败', $e);
+        }
+    }
+
+    return shop_find_product(shop_get_products(), $id);
+}
+
 function shop_upsert_product(array $products, array $product): array
 {
     $pdo = get_db_connection();
