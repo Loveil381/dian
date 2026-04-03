@@ -116,9 +116,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== '') {
 $pageTitle = '购物车';
 $currentPage = 'cart';
 $cart = $_SESSION['cart'] ?? [];
+$flash_class = 'success';
 $flash_message = trim((string) ($_SESSION['flash_message'] ?? ''));
 if ($flash_message === '') {
     $flash_message = trim((string) ($_SESSION['flash'] ?? ''));
+} else {
+    $flash_class = 'error';
 }
 unset($_SESSION['flash_message'], $_SESSION['flash']);
 
@@ -132,7 +135,7 @@ include __DIR__ . '/header.php';
 
 <main class="page-shell">
     <?php if ($flash_message !== ''): ?>
-        <div class="flash error cart-flash">
+        <div class="flash <?php echo shop_e($flash_class); ?> cart-flash">
             <?php echo shop_e($flash_message); ?>
         </div>
     <?php endif; ?>
