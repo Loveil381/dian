@@ -1278,6 +1278,7 @@ body.has-fixed-header {
     height: calc(var(--space-xl) + var(--space-md));
     border-radius: var(--radius-full);
     color: var(--color-primary);
+    background: #f5efff;
     background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-container-lowest));
     text-decoration: none;
     box-shadow: var(--shadow-sm);
@@ -1287,6 +1288,7 @@ body.has-fixed-header {
 .header-cart-link:hover {
     transform: translateY(calc(var(--space-xs) * -1));
     box-shadow: var(--shadow-md);
+    background: #efe4ff;
     background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-container-lowest));
 }
 
@@ -1359,6 +1361,7 @@ body.has-fixed-header {
 
 .bottom-nav-link:hover {
     color: var(--color-primary);
+    background: #f5efff;
     background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-container-lowest));
 }
 
@@ -1366,6 +1369,7 @@ body.has-fixed-header {
 .bottom-nav-link.is-active,
 .bottom-nav-link[aria-current="page"] {
     color: var(--color-primary);
+    background: #efe4ff;
     background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-container-lowest));
     box-shadow: var(--shadow-sm);
 }
