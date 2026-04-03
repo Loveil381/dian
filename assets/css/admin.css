@@ -708,3 +708,232 @@ body.sidebar-open .admin-overlay {
             }
         }
 
+
+/* ══ 分类管理 ══ */
+.admin-categories-hero-copy,
+.admin-categories-hero-meta,
+.admin-categories-grid,
+.admin-categories-form-panel,
+.admin-categories-list-panel,
+.admin-categories-panel-head,
+.admin-categories-form,
+.admin-categories-field,
+.admin-categories-form-actions,
+.admin-categories-list,
+.admin-category-item,
+.admin-category-item-head,
+.admin-category-item-title-wrap,
+.admin-category-item-badges,
+.admin-category-item-meta,
+.admin-category-item-meta-block {
+            display: grid;
+        }
+
+.admin-categories-hero-copy,
+.admin-categories-form-panel,
+.admin-categories-list-panel,
+.admin-categories-form,
+.admin-category-item {
+            gap: var(--space-md);
+        }
+
+.admin-categories-title {
+            margin: 0;
+            color: var(--color-on-surface);
+            font-family: var(--font-headline);
+            font-size: clamp(calc(var(--text-h1) + 0.25rem), 4vw, calc(var(--text-display) + 0.5rem));
+            line-height: 1.1;
+        }
+
+.admin-categories-desc,
+.admin-categories-section-note,
+.admin-categories-help,
+.admin-category-item-desc {
+            margin: 0;
+            color: var(--color-on-surface-variant);
+            font-size: var(--text-body);
+            line-height: 1.8;
+        }
+
+.admin-categories-hero-meta {
+            gap: var(--space-sm);
+            justify-items: end;
+        }
+
+.admin-categories-grid {
+            grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+            gap: var(--space-md);
+            align-items: start;
+        }
+
+.admin-categories-form-panel,
+.admin-categories-list-panel {
+            padding: var(--space-xl);
+            border: 1px solid color-mix(in srgb, var(--color-outline-variant) 24%, transparent);
+        }
+
+.admin-categories-panel-head {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: var(--space-md);
+            align-items: start;
+        }
+
+.admin-categories-form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-md);
+        }
+
+.admin-categories-label,
+.admin-category-item-meta-label {
+            color: var(--color-on-surface-variant);
+            font-size: var(--text-caption);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+.admin-categories-field {
+            gap: var(--space-sm);
+        }
+
+.admin-categories-form-actions {
+            gap: var(--space-sm);
+        }
+
+.admin-categories-form-actions .btn-primary {
+            width: 100%;
+        }
+
+.admin-categories-list {
+            gap: var(--space-md);
+        }
+
+.admin-categories-empty {
+            display: grid;
+            justify-items: center;
+            gap: var(--space-sm);
+            padding: calc(var(--space-xl) + var(--space-sm));
+            text-align: center;
+            border-radius: var(--radius-md);
+            background: var(--color-surface-container-low);
+        }
+
+.admin-categories-empty .material-symbols-outlined {
+            color: var(--color-primary);
+            font-size: calc(var(--space-xl) + var(--space-md));
+        }
+
+.admin-category-item {
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-container-low);
+        }
+
+.admin-category-item-head {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: var(--space-md);
+            align-items: start;
+        }
+
+.admin-category-item-title-wrap {
+            grid-template-columns: auto 1fr;
+            gap: var(--space-md);
+            align-items: start;
+        }
+
+.admin-category-item-icon {
+            display: grid;
+            place-items: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius-md);
+            background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+            color: var(--color-primary);
+            font-size: calc(var(--text-h2) + 0.25rem);
+        }
+
+.admin-category-item-title {
+            margin: 0;
+            color: var(--color-on-surface);
+            font-family: var(--font-headline);
+            font-size: var(--text-h2);
+            line-height: 1.25;
+        }
+
+.admin-category-item-badges {
+            gap: var(--space-sm);
+            justify-items: end;
+        }
+
+.admin-category-item-meta {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-md);
+        }
+
+.admin-category-item-meta-block {
+            gap: 2px;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-container-lowest);
+        }
+
+.admin-category-item-meta-block strong {
+            color: var(--color-on-surface);
+            font-size: var(--text-body);
+            line-height: 1.5;
+        }
+
+.admin-category-item-meta-block small {
+            color: var(--color-on-surface-variant);
+            font-size: var(--text-caption);
+            line-height: 1.6;
+        }
+
+.admin-category-item-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+.admin-category-item-actions form {
+            margin: 0;
+        }
+
+@media (max-width: 1023px) {
+            .admin-categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+@media (max-width: 767px) {
+            .admin-categories-hero,
+            .admin-categories-form-panel,
+            .admin-categories-list-panel {
+                padding: var(--space-lg);
+            }
+
+            .admin-categories-panel-head,
+            .admin-categories-form-row,
+            .admin-category-item-head,
+            .admin-category-item-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-categories-hero-meta,
+            .admin-category-item-badges {
+                justify-items: start;
+            }
+        }
+
+@media (max-width: 520px) {
+            .admin-category-item-actions {
+                flex-direction: column;
+            }
+
+            .admin-category-item-actions .btn-secondary,
+            .admin-category-item-actions .btn-danger {
+                width: 100%;
+            }
+        }
+
