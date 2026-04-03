@@ -1116,3 +1116,132 @@ body.sidebar-open .admin-overlay {
             }
         }
 
+/* ══ 用户管理 ══ */
+.admin-users-shell,
+.admin-payment-shell,
+.admin-settings-shell {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+.admin-users-grid,
+.admin-settings-grid {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+.admin-users-card,
+.admin-payment-card,
+.admin-settings-card {
+            padding: var(--space-lg);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-outline-variant);
+            background: var(--color-surface);
+            box-shadow: var(--shadow-sm);
+        }
+
+.admin-users-action {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+.admin-user-role {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: var(--text-caption);
+            line-height: 1;
+        }
+
+.admin-user-role-admin {
+            background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+            color: var(--color-primary);
+        }
+
+.admin-user-role-user {
+            background: var(--color-surface-container-low);
+            color: var(--color-on-surface-variant);
+        }
+
+/* ══ 支付设置 ══ */
+.admin-payment-grid {
+            display: grid;
+            gap: var(--space-lg);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+.admin-payment-channel {
+            display: grid;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-outline-variant);
+            background: var(--color-surface-container-low);
+        }
+
+.admin-payment-input-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+.admin-payment-input-row input[type="text"] {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--color-outline-variant);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-on-surface);
+            font: inherit;
+        }
+
+.admin-payment-preview {
+            display: grid;
+            place-items: center;
+            min-height: 12rem;
+            padding: var(--space-md);
+            border-radius: var(--radius-xl);
+            border: 1px dashed color-mix(in srgb, var(--color-primary) 18%, var(--color-outline-variant));
+            background: var(--color-surface);
+        }
+
+.admin-payment-preview-image {
+            width: 100%;
+            max-width: 14rem;
+            max-height: 14rem;
+            object-fit: contain;
+        }
+
+.admin-payment-placeholder {
+            color: var(--color-on-surface-variant);
+            font-size: var(--text-caption);
+        }
+
+.admin-payment-check {
+            margin-bottom: var(--space-lg);
+        }
+
+/* ══ 系统设置 ══ */
+.admin-settings-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+.admin-settings-card .actions {
+            margin-top: var(--space-md);
+        }
+
+.admin-settings-card .form-grid {
+            margin-top: var(--space-md);
+        }
+
+@media (max-width: 1024px) {
+            .admin-payment-grid,
+            .admin-settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
