@@ -103,6 +103,9 @@ $ogImage = $ogImage ?? $defaultOgImage;
     </a>
     <a class="bottom-nav-link <?php echo $currentPage === 'cart' ? 'active' : ''; ?>" href="index.php?page=cart">
         <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
+        <?php if ($cartCount > 0): ?>
+            <span class="badge badge-cart"><?php echo $cartCount; ?></span>
+        <?php endif; ?>
         <span>购物车</span>
     </a>
     <a class="bottom-nav-link <?php echo $currentPage === 'profile' ? 'active' : ''; ?>" href="index.php?page=profile">
