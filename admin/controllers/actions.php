@@ -103,6 +103,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = handle_save_role();
             break;
 
+        // ── 更新中心 ──
+        case 'check_update':
+            require_once __DIR__ . '/update_actions.php';
+            $result = handle_check_update();
+            break;
+        case 'create_backup':
+            require_once __DIR__ . '/update_actions.php';
+            $result = handle_create_backup();
+            break;
+        case 'apply_update':
+            require_once __DIR__ . '/update_actions.php';
+            $result = handle_apply_update();
+            break;
+        case 'rollback_update':
+            require_once __DIR__ . '/update_actions.php';
+            $result = handle_rollback_update();
+            break;
+        case 'delete_backup':
+            require_once __DIR__ . '/update_actions.php';
+            $result = handle_delete_backup();
+            break;
+
         default:
             $result = ['未知操作。', 'error'];
             break;

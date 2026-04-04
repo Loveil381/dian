@@ -34,7 +34,7 @@ server {
     }
 
     # ── 阻止直接访问敏感目录 ──
-    location ~ ^/(config|includes|data|actions|docs|database|logs)/ {
+    location ~ ^/(config|includes|data|actions|docs|database|logs|storage)/ {
         return 403;
     }
 

@@ -9,6 +9,7 @@ $tabLabels = [
     'users' => '用户管理',
     'payment' => '支付设置',
     'settings' => '系统设置',
+    'updates' => '更新中心',
 ];
 $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
 ?>
@@ -131,6 +132,16 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
                         <strong>系统设置</strong>
                         <small>Settings</small>
                     </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'updates' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=updates" <?php echo $currentTab === 'updates' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">system_update_alt</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>更新中心</strong>
+                        <small>Updates</small>
+                    </span>
+                    <?php if (!empty($updateAvailable)): ?>
+                        <span style="display:inline-block;width:8px;height:8px;background:var(--color-error,#ef4444);border-radius:50%;margin-left:auto;flex-shrink:0;" title="有新版本可用"></span>
+                    <?php endif; ?>
                 </a>
             </div>
         </nav>
