@@ -4239,3 +4239,227 @@ body.has-fixed-header {
 .home-consult-fab .material-symbols-outlined {
     font-size: 1.5rem;
 }
+
+
+/* ══ 首页 UI 改版 ══ */
+.home-hero-wrap {
+    padding: var(--space-xs);
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    overflow: hidden;
+}
+
+.home-hero-frame {
+    position: relative;
+    width: 100%;
+    height: 192px; /* h-48 */
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.home-hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-hero-mask {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(250, 245, 255, 0.6), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.home-hero-tag {
+    color: var(--color-secondary);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    position: relative;
+    z-index: 2;
+}
+
+.home-hero-headline {
+    color: var(--color-on-surface);
+    font-size: var(--text-display);
+    font-weight: 700;
+    line-height: 1.1;
+    font-family: var(--font-headline);
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* 标题区更新 */
+.home-section-heading--updated {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.home-section-title-updated {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+}
+
+.home-section-title-main {
+    color: var(--color-primary-dim);
+    font-size: var(--text-h2); 
+    font-weight: 700;
+    font-family: var(--font-headline);
+}
+
+.home-section-title-sub {
+    color: var(--color-outline);
+    font-size: var(--text-caption);
+    font-weight: 400;
+}
+
+.home-section-view-all {
+    color: var(--color-secondary);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* 商品卡片更新 */
+.home-card-v2 {
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: 0 8px 30px rgba(106, 55, 212, 0.04);
+    transition: transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.home-card-v2:active {
+    transform: scale(0.95);
+}
+
+.home-card-v2-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+}
+
+.home-card-v2-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.home-card-v2-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.home-card-v2-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-surface-container-low);
+}
+
+.home-card-v2-fav-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: var(--glass-blur);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-secondary);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+.home-card-v2-fav-btn .material-symbols-outlined {
+    font-size: 14px;
+}
+
+.home-card-v2-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.home-card-v2-title {
+    margin: 0;
+    color: var(--color-on-surface);
+    font-size: 0.875rem; 
+    font-weight: 700;
+    font-family: var(--font-headline);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.home-card-v2-cat {
+    margin: 0 0 8px 0;
+    color: var(--color-outline);
+    font-size: 10px;
+    font-family: var(--font-body);
+}
+
+.home-card-v2-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.home-card-v2-price {
+    color: var(--color-primary);
+    font-size: var(--text-body);
+    font-weight: 700;
+    font-family: var(--font-headline);
+}
+
+.home-card-v2-cart-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.home-card-v2-cart-btn:hover {
+    opacity: 0.8;
+}
+
+.home-card-v2-cart-btn .material-symbols-outlined {
+    font-size: 14px;
+}

@@ -75,30 +75,14 @@ include __DIR__ . '/header.php';
 ?>
 
 <main class="page-shell home-shell">
-    <section class="card-hero home-hero">
-        <div class="home-hero-overlay"></div>
-        <div class="home-hero-copy">
-            <span class="home-hero-badge">店长推荐</span>
-            <h1 class="home-hero-title">把喜欢的商品带回家</h1>
-            <p class="home-hero-note">这里会优先展示首页排序靠前的商品，你也可以直接搜索关键字，快速找到想看的内容。</p>
-        </div>
-
-        <div class="home-metrics-grid">
-            <div class="card-metric home-metric-card">
-                <strong class="metric-value"><?php echo shop_format_sales((int) $metrics['count']); ?></strong>
-                <span class="home-metric-label">商品总数</span>
-            </div>
-            <div class="card-metric home-metric-card">
-                <strong class="metric-value"><?php echo shop_format_sales($productTotal); ?></strong>
-                <span class="home-metric-label">当前展示</span>
-            </div>
-            <div class="card-metric home-metric-card">
-                <strong class="metric-value"><?php echo shop_format_sales((int) $metrics['home_priority_count']); ?></strong>
-                <span class="home-metric-label">首页推荐</span>
-            </div>
-            <div class="card-metric home-metric-card">
-                <strong class="metric-value"><?php echo shop_format_sales((int) $metrics['sales']); ?></strong>
-                <span class="home-metric-label">累计销量</span>
+    <section class="home-hero-wrap">
+        <div class="home-hero-frame">
+            <img class="home-hero-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaqnbdArYaRRqXXEl77TSGrRkeTTYleFy5bHz7GzhyDE7lk2HWlQtPPj8-QbqIQyDz1iymA0mLqkLXXhPwZd04XBN4B1qsr56bS8hYfAJuoZCKHUlDjHp_GBVsqf3xkVtmYBm8u65QeA0RXmurJ-YgPAoJX4w9O7ZVZuOlZioAQRlOWo3VtCUMM3USo4Hbcy5F2MFGmZ5TXLthRdZgVVTh3Z7STH35N1T9K0k6gufNenWwXqKxZBH2vRuf07s5AmZmQDjm2lEVgrs" alt="Hero Banner">
+            <div class="home-hero-mask">
+                <div class="home-hero-text">
+                    <span class="home-hero-tag">店长推荐</span>
+                    <h2 class="home-hero-headline">温暖身心的<br>魔法处方</h2>
+                </div>
             </div>
         </div>
     </section>
@@ -123,12 +107,12 @@ include __DIR__ . '/header.php';
     <?php endif; ?>
 
     <section class="home-section">
-        <div class="home-section-heading">
-            <div class="home-section-copy">
-                <h2 class="home-section-title">首页商品推荐</h2>
-                <p class="home-section-note">以下内容会根据首页排序优先展示，方便你快速浏览当前主推商品。</p>
-            </div>
-            <span class="badge badge-primary"><?php echo $productTotal; ?> 个</span>
+        <div class="home-section-heading home-section-heading--updated">
+            <h3 class="home-section-title-updated">
+                <span class="home-section-title-main">热门商品</span>
+                <span class="home-section-title-sub">✨ 精选好物</span>
+            </h3>
+            <a href="index.php?page=products" class="home-section-view-all">查看全部</a>
         </div>
 
         <?php if (empty($sortedProducts)): ?>
@@ -140,31 +124,29 @@ include __DIR__ . '/header.php';
         <?php else: ?>
             <div class="home-product-grid">
                 <?php foreach ($sortedProducts as $product): ?>
-                    <article class="card home-product-card">
-                        <a class="home-product-link" href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>">
-                            <?php
-                            $displayImg = !empty($product['cover_image']) ? (string) $product['cover_image'] : (!empty($product['images']) && is_array($product['images']) ? (string) ($product['images'][0] ?? '') : '');
-                            if ($displayImg !== ''):
-                            ?>
-                                <div class="home-product-cover">
-                                    <img class="home-product-cover-image" src="<?php echo shop_e($displayImg); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
-                                </div>
-                            <?php endif; ?>
-                            <div class="home-product-body">
-                                <div class="home-product-meta-top">
-                                    <span class="badge badge-primary"><?php echo shop_e((string) ($product['category'] ?? '未分类')); ?></span>
-                                </div>
-
-                                <h3 class="home-product-title"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h3>
-                                <p class="home-product-date text-muted">上架时间：<?php echo shop_short_date((string) ($product['published_at'] ?? date('Y-m-d H:i:s'))); ?></p>
-
-                                <div class="home-product-meta">
-                                    <div class="home-product-meta-group">
-                                        <span class="text-price"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></span>
-                                        <span class="text-muted">库存：<?php echo shop_format_sales((int) ($product['stock'] ?? 0)); ?> 件</span>
-                                    </div>
-
-                                    <span class="text-muted">销量：<?php echo shop_format_sales((int) ($product['sales'] ?? 0)); ?></span>
+                    <article class="home-card-v2">
+                        <a class="home-card-v2-link" href="index.php?page=product_detail&id=<?php echo (int) ($product['id'] ?? 0); ?>">
+                            <div class="home-card-v2-media">
+                                <?php
+                                $displayImg = !empty($product['cover_image']) ? (string) $product['cover_image'] : (!empty($product['images']) && is_array($product['images']) ? (string) ($product['images'][0] ?? '') : '');
+                                if ($displayImg !== ''):
+                                ?>
+                                    <img class="home-card-v2-img" src="<?php echo shop_e($displayImg); ?>" alt="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
+                                <?php else: ?>
+                                    <div class="home-card-v2-img-placeholder"></div>
+                                <?php endif; ?>
+                                <button class="home-card-v2-fav-btn" aria-label="收藏" onclick="event.preventDefault();">
+                                    <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                </button>
+                            </div>
+                            <div class="home-card-v2-body">
+                                <h4 class="home-card-v2-title" title="<?php echo shop_e((string) ($product['name'] ?? '')); ?>"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h4>
+                                <p class="home-card-v2-cat"><?php echo shop_e((string) ($product['category'] ?? '未分类')); ?></p>
+                                <div class="home-card-v2-footer">
+                                    <span class="home-card-v2-price"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></span>
+                                    <button class="home-card-v2-cart-btn" aria-label="加入购物车" onclick="event.preventDefault();">
+                                        <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
+                                    </button>
                                 </div>
                             </div>
                         </a>
