@@ -19,3 +19,18 @@ vendor/
 node_modules/
 
 dian2/
+
+# 设计稿参考文件
+stitch/
+
+# 内部开发文件
+STATUS.md
+AGENTS.md
+commit_msg.txt
+build_index.py
+split.py
+git_init.ps1
+结构.md
+__compare_v11/
+*.7z
+*.zip
