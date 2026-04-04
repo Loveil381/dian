@@ -83,25 +83,15 @@ ob_start();
         <div class="products-hero-copy">
             <span class="badge badge-primary">Product Gallery</span>
             <h1 class="products-title">全部商品</h1>
-            <p class="products-subtitle">浏览当前所有上架商品，也可以按关键字或分类快速筛选。</p>
-        </div>
-        <div class="products-hero-stats">
-            <div class="products-stat card">
-                <span class="products-stat-label">当前结果</span>
-                <strong class="products-stat-value"><?php echo shop_e((string) $productTotal); ?></strong>
-            </div>
-            <div class="products-stat card">
-                <span class="products-stat-label">分类数量</span>
-                <strong class="products-stat-value"><?php echo shop_e((string) count($categories)); ?></strong>
-            </div>
+            <p class="products-subtitle">寻找属于你的蜕变良方 ✨</p>
         </div>
     </section>
 
     <section class="card products-filter-panel">
         <div class="products-filter-head">
             <div>
-                <h2 class="products-section-title">筛选商品</h2>
-                <p class="products-section-note">输入关键字或点击分类，快速找到想看的商品。</p>
+                <h2 class="products-section-title">探索药剂</h2>
+                <p class="products-section-note">输入关键字寻找你需要的商品。</p>
             </div>
         </div>
 
@@ -144,7 +134,7 @@ ob_start();
         <div class="products-results-head">
             <div>
                 <h2 class="products-section-title">商品列表</h2>
-                <p class="products-section-note">共找到 <?php echo shop_e((string) $productTotal); ?> 个可购买商品。</p>
+                <p class="products-section-note">共找到 <?php echo shop_e((string) $productTotal); ?> 份专属好物。</p>
             </div>
         </div>
 
@@ -166,31 +156,23 @@ ob_start();
                     $detail_url = 'index.php?page=product_detail&id=' . $product_id;
                     $product_category = (string) ($product['category'] ?? '未分类');
                     ?>
-                    <article class="card product-card products-card">
-                        <a class="product-card-link products-card-link" href="<?php echo shop_e($detail_url); ?>">
-                            <div class="products-card-media">
+                    <article class="products-card-v2">
+                        <a class="products-card-v2-link" href="<?php echo shop_e($detail_url); ?>">
+                            <div class="products-card-v2-media">
                                 <?php if ($cover_image !== ''): ?>
-                                    <img class="products-card-image" src="<?php echo shop_e($cover_image); ?>" alt="<?php echo shop_e($product_name); ?>">
+                                    <img class="products-card-v2-img" src="<?php echo shop_e($cover_image); ?>" alt="<?php echo shop_e($product_name); ?>">
                                 <?php else: ?>
-                                    <div class="products-card-placeholder">
+                                    <div class="products-card-v2-placeholder">
                                         <span class="material-symbols-outlined" aria-hidden="true">photo</span>
-                                        <span>暂无图片</span>
                                     </div>
                                 <?php endif; ?>
-                                <span class="badge badge-primary products-card-badge"><?php echo shop_e($product_category); ?></span>
                             </div>
-                            <div class="product-body products-card-body">
-                                <div class="products-card-title-row">
-                                    <h3 class="product-title products-card-title"><?php echo shop_e($product_name); ?></h3>
-                                </div>
-                                <p class="products-card-note">点击查看商品详情、规格、价格与下单入口。</p>
-                                <div class="product-meta products-card-meta">
-                                    <div>
-                                        <div class="product-price"><?php echo shop_format_price($product_price); ?></div>
-                                        <div class="product-sales"><?php echo shop_format_sales($product_sales); ?></div>
-                                    </div>
-                                    <span class="products-card-arrow material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-                                </div>
+                            <h3 class="products-card-v2-title" title="<?php echo shop_e($product_name); ?>"><?php echo shop_e($product_name); ?></h3>
+                            <div class="products-card-v2-footer">
+                                <span class="products-card-v2-price"><?php echo shop_format_price($product_price); ?></span>
+                                <button class="products-card-v2-cart-btn" aria-label="加入购物车" onclick="event.preventDefault();">
+                                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
+                                </button>
                             </div>
                         </a>
                     </article>
