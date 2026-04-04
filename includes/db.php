@@ -93,3 +93,68 @@ function update_db_config(string $host, int $port, string $name, string $user, s
 
     return file_put_contents($config_path, $content) !== false;
 }
+
+/* ─── Settings 键值存取（{prefix}settings 表） ─── */
+
+/**
+ * 读取单个设置项。
+ */
+function shop_get_setting(string $key, string $default = ''): string
+{
+    $pdo = get_db_connection();
+    if (!$pdo) {
+        return $default;
+    }
+    try {
+        $prefix = get_db_prefix();
+        $stmt = $pdo->prepare("SELECT `value` FROM `{$prefix}settings` WHERE `key` = ? LIMIT 1");
+        $stmt->execute([$key]);
+        $row = $stmt->fetch();
+        return is_array($row) ? (string) $row['value'] : $default;
+    } catch (PDOException $e) {
+        return $default;
+    }
+}
+
+/**
+ * 写入单个设置项（不存在则插入，存在则更新）。
+ */
+function shop_set_setting(string $key, string $value): bool
+{
+    $pdo = get_db_connection();
+    if (!$pdo) {
+        return false;
+    }
+    try {
+        $prefix = get_db_prefix();
+        $stmt = $pdo->prepare("REPLACE INTO `{$prefix}settings` (`key`, `value`) VALUES (?, ?)");
+        $stmt->execute([$key, $value]);
+        return true;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+/**
+ * 批量读取设置项，返回 key => value 关联数组。
+ */
+function shop_get_settings(array $keys): array
+{
+    $pdo = get_db_connection();
+    if (!$pdo || empty($keys)) {
+        return [];
+    }
+    try {
+        $prefix = get_db_prefix();
+        $placeholders = implode(',', array_fill(0, count($keys), '?'));
+        $stmt = $pdo->prepare("SELECT `key`, `value` FROM `{$prefix}settings` WHERE `key` IN ({$placeholders})");
+        $stmt->execute(array_values($keys));
+        $result = [];
+        while ($row = $stmt->fetch()) {
+            $result[(string) $row['key']] = (string) $row['value'];
+        }
+        return $result;
+    } catch (PDOException $e) {
+        return [];
+    }
+}

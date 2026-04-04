@@ -4,7 +4,10 @@ config/installed.lock
 assets/uploads/*
 !assets/uploads/.gitkeep
 
-storage/
+storage/*
+!storage/backups/
+storage/backups/*
+!storage/backups/.gitkeep
 logs/*.log
 *.log
 

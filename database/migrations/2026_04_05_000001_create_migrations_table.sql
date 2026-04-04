@@ -1,0 +1,6 @@
+-- 迁移跟踪表，记录已执行的数据库迁移。
+CREATE TABLE IF NOT EXISTS `{PREFIX}migrations` (
+    `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `migration`  VARCHAR(255) NOT NULL UNIQUE,
+    `applied_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

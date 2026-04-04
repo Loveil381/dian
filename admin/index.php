@@ -9,6 +9,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
 require_once __DIR__ . '/../data/products.php';
 require_once __DIR__ . '/../includes/pagination.php';
 require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/version.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -119,6 +120,21 @@ $wechatQr = '';
 $alipayQr = '';
 $requireAddress = '0';
 
+$updateInfo = ['current_version' => shop_app_version(), 'latest_version' => '', 'has_update' => false, 'release_notes' => '', 'release_url' => '', 'published_at' => '', 'last_checked' => '', 'check_error' => ''];
+$backupList = [];
+$updateHistory = [];
+$incompleteUpdate = null;
+
+// dashboard 新版本红点提示（只读缓存，不调 API）
+$updateAvailable = false;
+if ($pdo) {
+    $cachedJson = shop_get_setting('update_cached_release');
+    $cached = @json_decode($cachedJson, true);
+    if (is_array($cached) && !empty($cached['tag_name'])) {
+        $updateAvailable = version_compare(ltrim($cached['tag_name'], 'vV'), shop_app_version(), '>');
+    }
+}
+
 // ── 按当前 tab 加载对应数据 ──
 $loaderMap = [
     'dashboard'  => __DIR__ . '/data_loaders/dashboard.php',
@@ -128,6 +144,7 @@ $loaderMap = [
     'orders'     => __DIR__ . '/data_loaders/orders.php',
     'users'      => __DIR__ . '/data_loaders/users.php',
     'payment'    => __DIR__ . '/data_loaders/payment.php',
+    'updates'    => __DIR__ . '/data_loaders/updates.php',
 ];
 if (isset($loaderMap[$currentTab])) {
     require $loaderMap[$currentTab];
