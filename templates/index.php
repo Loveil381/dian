@@ -77,7 +77,6 @@ include __DIR__ . '/header.php';
 <main class="page-shell home-shell">
     <section class="home-hero-wrap">
         <div class="home-hero-frame">
-            <img class="home-hero-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaqnbdArYaRRqXXEl77TSGrRkeTTYleFy5bHz7GzhyDE7lk2HWlQtPPj8-QbqIQyDz1iymA0mLqkLXXhPwZd04XBN4B1qsr56bS8hYfAJuoZCKHUlDjHp_GBVsqf3xkVtmYBm8u65QeA0RXmurJ-YgPAoJX4w9O7ZVZuOlZioAQRlOWo3VtCUMM3USo4Hbcy5F2MFGmZ5TXLthRdZgVVTh3Z7STH35N1T9K0k6gufNenWwXqKxZBH2vRuf07s5AmZmQDjm2lEVgrs" alt="Hero Banner">
             <div class="home-hero-mask">
                 <div class="home-hero-text">
                     <span class="home-hero-tag">店长推荐</span>

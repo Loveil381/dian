@@ -87,48 +87,19 @@ ob_start();
         </div>
     </section>
 
-    <section class="card products-filter-panel">
-        <div class="products-filter-head">
-            <div>
-                <h2 class="products-section-title">探索药剂</h2>
-                <p class="products-section-note">输入关键字寻找你需要的商品。</p>
-            </div>
-        </div>
-
-        <form method="get" action="index.php" class="products-filter-form">
-            <input type="hidden" name="page" value="products">
-            <?php if ($selected_category !== ''): ?>
-                <input type="hidden" name="category" value="<?php echo shop_e($selected_category); ?>">
-            <?php endif; ?>
-
-            <div class="products-filter-field">
-                <label class="font-label products-filter-label" for="productKeyword">关键字</label>
-                <div class="products-filter-control">
-                    <span class="material-symbols-outlined products-filter-icon" aria-hidden="true">search</span>
-                    <input class="input products-filter-input" id="productKeyword" type="text" name="keyword" value="<?php echo shop_e($keyword); ?>" placeholder="搜索商品名称或描述">
-                </div>
-            </div>
-
-            <div class="products-filter-actions">
-                <button type="submit" class="btn-primary">搜索</button>
-                <a href="index.php?page=products" class="btn-ghost">清空</a>
-            </div>
-        </form>
-
-        <?php if (!empty($categories)): ?>
-        <nav class="products-cat-pills" aria-label="分类筛选">
-            <a class="products-cat-pill <?php echo $selected_category === '' ? 'products-cat-pill--active' : ''; ?>"
-               href="index.php?page=products<?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">全部</a>
-            <?php foreach ($categories as $category): ?>
-                <?php $cat_name = (string) ($category['name'] ?? ''); ?>
-                <a class="products-cat-pill <?php echo $selected_category === $cat_name ? 'products-cat-pill--active' : ''; ?>"
-                   href="index.php?page=products&category=<?php echo urlencode($cat_name); ?><?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">
-                    <?php echo shop_e($cat_name); ?>
-                </a>
-            <?php endforeach; ?>
-        </nav>
-        <?php endif; ?>
-    </section>
+    <?php if (!empty($categories)): ?>
+    <nav class="products-cat-pills" aria-label="分类筛选">
+        <a class="products-cat-pill <?php echo $selected_category === '' ? 'products-cat-pill--active' : ''; ?>"
+           href="index.php?page=products<?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">全部</a>
+        <?php foreach ($categories as $category): ?>
+            <?php $cat_name = (string) ($category['name'] ?? ''); ?>
+            <a class="products-cat-pill <?php echo $selected_category === $cat_name ? 'products-cat-pill--active' : ''; ?>"
+               href="index.php?page=products&category=<?php echo urlencode($cat_name); ?><?php echo $keyword !== '' ? '&keyword=' . urlencode($keyword) : ''; ?>">
+                <?php echo shop_e($cat_name); ?>
+            </a>
+        <?php endforeach; ?>
+    </nav>
+    <?php endif; ?>
 
     <section class="products-results">
         <div class="products-results-head">
