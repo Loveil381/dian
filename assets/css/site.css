@@ -4463,3 +4463,119 @@ body.has-fixed-header {
 .home-card-v2-cart-btn .material-symbols-outlined {
     font-size: 14px;
 }
+
+
+/* ══ 全部商品 UI 改版 ══ */
+.products-hero-copy {
+    text-align: left;
+}
+
+.products-card-v2 {
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.products-card-v2:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.products-card-v2:active {
+    transform: scale(0.95);
+}
+
+.products-card-v2-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+}
+
+.products-card-v2-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.products-card-v2-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-normal);
+}
+
+.products-card-v2:hover .products-card-v2-img {
+    transform: scale(1.05);
+}
+
+.products-card-v2-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-outline-variant);
+    background: var(--color-surface-container-low);
+}
+
+.products-card-v2-title {
+    margin: 0 0 12px 0;
+    color: var(--color-on-surface);
+    font-size: var(--text-body);
+    font-weight: 700;
+    font-family: var(--font-headline);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.products-card-v2-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.products-card-v2-price {
+    color: var(--color-primary);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    font-family: var(--font-headline);
+}
+
+.products-card-v2-cart-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.products-card-v2-cart-btn:hover {
+    transform: scale(1.05);
+}
+
+.products-card-v2-cart-btn .material-symbols-outlined {
+    font-size: 18px;
+}
