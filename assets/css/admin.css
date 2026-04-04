@@ -131,6 +131,7 @@
         .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid transparent; text-decoration: none; cursor: pointer; font: inherit; line-height: 1.2; transition: .15s; }
         .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: scale(0.95); }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-secondary { background: #f8fafc; border-color: var(--line); color: var(--text); }
         .btn-danger { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
@@ -1200,6 +1201,7 @@ body.sidebar-open .admin-overlay {
         }
 
 .admin-payment-preview {
+            position: relative;
             display: grid;
             place-items: center;
             min-height: 12rem;
@@ -1244,4 +1246,271 @@ body.sidebar-open .admin-overlay {
                 grid-template-columns: 1fr;
             }
         }
+
+/* ══ 支付设置 - 增强视觉 ══ */
+.admin-payment-channel-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+.admin-payment-channel-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+.admin-payment-channel-icon .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+.admin-payment-channel-icon[data-brand="wechat"] {
+            background: #07C160;
+        }
+
+.admin-payment-channel-icon[data-brand="alipay"] {
+            background: #1677FF;
+        }
+
+.admin-payment-preview-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-xl);
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+.admin-payment-preview-overlay .material-symbols-outlined {
+            font-size: 28px;
+            color: #ffffff;
+        }
+
+.admin-payment-preview:hover .admin-payment-preview-overlay {
+            opacity: 1;
+        }
+
+/* ══ 支付提示卡片 ══ */
+.admin-payment-tips {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+
+.admin-payment-tip-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            background: var(--color-surface-container-lowest, #ffffff);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-outline-variant);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+.admin-payment-tip-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+.admin-payment-tip-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background: var(--color-surface-container-low);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+.admin-payment-tip-icon--security {
+            background: color-mix(in srgb, var(--color-tertiary-container) 30%, transparent);
+            color: var(--color-tertiary);
+        }
+
+.admin-payment-tip-icon--fast {
+            background: color-mix(in srgb, var(--color-secondary-container) 30%, transparent);
+            color: var(--color-secondary);
+        }
+
+.admin-payment-tip-icon--help {
+            background: color-mix(in srgb, var(--color-surface-container-highest) 40%, transparent);
+            color: var(--color-on-surface-variant);
+        }
+
+.admin-payment-tip-title {
+            font-size: var(--text-body);
+            font-weight: 600;
+            color: var(--color-on-surface);
+            margin-bottom: var(--space-xs);
+        }
+
+.admin-payment-tip-desc {
+            font-size: var(--text-caption);
+            color: var(--color-on-surface-variant);
+            line-height: 1.55;
+        }
+
+@media (max-width: 1024px) {
+            .admin-payment-tips {
+                grid-template-columns: 1fr;
+            }
+        }
+
+/* ══ 用户管理统计卡片 ══ */
+.admin-users-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.admin-users-stat-card {
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border-left: 3px solid var(--color-outline-variant);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.admin-users-stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.admin-users-stat-card--active {
+    border-left-color: var(--color-success);
+}
+
+.admin-users-stat-card--banned {
+    border-left-color: var(--color-error);
+}
+
+.admin-users-stat-icon {
+    color: var(--color-outline);
+    font-size: 1.25rem;
+}
+
+.admin-users-stat-card--active .admin-users-stat-icon {
+    color: var(--color-success);
+}
+
+.admin-users-stat-card--banned .admin-users-stat-icon {
+    color: var(--color-error);
+}
+
+.admin-users-stat-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-display);
+    font-weight: 800;
+    color: var(--color-on-surface);
+    line-height: 1;
+}
+
+.admin-users-stat-label {
+    font-size: var(--text-caption);
+    color: var(--color-on-surface-variant);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+@media (max-width: 767px) {
+    .admin-users-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ══ 分类列表 hover 操作按钮显隐 ══ */
+.admin-category-item {
+    transition: background var(--transition-fast);
+}
+
+.admin-category-item:hover {
+    background: color-mix(in srgb, var(--color-primary) 3%, var(--color-surface-container-lowest));
+}
+
+.admin-category-item .admin-category-item-actions {
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.admin-category-item:hover .admin-category-item-actions,
+.admin-category-item:focus-within .admin-category-item-actions {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ══ 库存看板统计卡片 ══ */
+.admin-inventory-kpi {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.admin-inventory-kpi-card {
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border-top: 3px solid var(--color-outline-variant);
+}
+
+.admin-inventory-kpi-card--warning {
+    border-top-color: var(--color-warning, #f59e0b);
+}
+
+.admin-inventory-kpi-card--danger {
+    border-top-color: var(--color-error);
+}
+
+.admin-inventory-kpi-card--primary {
+    border-top-color: var(--color-primary);
+}
+
+.admin-inventory-kpi-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-h1);
+    font-weight: 800;
+    color: var(--color-on-surface);
+    line-height: 1;
+}
+
+.admin-inventory-kpi-label {
+    font-size: var(--text-caption);
+    color: var(--color-on-surface-variant);
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .admin-inventory-kpi {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-users-stats,
+    .admin-inventory-kpi {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
 

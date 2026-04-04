@@ -44,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (is_array($admin) && password_verify($password, (string) ($admin['password_hash'] ?? ''))) {
             $_SESSION['login_attempts'] = 0;
             $_SESSION['login_lockout'] = 0;
+
+            session_regenerate_id(true);
+
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_id'] = (int) ($admin['id'] ?? 0);
             $_SESSION['admin_username'] = $username;

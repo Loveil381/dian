@@ -103,10 +103,11 @@ $default_sku = $skus[0];
 $default_sku_name = (string) ($default_sku['name'] ?? (string) ($product['name'] ?? '默认规格'));
 $show_sku_selector = count($skus) > 1 || (count($skus) === 1 && $default_sku_name !== (string) ($product['name'] ?? ''));
 
+$hideBottomNav = true;
 include __DIR__ . '/header.php';
 ?>
 
-<main class="page-shell product-detail-page">
+<main class="page-shell product-detail-page product-detail-page--has-bar">
     <?php if (!empty($_SESSION['flash'])): ?>
         <div class="product-detail-flash-wrap">
             <div class="flash success product-detail-flash">
@@ -204,23 +205,6 @@ include __DIR__ . '/header.php';
                 </div>
             </section>
 
-            <div class="product-detail-actions">
-                <button id="buyBtn" type="button" data-action="show-payment-popup" class="product-detail-buy-btn btn-primary">
-                    立即购买 <?php echo shop_format_price((float) ($default_sku['price'] ?? 0)); ?>
-                </button>
-
-                <form method="post" action="index.php?page=cart" class="product-detail-cart-form">
-                    <?php echo csrf_field(); ?>
-                    <input type="hidden" name="cart_action" value="add">
-                    <input type="hidden" name="product_id" value="<?php echo (int) ($product['id'] ?? 0); ?>">
-                    <input type="hidden" name="name" value="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
-                    <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
-                    <input type="hidden" name="sku_name" id="cartSkuName" value="<?php echo shop_e($default_sku_name); ?>">
-                    <input type="hidden" name="sku_price" id="cartSkuPrice" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
-                    <button id="cartBtnSubmit" type="submit" class="product-detail-cart-btn btn-cart">加入购物车</button>
-                </form>
-            </div>
-
             <script>
             let currentPrice = <?php echo (float) ($default_sku['price'] ?? 0); ?>;
             let currentSkuName = <?php echo json_encode($default_sku_name, JSON_UNESCAPED_UNICODE); ?>;
@@ -233,6 +217,28 @@ include __DIR__ . '/header.php';
         </section>
     </article>
 </main>
+
+<footer class="product-detail-bottom-bar">
+    <a href="index.php?page=cart" class="product-detail-bar-cart-link">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="product-detail-bar-cart-label">购物车</span>
+    </a>
+    <div class="product-detail-bar-actions">
+        <form method="post" action="index.php?page=cart" class="product-detail-cart-form">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="cart_action" value="add">
+            <input type="hidden" name="product_id" value="<?php echo (int) ($product['id'] ?? 0); ?>">
+            <input type="hidden" name="name" value="<?php echo shop_e((string) ($product['name'] ?? '')); ?>">
+            <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
+            <input type="hidden" name="sku_name" id="cartSkuName" value="<?php echo shop_e($default_sku_name); ?>">
+            <input type="hidden" name="sku_price" id="cartSkuPrice" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
+            <button id="cartBtnSubmit" type="submit" class="product-detail-bar-add-btn">加入购物车</button>
+        </form>
+        <button type="button" class="product-detail-bar-buy-btn" id="buyBtn" data-action="show-payment-popup">
+            立即购买
+        </button>
+    </div>
+</footer>
 
 <div id="alertPopup" class="modal-overlay product-detail-modal product-detail-hidden">
     <div class="product-detail-alert">

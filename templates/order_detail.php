@@ -90,6 +90,30 @@ include __DIR__ . '/header.php';
             </div>
         </section>
 
+        <div class="order-meta-cards">
+            <div class="order-meta-card">
+                <span class="material-symbols-outlined order-meta-icon" aria-hidden="true">schedule</span>
+                <div>
+                    <div class="order-meta-label">下单时间</div>
+                    <div class="order-meta-value"><?php echo shop_e(shop_short_datetime((string) ($order['time'] ?? ''))); ?></div>
+                </div>
+            </div>
+            <div class="order-meta-card">
+                <span class="material-symbols-outlined order-meta-icon" aria-hidden="true">payment</span>
+                <div>
+                    <div class="order-meta-label">支付方式</div>
+                    <div class="order-meta-value"><?php echo shop_e($pay_method_label); ?></div>
+                </div>
+            </div>
+            <div class="order-meta-card">
+                <span class="material-symbols-outlined order-meta-icon" aria-hidden="true">person</span>
+                <div>
+                    <div class="order-meta-label">收货人</div>
+                    <div class="order-meta-value"><?php echo shop_e((string) (($order['customer'] ?? '') !== '' ? $order['customer'] : '游客')); ?></div>
+                </div>
+            </div>
+        </div>
+
         <section class="card checkout-section order-detail-section">
             <div class="checkout-section-heading">
                 <div class="checkout-section-title-wrap">

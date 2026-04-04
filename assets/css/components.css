@@ -42,7 +42,7 @@
 .btn-danger:active,
 .btn-ghost:active,
 .btn-cart:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
 }
 
 .btn-primary:disabled,

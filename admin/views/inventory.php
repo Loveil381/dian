@@ -13,6 +13,25 @@
         </div>
     </div>
 
+    <div class="admin-inventory-kpi" aria-label="库存概览">
+        <div class="admin-inventory-kpi-card admin-inventory-kpi-card--primary">
+            <strong class="admin-inventory-kpi-value"><?php echo shop_format_sales((int) ($inventoryStats['total'] ?? 0)); ?></strong>
+            <span class="admin-inventory-kpi-label">商品总数</span>
+        </div>
+        <div class="admin-inventory-kpi-card admin-inventory-kpi-card--primary">
+            <strong class="admin-inventory-kpi-value"><?php echo shop_format_sales((int) ($inventoryStats['stock_total'] ?? 0)); ?></strong>
+            <span class="admin-inventory-kpi-label">库存总量（件）</span>
+        </div>
+        <div class="admin-inventory-kpi-card admin-inventory-kpi-card--warning">
+            <strong class="admin-inventory-kpi-value"><?php echo shop_format_sales((int) ($inventoryStats['low'] ?? 0)); ?></strong>
+            <span class="admin-inventory-kpi-label">低库存（≤50）</span>
+        </div>
+        <div class="admin-inventory-kpi-card admin-inventory-kpi-card--danger">
+            <strong class="admin-inventory-kpi-value"><?php echo shop_format_sales((int) ($inventoryStats['zero'] ?? 0)); ?></strong>
+            <span class="admin-inventory-kpi-label">零库存缺货</span>
+        </div>
+    </div>
+
     <div class="admin-inventory-hero">
         <div class="admin-inventory-summary">
             <div class="section-head">

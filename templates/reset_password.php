@@ -34,38 +34,8 @@ if ($pdo instanceof PDO && $token !== '') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === '') {
-    csrf_verify();
-
-    $new_password = (string) ($_POST['password'] ?? '');
-    $confirm_password = (string) ($_POST['password_confirm'] ?? '');
-
-    if (!$pdo instanceof PDO) {
-        $error = '数据库连接失败，请稍后重试。';
-    } elseif (!is_array($user)) {
-        $error = '重置链接已失效，请重新申请。';
-    } elseif ($new_password === '' || $confirm_password === '') {
-        $error = '请输入并确认新密码。';
-    } elseif (strlen($new_password) < 6) {
-        $error = '新密码长度不能少于 6 位。';
-    } elseif (!hash_equals($new_password, $confirm_password)) {
-        $error = '两次输入的密码不一致。';
-    } else {
-        try {
-            $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET password_hash = ?, reset_token = NULL, reset_expires = NULL, updated_at = NOW() WHERE id = ?");
-            $stmt->execute([$password_hash, (int) ($user['id'] ?? 0)]);
-
-            $_SESSION['auth_flash'] = [
-                'type' => 'success',
-                'message' => '密码重置成功，请使用新密码登录。',
-            ];
-            header('Location: index.php?page=auth&action=login');
-            exit;
-        } catch (Throwable $exception) {
-            shop_log('error', '重置密码失败', ['message' => $exception->getMessage()]);
-            $error = '密码重置失败，请稍后重试。';
-        }
-    }
+    require __DIR__ . '/../actions/reset_password_action.php';
+    // 成功时 action 文件 redirect + exit；失败时设 $error 并 return 到这里
 }
 
 include __DIR__ . '/header.php';
@@ -122,7 +92,7 @@ include __DIR__ . '/header.php';
                     <div class="reset-password-tips">
                         <div class="reset-password-tip">
                             <span class="material-symbols-outlined" aria-hidden="true">password</span>
-                            <span>密码长度至少 6 位</span>
+                            <span>密码长度至少 8 位</span>
                         </div>
                         <div class="reset-password-tip">
                             <span class="material-symbols-outlined" aria-hidden="true">timer</span>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/logger.php';
+require_once __DIR__ . '/../includes/pagination.php';
 require_once __DIR__ . '/../data/products.php';
 
 $currentPage = 'products';
@@ -12,8 +13,12 @@ $pageDescription = '浏览魔女小店的全部上架商品，支持关键字和
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $selected_category = trim((string) ($_GET['category'] ?? ''));
 $is_ajax = isset($_GET['ajax']);
+$productsPage = max(1, (int) ($_GET['p'] ?? 1));
+$perPage = 20;
 $categories = [];
 $products = [];
+$productTotal = 0;
+$pagination = shop_paginate(0, $perPage, 1);
 
 $pdo = get_db_connection();
 if ($pdo instanceof PDO) {
@@ -38,14 +43,22 @@ if ($pdo instanceof PDO) {
             $params[] = $like_keyword;
         }
 
-        $sql = "SELECT * FROM `{$prefix}products`";
-        if ($where_clauses !== []) {
-            $sql .= ' WHERE ' . implode(' AND ', $where_clauses);
-        }
-        $sql .= ' ORDER BY id DESC';
+        $where_sql = ' WHERE ' . implode(' AND ', $where_clauses);
 
+        $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM `{$prefix}products`" . $where_sql);
+        $count_stmt->execute($params);
+        $productTotal = (int) $count_stmt->fetchColumn();
+        $pagination = shop_paginate($productTotal, $perPage, $productsPage);
+
+        $sql = "SELECT * FROM `{$prefix}products`" . $where_sql . ' ORDER BY id DESC LIMIT ? OFFSET ?';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
+        $bindIndex = 1;
+        foreach ($params as $param) {
+            $stmt->bindValue($bindIndex++, $param, PDO::PARAM_STR);
+        }
+        $stmt->bindValue($bindIndex, (int) $pagination['limit'], PDO::PARAM_INT);
+        $stmt->bindValue($bindIndex + 1, (int) $pagination['offset'], PDO::PARAM_INT);
+        $stmt->execute();
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         shop_log('error', '商品筛选查询失败', ['message' => $exception->getMessage()]);
@@ -53,6 +66,15 @@ if ($pdo instanceof PDO) {
         $products = [];
     }
 }
+
+$paginationBaseUrl = 'index.php?page=products';
+if ($selected_category !== '') {
+    $paginationBaseUrl .= '&category=' . urlencode($selected_category);
+}
+if ($keyword !== '') {
+    $paginationBaseUrl .= '&keyword=' . urlencode($keyword);
+}
+$paginationBaseUrl .= '&p=';
 
 ob_start();
 ?>
@@ -66,7 +88,7 @@ ob_start();
         <div class="products-hero-stats">
             <div class="products-stat card">
                 <span class="products-stat-label">当前结果</span>
-                <strong class="products-stat-value"><?php echo shop_e((string) count($products)); ?></strong>
+                <strong class="products-stat-value"><?php echo shop_e((string) $productTotal); ?></strong>
             </div>
             <div class="products-stat card">
                 <span class="products-stat-label">分类数量</span>
@@ -122,7 +144,7 @@ ob_start();
         <div class="products-results-head">
             <div>
                 <h2 class="products-section-title">商品列表</h2>
-                <p class="products-section-note">共找到 <?php echo shop_e((string) count($products)); ?> 个可购买商品。</p>
+                <p class="products-section-note">共找到 <?php echo shop_e((string) $productTotal); ?> 个可购买商品。</p>
             </div>
         </div>
 
@@ -174,6 +196,7 @@ ob_start();
                     </article>
                 <?php endforeach; ?>
             </div>
+            <?php echo shop_render_pagination($pagination, $paginationBaseUrl); ?>
         <?php endif; ?>
     </section>
 </main>

@@ -12,38 +12,27 @@ require_once __DIR__ . '/../includes/logger.php';
 $pageTitle = '个人中心 - 魔女小店';
 $currentPage = 'profile';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['action'] ?? '') === 'save_profile') {
+    require __DIR__ . '/../actions/profile_action.php';
+    // profile_action.php 总是 redirect + exit，不会到达这里
+}
+
 $isLoggedIn = isset($_SESSION['user_id']);
 $userName = (string) ($_SESSION['user_name'] ?? '游客');
 $userUsername = (string) ($_SESSION['user_username'] ?? '');
 $userId = (string) ($_SESSION['user_id'] ?? '');
 $userPhone = '';
 $userAddress = '';
-$messageType = '';
-$messageText = '';
+
+$flash = $_SESSION['profile_flash'] ?? null;
+unset($_SESSION['profile_flash']);
+$messageType = (string) ($flash['type'] ?? '');
+$messageText = (string) ($flash['message'] ?? '');
 
 $pdo = get_db_connection();
 $prefix = get_db_prefix();
 
 if ($isLoggedIn && $pdo instanceof PDO) {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['action'] ?? '') === 'save_profile') {
-        csrf_verify();
-        $userName = trim((string) ($_POST['name'] ?? ''));
-        $userPhone = trim((string) ($_POST['phone'] ?? ''));
-        $userAddress = trim((string) ($_POST['address'] ?? ''));
-
-        try {
-            $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET name = ?, phone = ?, address = ? WHERE id = ?");
-            $stmt->execute([$userName, $userPhone, $userAddress, $_SESSION['user_id']]);
-            $_SESSION['user_name'] = $userName;
-            $messageType = 'success';
-            $messageText = '收货信息已保存。';
-        } catch (PDOException $e) {
-            shop_log('error', '保存收货信息失败', ['message' => $e->getMessage()]);
-            $messageType = 'error';
-            $messageText = '保存失败，请稍后重试。';
-        }
-    }
-
     try {
         $stmt = $pdo->prepare("SELECT phone, address FROM `{$prefix}users` WHERE id = ?");
         $stmt->execute([$_SESSION['user_id']]);
@@ -55,12 +44,6 @@ if ($isLoggedIn && $pdo instanceof PDO) {
     } catch (PDOException $e) {
         shop_log('error', '个人中心数据查询失败', ['message' => $e->getMessage()]);
     }
-}
-
-if (!$isLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['action'] ?? '') === 'save_profile') {
-    csrf_verify();
-    $messageType = 'warning';
-    $messageText = '访客状态下无法永久保存收货信息，请注册账号。';
 }
 
 include __DIR__ . '/header.php';

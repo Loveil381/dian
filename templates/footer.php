@@ -1,5 +1,9 @@
+<?php
+declare(strict_types=1);
+
+$showFooter = $showFooter ?? true;
+?>
 <!-- templates/footer.php -->
-<?php $showFooter = $showFooter ?? true; ?>
 
 <?php if ($showFooter): ?>
 <footer class="site-footer">

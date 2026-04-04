@@ -1,0 +1,16 @@
+# 魔女小店 - SEO 爬虫配置
+# 允许所有爬虫访问公开页面
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin_login
+Disallow: /admin_setup
+Disallow: /*.php$
+Disallow: /includes/
+Disallow: /database/
+Disallow: /assets/js/
+Disallow: /?*checkout_action=*
+Disallow: /?*cart_action=*
+
+Sitemap: /sitemap.xml

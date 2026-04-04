@@ -28,6 +28,38 @@ $today_count = 0;
 $today = date('Y-m-d');
 $order_status_options = shop_order_status_options();
 
+// 收集所有订单商品的 product_id，批量查找封面图（兼容旧订单无 cover_image）
+$all_product_ids = [];
+foreach ($orders as $order) {
+    foreach (($order['items_data'] ?? []) as $it) {
+        $pid = (int) ($it['product_id'] ?? 0);
+        if ($pid > 0) {
+            $all_product_ids[$pid] = true;
+        }
+    }
+}
+$product_covers = [];
+if ($all_product_ids !== []) {
+    $pdo_covers = get_db_connection();
+    if ($pdo_covers instanceof PDO) {
+        $prefix_covers = get_db_prefix();
+        $id_list = implode(',', array_map('intval', array_keys($all_product_ids)));
+        $stmt_covers = $pdo_covers->query("SELECT id, cover_image, images FROM `{$prefix_covers}products` WHERE id IN ({$id_list})");
+        if ($stmt_covers) {
+            while ($row = $stmt_covers->fetch(PDO::FETCH_ASSOC)) {
+                $cover = trim((string) ($row['cover_image'] ?? ''));
+                if ($cover === '' && !empty($row['images'])) {
+                    $imgs = is_string($row['images']) ? json_decode($row['images'], true) : $row['images'];
+                    if (is_array($imgs) && $imgs !== []) {
+                        $cover = trim((string) ($imgs[0] ?? ''));
+                    }
+                }
+                $product_covers[(int) $row['id']] = $cover;
+            }
+        }
+    }
+}
+
 foreach ($orders as $order) {
     $status = shop_normalize_order_status((string) ($order['status'] ?? ''));
     if (in_array($status, ['pending', 'paid'], true)) {
@@ -75,6 +107,13 @@ include __DIR__ . '/header.php';
         </article>
     </section>
 
+    <nav class="orders-filter-tabs" aria-label="订单状态过滤">
+        <button class="orders-filter-tab is-active" data-filter="all" type="button">全部</button>
+        <button class="orders-filter-tab" data-filter="pending" type="button">待付款</button>
+        <button class="orders-filter-tab" data-filter="shipped" type="button">待收货</button>
+        <button class="orders-filter-tab" data-filter="completed" type="button">已完成</button>
+    </nav>
+
     <section class="card orders-shell">
         <?php if ($orders === []): ?>
             <div class="orders-empty">
@@ -84,7 +123,7 @@ include __DIR__ . '/header.php';
                 <a href="index.php?page=products" class="btn-primary orders-empty-action">去逛商品</a>
             </div>
         <?php else: ?>
-            <div class="orders-list">
+            <div class="orders-list" id="orders-list">
                 <?php foreach ($orders as $order): ?>
                     <?php
                     $status_key = shop_normalize_order_status((string) ($order['status'] ?? ''));
@@ -93,21 +132,65 @@ include __DIR__ . '/header.php';
                         'badge_background' => '#e2e8f0',
                         'badge_color' => '#475569',
                     ];
+                    $filter_group = match ($status_key) {
+                        'pending', 'paid' => 'pending',
+                        'shipped'         => 'shipped',
+                        'completed'       => 'completed',
+                        default           => 'other',
+                    };
+                    $items_data = $order['items_data'] ?? [];
+                    $first_item = $items_data[0] ?? null;
+                    $thumb_url = '';
+                    if ($first_item !== null) {
+                        $thumb_url = trim((string) ($first_item['cover_image'] ?? ''));
+                        if ($thumb_url === '' && ($first_item['product_id'] ?? 0) > 0) {
+                            $thumb_url = $product_covers[(int) $first_item['product_id']] ?? '';
+                        }
+                    }
+                    $detail_url = 'index.php?page=order_detail&order_no=' . urlencode((string) $order['order_no']);
                     ?>
-                    <article class="card orders-item">
-                        <div class="orders-item-main">
-                            <div class="orders-item-heading">
-                                <div class="orders-item-title-wrap">
-                                    <h2 class="orders-item-title">订单号 <?php echo shop_e((string) $order['order_no']); ?></h2>
-                                    <p class="text-muted orders-item-time"><?php echo shop_e(shop_short_datetime((string) $order['time'])); ?></p>
-                                </div>
-                                <span class="badge orders-status-badge orders-status-badge--<?php echo shop_e($status_key); ?>"><?php echo shop_e((string) $status_meta['label']); ?></span>
+                    <article class="card orders-item" data-status="<?php echo shop_e($filter_group); ?>">
+                        <div class="orders-item-header">
+                            <div class="orders-item-header-left">
+                                <p class="orders-item-no">订单号: <?php echo shop_e((string) $order['order_no']); ?></p>
+                                <p class="text-muted orders-item-time"><?php echo shop_e(shop_short_datetime((string) $order['time'])); ?></p>
                             </div>
-                            <p class="orders-item-summary"><?php echo shop_e((string) $order['items_summary']); ?></p>
+                            <span class="badge orders-status-badge orders-status-badge--<?php echo shop_e($status_key); ?>"><?php echo shop_e((string) $status_meta['label']); ?></span>
                         </div>
-                        <div class="orders-item-side">
-                            <div class="text-price orders-item-total"><?php echo shop_format_price((float) $order['total']); ?></div>
-                            <a href="index.php?page=order_detail&order_no=<?php echo urlencode((string) $order['order_no']); ?>" class="orders-detail-link">查看详情</a>
+
+                        <div class="orders-item-body">
+                            <div class="orders-item-thumb">
+                                <?php if ($thumb_url !== ''): ?>
+                                    <img src="<?php echo shop_e($thumb_url); ?>" alt="<?php echo shop_e($first_item['name'] ?? ''); ?>" class="orders-item-img" loading="lazy">
+                                <?php else: ?>
+                                    <span class="material-symbols-outlined orders-item-img-fallback" aria-hidden="true">package_2</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="orders-item-info">
+                                <h2 class="orders-item-name"><?php echo shop_e($first_item['name'] ?? '商品'); ?></h2>
+                                <?php if (($first_item['sku_name'] ?? '') !== ''): ?>
+                                    <p class="orders-item-sku"><?php echo shop_e($first_item['sku_name']); ?></p>
+                                <?php endif; ?>
+                                <?php if (count($items_data) > 1): ?>
+                                    <p class="orders-item-extra">等 <?php echo count($items_data); ?> 件商品</p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="orders-item-footer">
+                            <p class="text-price orders-item-total">合计: <?php echo shop_format_price((float) $order['total']); ?></p>
+                            <div class="orders-item-actions">
+                                <?php if ($filter_group === 'pending'): ?>
+                                    <a href="<?php echo $detail_url; ?>" class="btn-ghost orders-action-btn orders-action-outline">查看详情</a>
+                                <?php elseif ($filter_group === 'shipped'): ?>
+                                    <a href="<?php echo $detail_url; ?>" class="btn-ghost orders-action-btn orders-action-secondary">查看物流</a>
+                                <?php elseif ($filter_group === 'completed'): ?>
+                                    <a href="index.php?page=products" class="btn-ghost orders-action-btn orders-action-muted">再次购买</a>
+                                    <a href="<?php echo $detail_url; ?>" class="btn-ghost orders-action-btn orders-action-outline">查看详情</a>
+                                <?php else: ?>
+                                    <a href="<?php echo $detail_url; ?>" class="btn-ghost orders-action-btn orders-action-outline">查看详情</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </article>
                 <?php endforeach; ?>
@@ -115,5 +198,34 @@ include __DIR__ . '/header.php';
         <?php endif; ?>
     </section>
 </main>
+
+<script>
+(function () {
+    'use strict';
+    var tabs = document.querySelectorAll('.orders-filter-tab');
+    var items = document.querySelectorAll('#orders-list .orders-item');
+
+    if (!tabs.length || !items.length) { return; }
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var filter = tab.getAttribute('data-filter');
+
+            // 更新 Tab active 状态
+            tabs.forEach(function (t) { t.classList.remove('is-active'); });
+            tab.classList.add('is-active');
+
+            // 显示 / 隐藏订单卡片
+            items.forEach(function (item) {
+                if (filter === 'all' || item.getAttribute('data-status') === filter) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+}());
+</script>
 
 <?php include __DIR__ . '/footer.php'; ?>

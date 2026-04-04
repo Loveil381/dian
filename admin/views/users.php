@@ -10,6 +10,24 @@
         </div>
     </div>
 
+    <div class="admin-users-stats">
+        <div class="admin-users-stat-card">
+            <span class="material-symbols-outlined admin-users-stat-icon" aria-hidden="true">group</span>
+            <strong class="admin-users-stat-value"><?php echo (int) ($userStats['total'] ?? 0); ?></strong>
+            <span class="admin-users-stat-label">注册用户</span>
+        </div>
+        <div class="admin-users-stat-card admin-users-stat-card--active">
+            <span class="material-symbols-outlined admin-users-stat-icon" aria-hidden="true">check_circle</span>
+            <strong class="admin-users-stat-value"><?php echo (int) ($userStats['active'] ?? 0); ?></strong>
+            <span class="admin-users-stat-label">正常账号</span>
+        </div>
+        <div class="admin-users-stat-card admin-users-stat-card--banned">
+            <span class="material-symbols-outlined admin-users-stat-icon" aria-hidden="true">block</span>
+            <strong class="admin-users-stat-value"><?php echo (int) ($userStats['banned'] ?? 0); ?></strong>
+            <span class="admin-users-stat-label">已封禁</span>
+        </div>
+    </div>
+
     <div class="admin-users-grid">
         <div class="admin-users-card">
             <div class="section-head">

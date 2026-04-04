@@ -39,7 +39,9 @@ function shop_send_mail_via_smtp(string $to, string $subject, string $body): boo
         return false;
     }
 
-    $socket = @stream_socket_client('tcp://' . $host . ':' . $port, $errno, $errstr, 10);
+    $errno = 0;
+    $errstr = '';
+    $socket = stream_socket_client('tcp://' . $host . ':' . $port, $errno, $errstr, 10);
     if (!is_resource($socket)) {
         shop_log('error', 'SMTP 连接失败', [
             'message' => $errstr,
@@ -72,7 +74,9 @@ function shop_send_mail_via_smtp(string $to, string $subject, string $body): boo
             'Content-Type: text/plain; charset=UTF-8',
         ];
         $message = implode("\r\n", $headers) . "\r\n\r\n" . str_replace("\n.", "\n..", $body) . "\r\n.";
-        fwrite($socket, $message . "\r\n");
+        if (fwrite($socket, $message . "\r\n") === false) {
+            throw new RuntimeException('SMTP 数据发送失败');
+        }
         shop_smtp_expect($socket, [250]);
         shop_smtp_command($socket, 'QUIT', [221]);
         fclose($socket);

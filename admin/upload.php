@@ -1,10 +1,8 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
+require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../includes/csrf.php';
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
 
 header('Content-Type: application/json; charset=UTF-8');
 

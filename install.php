@@ -59,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = '请填写数据库主机、数据库名和用户名。';
     } elseif ($form['prefix'] !== '' && !preg_match('/^[a-zA-Z0-9_]+$/', $form['prefix'])) {
         $error = '表前缀只能包含字母、数字和下划线。';
-    } elseif ($form['admin_user'] === '' || strlen($form['admin_password']) < 6) {
-        $error = '请设置管理员用户名，并确保管理员密码至少 6 位。';
+    } elseif ($form['admin_user'] === '' || strlen($form['admin_password']) < 8) {
+        $error = '请设置管理员用户名，并确保管理员密码至少 8 位。';
     } elseif (!file_exists($schema_path)) {
         $error = '未找到数据库结构文件 database/schema.sql。';
     } else {
@@ -147,12 +147,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魔女小店安装向导</title>
     <link rel="stylesheet" href="assets/css/site.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 </head>
-<body class="auth-page">
-<main class="page-shell">
+<body class="auth-page install-page">
+<main class="page-shell install-shell">
+    <header class="install-brand">
+        <div class="install-brand-icon">
+            <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+        </div>
+        <h1 class="install-brand-title">魔女小店 · 安装向导</h1>
+        <p class="install-brand-note">欢迎来到现代化的魔女小店管理系统，请按照以下步骤完成环境配置与初始化。</p>
+    </header>
+
+    <nav class="install-stepper" aria-label="安装步骤">
+        <div class="install-step <?php echo $success === '' ? 'is-active' : 'is-done'; ?>">
+            <div class="install-step-circle"><?php echo $success !== '' ? '✓' : '1'; ?></div>
+            <span class="install-step-label">步骤 1: 环境配置</span>
+        </div>
+        <div class="install-step-line"></div>
+        <div class="install-step <?php echo $success !== '' ? 'is-active' : ''; ?>">
+            <div class="install-step-circle">2</div>
+            <span class="install-step-label">步骤 2: 准备就绪</span>
+        </div>
+    </nav>
+
     <section class="auth-card auth-card--wide">
-        <h1 class="auth-title">安装向导</h1>
-        <p class="auth-description">填写数据库连接信息和管理员账号，提交后系统会自动完成初始化。</p>
+        <h2 class="auth-title"><?php echo $success !== '' ? '安装成功' : '填写配置信息'; ?></h2>
+        <p class="auth-description"><?php echo $success !== '' ? '数据库和管理员账号已创建完成，可以开始使用魔女小店了。' : '填写数据库连接信息和管理员账号，提交后系统会自动完成初始化。'; ?></p>
 
         <?php if ($error !== ''): ?>
             <div class="auth-alert auth-alert--error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>

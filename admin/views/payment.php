@@ -22,7 +22,10 @@
 
         <div class="admin-payment-grid">
             <section class="admin-payment-channel">
-                <div class="section-head">
+                <div class="admin-payment-channel-header">
+                    <div class="admin-payment-channel-icon" data-brand="wechat">
+                        <span class="material-symbols-outlined">wallet</span>
+                    </div>
                     <div>
                         <h3 class="section-title">微信支付</h3>
                         <p class="section-note">支持手动输入二维码地址，也可以直接上传图片。</p>
@@ -38,6 +41,9 @@
                 <div class="admin-payment-preview" id="wechat_preview">
                     <?php if ($wechatQr): ?>
                         <img class="admin-payment-preview-image" src="<?php echo shop_e($wechatQr); ?>" alt="微信支付二维码">
+                        <div class="admin-payment-preview-overlay">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </div>
                     <?php else: ?>
                         <span class="admin-payment-placeholder">暂未设置微信二维码</span>
                     <?php endif; ?>
@@ -45,7 +51,10 @@
             </section>
 
             <section class="admin-payment-channel">
-                <div class="section-head">
+                <div class="admin-payment-channel-header">
+                    <div class="admin-payment-channel-icon" data-brand="alipay">
+                        <span class="material-symbols-outlined">account_balance_wallet</span>
+                    </div>
                     <div>
                         <h3 class="section-title">支付宝支付</h3>
                         <p class="section-note">支持手动输入二维码地址，也可以直接上传图片。</p>
@@ -61,6 +70,9 @@
                 <div class="admin-payment-preview" id="alipay_preview">
                     <?php if ($alipayQr): ?>
                         <img class="admin-payment-preview-image" src="<?php echo shop_e($alipayQr); ?>" alt="支付宝二维码">
+                        <div class="admin-payment-preview-overlay">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </div>
                     <?php else: ?>
                         <span class="admin-payment-placeholder">暂未设置支付宝二维码</span>
                     <?php endif; ?>
@@ -72,4 +84,34 @@
             <button class="btn btn-primary" type="submit">保存支付设置</button>
         </div>
     </form>
+
+    <div class="admin-payment-tips">
+        <div class="admin-payment-tip-card">
+            <div class="admin-payment-tip-icon admin-payment-tip-icon--security">
+                <span class="material-symbols-outlined">security</span>
+            </div>
+            <div>
+                <h4 class="admin-payment-tip-title">交易安全 🔒</h4>
+                <p class="admin-payment-tip-desc">收款码直达您的账户，系统不参与任何资金结算过程，百分百安全。</p>
+            </div>
+        </div>
+        <div class="admin-payment-tip-card">
+            <div class="admin-payment-tip-icon admin-payment-tip-icon--fast">
+                <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <div>
+                <h4 class="admin-payment-tip-title">快速到账 ⚡</h4>
+                <p class="admin-payment-tip-desc">由于是直接到账收款码，资金实时进入您的微信 / 支付宝余额。</p>
+            </div>
+        </div>
+        <div class="admin-payment-tip-card">
+            <div class="admin-payment-tip-icon admin-payment-tip-icon--help">
+                <span class="material-symbols-outlined">help_center</span>
+            </div>
+            <div>
+                <h4 class="admin-payment-tip-title">需要帮助 💬</h4>
+                <p class="admin-payment-tip-desc">如果在配置过程中遇到困难，请联系魔女小店的技术支持团队。</p>
+            </div>
+        </div>
+    </div>
 </section>

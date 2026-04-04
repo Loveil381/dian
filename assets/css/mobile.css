@@ -1,3 +1,23 @@
+/* ══ 1024px 平板横屏断点 ══ */
+@media (max-width: 1024px) {
+    .home-metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .orders-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .auth-card {
+        padding: var(--space-xl);
+    }
+
+    .product-detail-bottom-bar {
+        padding: var(--space-md) var(--space-lg);
+    }
+}
+
+/* ══ 768px 手机竖屏主断点 ══ */
 @media (max-width: 768px) {
     .nav-container {
         display: grid;
@@ -74,5 +94,45 @@
     #checkoutForm button,
     #checkoutForm .pay-method-btn {
         width: 100%;
+    }
+}
+
+/* ══ 480px 小屏手机断点 ══ */
+@media (max-width: 480px) {
+    .home-metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-sm);
+    }
+
+    .home-quick-categories {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .orders-metrics {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-card,
+    .auth-card--wide {
+        padding: var(--space-lg);
+    }
+
+    .orders-shell,
+    .orders-header {
+        padding: var(--space-md);
+    }
+
+    .install-stepper {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .install-step-line {
+        display: none;
+    }
+
+    .home-pharmacist-card {
+        flex-direction: column;
+        text-align: center;
     }
 }

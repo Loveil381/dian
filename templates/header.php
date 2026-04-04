@@ -92,7 +92,7 @@ $ogImage = $ogImage ?? $defaultOgImage;
 
 <div id="searchAjaxResults" class="search-ajax-results" hidden></div>
 
-<nav class="bottom-nav app-bottom-nav" aria-label="底部导航">
+<nav class="bottom-nav app-bottom-nav<?php echo !empty($hideBottomNav) ? ' is-hidden' : ''; ?>" aria-label="底部导航">
     <a class="bottom-nav-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">
         <span class="material-symbols-outlined" aria-hidden="true">home</span>
         <span>首页</span>

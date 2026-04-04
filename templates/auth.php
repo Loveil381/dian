@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/logger.php';
+require_once __DIR__ . '/../includes/rate_limit.php';
 require_once __DIR__ . '/../data/products.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -16,86 +17,12 @@ $success = '';
 $flash = $_SESSION['auth_flash'] ?? null;
 unset($_SESSION['auth_flash']);
 
+if (isset($_GET['checkout_blocked'])) {
+    $error = '您的账号已被禁用，无法完成下单，请联系客服。';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    csrf_verify();
-
-    $pdo = get_db_connection();
-    if (!$pdo instanceof PDO) {
-        $error = '数据库连接失败，请稍后重试。';
-    } else {
-        $prefix = get_db_prefix();
-
-        if ($action === 'register') {
-            $username = trim((string) ($_POST['username'] ?? ''));
-            $name = trim((string) ($_POST['name'] ?? ''));
-            $email = trim((string) ($_POST['email'] ?? ''));
-            $password = (string) ($_POST['password'] ?? '');
-            $password_confirm = (string) ($_POST['password_confirm'] ?? '');
-
-            if ($username === '' || $name === '' || $email === '' || $password === '') {
-                $error = '请输入完整必填注册信息。';
-            } elseif (strlen($password) < 6) {
-                $error = '密码至少需要 6 位。';
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = '请输入正确的邮箱地址。';
-            } elseif ($password !== $password_confirm) {
-                $error = '两次输入的密码不一致。';
-            } else {
-                try {
-                    $stmt = $pdo->prepare("SELECT id FROM `{$prefix}users` WHERE username = ? OR email = ? LIMIT 1");
-                    $stmt->execute([$username, $email]);
-                    if ($stmt->fetch()) {
-                        $error = '用户名或邮箱已被注册使用。';
-                    } else {
-                        $hash = password_hash($password, PASSWORD_DEFAULT);
-                        $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, password_hash, status, level, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', 'member', NOW(), NOW())");
-                        $stmt->execute([$username, $name, $email, $hash]);
-
-                        $success = '注册成功，请使用新账号登录。';
-                        $action = 'login';
-                    }
-                } catch (PDOException $exception) {
-                    shop_log('error', '用户注册失败', ['message' => $exception->getMessage()]);
-                    $error = '注册失败，请稍后重试。';
-                }
-            }
-        } else {
-            $login_id = trim((string) ($_POST['login_id'] ?? ''));
-            $password = (string) ($_POST['password'] ?? '');
-
-            if ($login_id === '' || $password === '') {
-                $error = '请输入登录账号与密码。';
-            } else {
-                try {
-                    if (is_numeric($login_id)) {
-                        $stmt = $pdo->prepare("SELECT * FROM `{$prefix}users` WHERE id = ? OR username = ? OR email = ? LIMIT 1");
-                        $stmt->execute([$login_id, $login_id, $login_id]);
-                    } else {
-                        $stmt = $pdo->prepare("SELECT * FROM `{$prefix}users` WHERE username = ? OR email = ? LIMIT 1");
-                        $stmt->execute([$login_id, $login_id]);
-                    }
-
-                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if ($user && password_verify($password, (string) ($user['password_hash'] ?? ''))) {
-                        $update_stmt = $pdo->prepare("UPDATE `{$prefix}users` SET last_login = NOW() WHERE id = ?");
-                        $update_stmt->execute([(int) ($user['id'] ?? 0)]);
-
-                        $_SESSION['user_id'] = (int) ($user['id'] ?? 0);
-                        $_SESSION['user_name'] = (string) ($user['name'] ?? '');
-                        $_SESSION['user_username'] = (string) ($user['username'] ?? '');
-
-                        header('Location: index.php?page=profile');
-                        exit;
-                    }
-
-                    $error = '登录信息不正确。';
-                } catch (PDOException $exception) {
-                    shop_log('error', '用户登录失败', ['message' => $exception->getMessage()]);
-                    $error = '登录失败，请稍后重试。';
-                }
-            }
-        }
-    }
+    require __DIR__ . '/../actions/auth_action.php';
 }
 
 if ($action === 'logout') {

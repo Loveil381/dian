@@ -67,7 +67,7 @@
 
                 <label class="field field-full">
                     <span class="label">新密码</span>
-                    <input type="password" name="new_password" required placeholder="至少 6 位，建议使用更强密码" autocomplete="new-password">
+                    <input type="password" name="new_password" required placeholder="至少 8 位，建议使用更强密码" autocomplete="new-password">
                 </label>
             </div>
 
