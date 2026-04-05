@@ -137,6 +137,43 @@ include __DIR__ . '/header.php';
                     <span class="font-label checkout-total-label">总价</span>
                     <strong class="text-price text-h1 checkout-total-price"><?php echo shop_format_price($total_price); ?></strong>
                 </div>
+
+                <?php
+                // 优惠券状态
+                $appliedCoupon = $_SESSION['applied_coupon'] ?? null;
+                $couponDiscount = 0.0;
+                if (is_array($appliedCoupon)) {
+                    require_once __DIR__ . '/../data/coupons.php';
+                    $couponDiscount = shop_calculate_discount($appliedCoupon, $total_price);
+                }
+                ?>
+                <?php if (is_array($appliedCoupon)): ?>
+                    <div class="checkout-coupon-applied">
+                        <div class="checkout-coupon-info">
+                            <span class="material-symbols-outlined" aria-hidden="true" style="color:var(--color-success)">check_circle</span>
+                            <span>优惠券 <strong><?php echo shop_e((string) ($appliedCoupon['code'] ?? '')); ?></strong> 已应用，优惠 <strong class="text-price"><?php echo shop_format_price($couponDiscount); ?></strong></span>
+                        </div>
+                        <form method="post" style="display:inline">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="checkout_action" value="remove_coupon">
+                            <button class="btn btn-sm btn-ghost" type="submit">移除</button>
+                        </form>
+                    </div>
+                    <div class="checkout-total-row">
+                        <span class="font-label checkout-total-label">应付金额</span>
+                        <strong class="text-price text-h1 checkout-total-price"><?php echo shop_format_price(max(0.01, $total_price - $couponDiscount)); ?></strong>
+                    </div>
+                <?php else: ?>
+                    <form method="post" class="checkout-coupon-form">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="checkout_action" value="apply_coupon">
+                        <div class="checkout-coupon-input-row">
+                            <span class="material-symbols-outlined" aria-hidden="true" style="color:var(--color-primary)">confirmation_number</span>
+                            <input class="input" type="text" name="coupon_code" placeholder="输入优惠券码" style="flex:1;font-family:monospace;font-weight:600;letter-spacing:0.05em">
+                            <button class="btn btn-primary btn-sm" type="submit">使用</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
             </section>
 
             <form method="post" id="checkoutForm" class="checkout-form">

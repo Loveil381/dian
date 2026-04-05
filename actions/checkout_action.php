@@ -84,6 +84,35 @@ if ($checkout_action === 'quick_buy') {
     exit;
 }
 
+// ── 应用优惠券 ──
+if ($checkout_action === 'apply_coupon') {
+    require_once __DIR__ . '/../data/coupons.php';
+    $coupon_code = strtoupper(trim((string) ($_POST['coupon_code'] ?? '')));
+    $cart = $_SESSION['cart'] ?? [];
+    $cartTotal = 0.0;
+    foreach ($cart as $item) {
+        $cartTotal += (float) ($item['price'] ?? $item['sku_price'] ?? 0) * max(1, (int) ($item['quantity'] ?? 1));
+    }
+
+    $validation = shop_validate_coupon($coupon_code, $cartTotal);
+    if (!$validation['valid']) {
+        $_SESSION['flash_message'] = $validation['message'];
+    } else {
+        $_SESSION['applied_coupon'] = $validation['coupon'];
+        $_SESSION['flash_message'] = '优惠券已应用。';
+    }
+    header('Location: index.php?page=checkout');
+    exit;
+}
+
+// ── 移除优惠券 ──
+if ($checkout_action === 'remove_coupon') {
+    unset($_SESSION['applied_coupon']);
+    $_SESSION['flash_message'] = '优惠券已移除。';
+    header('Location: index.php?page=checkout');
+    exit;
+}
+
 // ── 提交订单 ──
 $customer_name = trim((string) ($_POST['customer_name'] ?? ''));
 $customer_phone = trim((string) ($_POST['customer_phone'] ?? ''));
@@ -210,7 +239,25 @@ try {
         $stmt_stock->execute([$quantity, $quantity, $product_id]);
     }
 
-    $stmt = $pdo->prepare("INSERT INTO `{$prefix}orders` (order_no, user_id, customer, phone, address, status, pay_method, total, items, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    // ── 优惠券二次验证（事务内，防过期/超限）──
+    $coupon_code_final = null;
+    $coupon_discount_final = 0.0;
+    $appliedCouponSession = $_SESSION['applied_coupon'] ?? null;
+    if (is_array($appliedCouponSession) && !empty($appliedCouponSession['code'])) {
+        require_once __DIR__ . '/../data/coupons.php';
+        $recheck = shop_validate_coupon((string) $appliedCouponSession['code'], $total);
+        if ($recheck['valid'] && shop_apply_coupon((string) $appliedCouponSession['code'])) {
+            $coupon_code_final = (string) $appliedCouponSession['code'];
+            $coupon_discount_final = shop_calculate_discount($recheck['coupon'], $total);
+            $total = max(0.01, $total - $coupon_discount_final);
+        }
+        // 验证失败静默跳过（不阻断下单，用户仍按原价支付）
+    }
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO `{$prefix}orders` (order_no, user_id, customer, phone, address, status, pay_method, total, items, coupon_code, coupon_discount, time)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+    );
     $stmt->execute([
         $order_no,
         $user_id,
@@ -221,12 +268,15 @@ try {
         $pay_method,
         $total,
         shop_encode_order_items($order_items),
+        $coupon_code_final,
+        $coupon_discount_final,
     ]);
 
     $pdo->commit();
 
     $_SESSION['cart'] = [];
     unset($_SESSION['checkout_selected_pay_method']);
+    unset($_SESSION['applied_coupon']);
     if (!isset($_SESSION['my_orders']) || !is_array($_SESSION['my_orders'])) {
         $_SESSION['my_orders'] = [];
     }

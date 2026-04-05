@@ -2809,6 +2809,38 @@ body.has-fixed-header {
     margin-top: calc(var(--space-xs) * -1);
 }
 
+/* 优惠券 */
+.checkout-coupon-form {
+    margin-top: var(--space-md);
+}
+
+.checkout-coupon-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+}
+
+.checkout-coupon-applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: color-mix(in srgb, var(--color-success) 8%, transparent);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-md);
+}
+
+.checkout-coupon-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-caption);
+}
+
 .checkout-total-label {
     color: var(--color-on-surface-variant);
     font-size: var(--text-caption);

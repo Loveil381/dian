@@ -98,6 +98,8 @@ function shop_normalize_order(array $order): array
         'items_summary' => shop_order_items_summary($items_data),
         'total' => max(0, (float) ($order['total'] ?? 0)),
         'remark' => trim((string) ($order['remark'] ?? '')),
+        'coupon_code' => trim((string) ($order['coupon_code'] ?? '')),
+        'coupon_discount' => max(0, (float) ($order['coupon_discount'] ?? 0)),
         'time' => trim((string) ($order['time'] ?? '')),
         'created_at' => trim((string) ($order['created_at'] ?? ($order['time'] ?? ''))),
         'updated_at' => trim((string) ($order['updated_at'] ?? '')),
