@@ -45,10 +45,16 @@ $ogImage = $ogImage ?? $defaultOgImage;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/design-tokens.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/site.css">
-    <link rel="stylesheet" href="assets/css/mobile.css">
+    <?php
+    $cssVersion = function(string $file): string {
+        $path = __DIR__ . '/../' . $file;
+        return $file . '?v=' . (file_exists($path) ? filemtime($path) : time());
+    };
+    ?>
+    <link rel="stylesheet" href="<?php echo $cssVersion('assets/css/design-tokens.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $cssVersion('assets/css/components.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $cssVersion('assets/css/site.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $cssVersion('assets/css/mobile.css'); ?>">
 </head>
 <body class="has-fixed-header">
 

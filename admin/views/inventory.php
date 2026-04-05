@@ -118,7 +118,21 @@
                     <input type="hidden" name="tag" value="<?php echo shop_e((string) ($selectedInventoryForm['tag'] ?? '')); ?>">
                     <input type="hidden" name="home_sort" value="<?php echo (int) ($selectedInventoryForm['home_sort'] ?? 0); ?>">
                     <input type="hidden" name="page_sort" value="<?php echo (int) ($selectedInventoryForm['page_sort'] ?? 0); ?>">
-                    <input type="hidden" name="sku" value="<?php echo shop_e((string) ($selectedInventoryForm['sku'] ?? '')); ?>">
+                    <?php
+                    // 保留原有SKU数据，解析JSON并作为数组提交
+                    $existingSkus = [];
+                    if (!empty($selectedInventoryForm['sku'])) {
+                        $decodedSkus = json_decode((string) $selectedInventoryForm['sku'], true);
+                        if (is_array($decodedSkus)) {
+                            $existingSkus = $decodedSkus;
+                        }
+                    }
+                    foreach ($existingSkus as $index => $sku):
+                    ?>
+                        <input type="hidden" name="sku[<?php echo $index; ?>][name]" value="<?php echo shop_e((string) ($sku['name'] ?? '')); ?>">
+                        <input type="hidden" name="sku[<?php echo $index; ?>][stock]" value="<?php echo (int) ($sku['stock'] ?? 0); ?>">
+                        <input type="hidden" name="sku[<?php echo $index; ?>][price]" value="<?php echo (float) ($sku['price'] ?? 0); ?>">
+                    <?php endforeach; ?>
                     <input type="hidden" name="cover_image" value="<?php echo shop_e((string) ($selectedInventoryForm['cover_image'] ?? '')); ?>">
                     <input type="hidden" name="description" value="<?php echo shop_e((string) ($selectedInventoryForm['description'] ?? '')); ?>">
                 </div>
