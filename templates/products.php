@@ -81,7 +81,7 @@ ob_start();
 <main class="page-shell products-page">
     <section class="card products-hero">
         <div class="products-hero-copy">
-            <span class="badge badge-primary">Product Gallery</span>
+            <span class="badge badge-primary">好物精选</span>
             <h1 class="products-title">全部商品</h1>
             <p class="products-subtitle">寻找属于你的蜕变良方 ✨</p>
         </div>

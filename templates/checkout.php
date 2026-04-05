@@ -115,7 +115,17 @@ include __DIR__ . '/header.php';
                     <?php foreach ($cart as $item): ?>
                         <article class="card checkout-item">
                             <div class="checkout-item-cover">
-                                <img class="checkout-item-image" src="<?php echo shop_e((string) ($item['cover_image'] ?? '')); ?>" alt="商品封面">
+                                <?php $checkout_cover = trim((string) ($item['cover_image'] ?? '')); ?>
+                                <?php if ($checkout_cover !== ''): ?>
+                                    <img class="checkout-item-image" src="<?php echo shop_e($checkout_cover); ?>" alt="<?php echo shop_e((string) ($item['name'] ?? '')); ?>" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                    <span class="checkout-item-placeholder" style="display:none" aria-hidden="true">
+                                        <span class="material-symbols-outlined">image</span>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="checkout-item-placeholder" aria-hidden="true">
+                                        <span class="material-symbols-outlined">image</span>
+                                    </span>
+                                <?php endif; ?>
                             </div>
 
                             <div class="checkout-item-content">

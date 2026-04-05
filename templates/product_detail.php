@@ -117,6 +117,13 @@ include __DIR__ . '/header.php';
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
 
+    <div class="product-detail-back-row">
+        <a class="product-detail-back" href="index.php?page=products" data-back="true">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+            <span>返回</span>
+        </a>
+    </div>
+
     <article class="product-detail">
         <section class="product-detail-gallery" aria-label="商品图片区域">
             <div class="product-detail-gallery-frame">
@@ -125,7 +132,6 @@ include __DIR__ . '/header.php';
                 <?php else: ?>
                     <div class="product-detail-image-empty">
                         <span class="material-symbols-outlined" aria-hidden="true">image</span>
-                        <span>暂无图片</span>
                     </div>
                 <?php endif; ?>
             </div>
