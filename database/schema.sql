@@ -89,6 +89,8 @@ CREATE TABLE IF NOT EXISTS {prefix}orders (
     items TEXT DEFAULT NULL,
     total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     remark VARCHAR(255) DEFAULT NULL,
+    coupon_code VARCHAR(50) DEFAULT NULL,
+    coupon_discount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -120,4 +122,37 @@ CREATE TABLE IF NOT EXISTS {prefix}settings (
     `key` VARCHAR(50) NOT NULL,
     `value` TEXT,
     PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS {prefix}coupons (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    code VARCHAR(50) NOT NULL,
+    type VARCHAR(20) NOT NULL DEFAULT 'fixed',
+    value DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    min_order_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    usage_limit INT UNSIGNED NOT NULL DEFAULT 0,
+    used_count INT UNSIGNED NOT NULL DEFAULT 0,
+    starts_at DATETIME DEFAULT NULL,
+    expires_at DATETIME DEFAULT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_coupons_code (code),
+    KEY idx_coupons_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS {prefix}admin_logs (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    admin_id INT UNSIGNED NOT NULL DEFAULT 0,
+    admin_name VARCHAR(80) NOT NULL DEFAULT '',
+    action VARCHAR(50) NOT NULL,
+    target_type VARCHAR(30) NOT NULL DEFAULT '',
+    target_id INT UNSIGNED NOT NULL DEFAULT 0,
+    detail TEXT DEFAULT NULL,
+    ip VARCHAR(45) NOT NULL DEFAULT '',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_admin_logs_created (created_at),
+    KEY idx_admin_logs_action (action)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
