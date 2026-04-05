@@ -1,4 +1,4 @@
-/* admin.css —— 后台专用样式，Phase 3 起仅承载后台改版代码 */
+/* admin.css —— 后台专用样式 */
 /* 所有颜色/圆角/阴影/字体优先使用 design-tokens.css 中的 var(--color-*) / var(--radius-*) / var(--shadow-*) / var(--font-*) */
 /* ══ 后台基础 ══ */
 :root {
@@ -318,7 +318,6 @@ body.sidebar-open .admin-overlay {
             pointer-events: auto;
         }
 
-.admin-sidebar-eyebrow,
 .admin-nav-group-title {
             margin: 0;
             color: color-mix(in srgb, var(--color-surface-container-lowest) 72%, transparent);

@@ -43,7 +43,7 @@
 
             <div class="actions">
                 <button class="btn btn-primary btn-sm" type="submit">保存预设</button>
-                <span class="help">当前提交后仍会走现有“开发中”提示逻辑。</span>
+                <span class=”help”>更多权限选项即将推出。</span>
             </div>
         </form>
 
