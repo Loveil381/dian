@@ -26,8 +26,11 @@ if ($flash_message === '') {
 unset($_SESSION['flash_message'], $_SESSION['flash']);
 
 $total_price = 0;
+$total_quantity = 0;
 foreach ($cart as $item) {
-    $total_price += (float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0);
+    $qty = max(1, (int) ($item['quantity'] ?? 1));
+    $total_price += (float) ($item['price'] ?? 0) * $qty;
+    $total_quantity += $qty;
 }
 
 include __DIR__ . '/header.php';
@@ -41,89 +44,105 @@ include __DIR__ . '/header.php';
     <?php endif; ?>
 
     <div class="cart-shell">
-        <div class="cart-heading">
-            <h1 class="cart-title font-headline">购物车</h1>
-            <p class="cart-subtitle">核对心仪商品后，就可以前往结算啦。</p>
-        </div>
-
         <?php if ($cart === []): ?>
-            <div class="home-empty-state cart-empty-state">
-                <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
-                <div class="cart-empty-copy">
-                    <strong class="home-empty-title">购物车还是空的</strong>
-                    <p class="home-empty-note">先去挑几件喜欢的商品吧。</p>
+            <!-- ── 空购物车 ── -->
+            <div class="cart-empty">
+                <div class="cart-empty-icon-wrap">
+                    <span class="material-symbols-outlined cart-empty-icon" aria-hidden="true">shopping_cart</span>
                 </div>
-                <a class="btn-primary cart-empty-action" href="index.php?page=products">继续购物</a>
+                <strong class="cart-empty-title">购物车是空的</strong>
+                <p class="cart-empty-note">去挑几件喜欢的商品吧</p>
+                <a class="btn-primary cart-empty-action" href="index.php?page=products">去逛逛</a>
             </div>
         <?php else: ?>
+            <!-- ── 标题栏：返回 + 标题(数量) + 清空 ── -->
+            <div class="cart-header">
+                <a class="cart-back" href="index.php?page=products">
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                    <span>继续购物</span>
+                </a>
+                <h1 class="cart-title font-headline">购物车<span class="cart-count">(<?php echo $total_quantity; ?>)</span></h1>
+                <form method="post" class="cart-clear-form">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="cart_action" value="clear">
+                    <button class="cart-clear-link" type="submit" data-confirm-click="确定要清空购物车吗？此操作不可撤销。">
+                        <span class="material-symbols-outlined" aria-hidden="true">delete_sweep</span>
+                        <span>清空</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- ── 商品列表 ── -->
             <div class="cart-list">
-                <?php foreach ($cart as $index => $item): ?>
+                <?php foreach ($cart as $index => $item):
+                    $item_qty = max(1, (int) ($item['quantity'] ?? 1));
+                    $item_price = (float) ($item['price'] ?? 0);
+                    $item_subtotal = $item_price * $item_qty;
+                ?>
                     <article class="card cart-item">
-                        <div class="cart-item-main">
-                            <a class="cart-item-media" href="index.php?page=product_detail&id=<?php echo (int) ($item['product_id'] ?? 0); ?>">
-                                <img class="cart-item-image" src="<?php echo shop_e((string) ($item['cover_image'] ?? '')); ?>" alt="商品封面">
+                        <div class="cart-item-body">
+                            <a class="cart-item-cover" href="index.php?page=product_detail&id=<?php echo (int) ($item['product_id'] ?? 0); ?>">
+                                <?php $cover_src = trim((string) ($item['cover_image'] ?? '')); ?>
+                                <?php if ($cover_src !== ''): ?>
+                                    <img class="cart-item-image" src="<?php echo shop_e($cover_src); ?>" alt="<?php echo shop_e((string) ($item['name'] ?? '')); ?>" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                    <span class="cart-item-placeholder" style="display:none" aria-hidden="true">
+                                        <span class="material-symbols-outlined">image</span>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="cart-item-placeholder" aria-hidden="true">
+                                        <span class="material-symbols-outlined">image</span>
+                                    </span>
+                                <?php endif; ?>
                             </a>
-                            <div class="cart-item-content">
-                                <a class="cart-item-name font-headline" href="index.php?page=product_detail&id=<?php echo (int) ($item['product_id'] ?? 0); ?>">
-                                    <?php echo shop_e((string) ($item['name'] ?? '')); ?>
-                                </a>
-                                <span class="badge badge-primary cart-item-sku">规格：<?php echo shop_e((string) ($item['sku_name'] ?? '')); ?></span>
-                                <div class="cart-item-price text-price"><?php echo shop_format_price((float) ($item['price'] ?? 0)); ?></div>
+                            <div class="cart-item-info">
+                                <div class="cart-item-top-row">
+                                    <a class="cart-item-name" href="index.php?page=product_detail&id=<?php echo (int) ($item['product_id'] ?? 0); ?>">
+                                        <?php echo shop_e((string) ($item['name'] ?? '')); ?>
+                                    </a>
+                                    <form method="post" class="cart-item-delete-form">
+                                        <?php echo csrf_field(); ?>
+                                        <input type="hidden" name="cart_action" value="remove">
+                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
+                                        <button class="cart-item-delete" type="submit" title="删除此商品" data-confirm-click="确定要删除这件商品吗？">
+                                            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                                        </button>
+                                    </form>
+                                </div>
+                                <span class="badge cart-item-sku"><?php echo shop_e((string) ($item['sku_name'] ?? '默认规格')); ?></span>
+                                <div class="cart-item-bottom-row">
+                                    <span class="cart-item-price text-price"><?php echo shop_format_price($item_price); ?></span>
+                                    <div class="cart-qty-stepper">
+                                        <form method="post" class="cart-qty-form">
+                                            <?php echo csrf_field(); ?>
+                                            <input type="hidden" name="cart_action" value="update">
+                                            <input type="hidden" name="index" value="<?php echo $index; ?>">
+                                            <input type="hidden" name="quantity" class="cart-qty-value" value="<?php echo $item_qty; ?>">
+                                            <button type="button" class="cart-qty-btn cart-qty-dec" aria-label="减少数量">
+                                                <span class="material-symbols-outlined">remove</span>
+                                            </button>
+                                            <span class="cart-qty-display"><?php echo $item_qty; ?></span>
+                                            <button type="button" class="cart-qty-btn cart-qty-inc" aria-label="增加数量">
+                                                <span class="material-symbols-outlined">add</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <span class="cart-item-subtotal text-price"><?php echo shop_format_price($item_subtotal); ?></span>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="cart-item-actions">
-                            <div class="cart-qty-stepper">
-                                <form method="post" class="cart-qty-form">
-                                    <?php echo csrf_field(); ?>
-                                    <input type="hidden" name="cart_action" value="update">
-                                    <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                    <input type="hidden" name="quantity" class="cart-qty-value" value="<?php echo (int) ($item['quantity'] ?? 1); ?>">
-                                    <button type="button" class="cart-qty-btn cart-qty-dec" aria-label="减少数量">
-                                        <span class="material-symbols-outlined">remove</span>
-                                    </button>
-                                    <span class="cart-qty-display"><?php echo (int) ($item['quantity'] ?? 1); ?></span>
-                                    <button type="button" class="cart-qty-btn cart-qty-inc" aria-label="增加数量">
-                                        <span class="material-symbols-outlined">add</span>
-                                    </button>
-                                </form>
-                            </div>
-
-                            <form method="post" class="cart-remove-form">
-                                <?php echo csrf_field(); ?>
-                                <input type="hidden" name="cart_action" value="remove">
-                                <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                <button class="btn-ghost cart-action-btn cart-action-btn--error" type="submit">
-                                    <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-                                    <span>删除</span>
-                                </button>
-                            </form>
                         </div>
                     </article>
                 <?php endforeach; ?>
             </div>
 
-            <div class="card cart-summary">
-                <div class="cart-summary-meta">
-                    <span class="cart-summary-label">总价</span>
-                    <strong class="text-price text-h1 font-headline"><?php echo shop_format_price($total_price); ?></strong>
+            <!-- ── 底部结算栏（仿淘宝/京东） ── -->
+            <div class="cart-bar">
+                <div class="cart-bar-total">
+                    <span class="cart-bar-label">合计</span>
+                    <span class="text-price cart-bar-price font-headline"><?php echo shop_format_price($total_price); ?></span>
                 </div>
-
-                <div class="cart-summary-actions">
-                    <form method="post" class="cart-clear-form">
-                        <?php echo csrf_field(); ?>
-                        <input type="hidden" name="cart_action" value="clear">
-                        <button class="btn-danger cart-summary-btn" type="submit">
-                            <span class="material-symbols-outlined" aria-hidden="true">delete_sweep</span>
-                            <span>清空购物车</span>
-                        </button>
-                    </form>
-
-                    <a class="btn-primary cart-summary-btn" href="index.php?page=checkout">
-                        <span>去结算</span>
-                        <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-                    </a>
-                </div>
+                <a class="btn-primary cart-bar-checkout" href="index.php?page=checkout">
+                    去结算(<?php echo $total_quantity; ?>)
+                </a>
             </div>
         <?php endif; ?>
     </div>

@@ -38,7 +38,7 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
             <span class="material-symbols-outlined" aria-hidden="true">menu</span>
         </button>
         <div class="admin-topbar-brand">
-            <span class="badge badge-primary">Admin Control</span>
+            <span class="badge badge-primary">管理后台</span>
             <div class="admin-topbar-copy">
                 <strong class="admin-topbar-title">魔女小店后台</strong>
                 <span class="admin-topbar-subtitle"><?php echo shop_e($currentTabLabel); ?></span>

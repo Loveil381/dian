@@ -550,4 +550,25 @@ document.addEventListener('DOMContentLoaded', () => {
             showQR(initialPayMethod);
         }
     }
+
+    // ── 通用确认弹窗（data-confirm-click） ──
+    document.querySelectorAll('[data-confirm-click]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+            var message = el.getAttribute('data-confirm-click') || '确定继续当前操作吗？';
+            if (!confirm(message)) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    });
+
+    // ── 返回按钮（data-back）：有浏览历史时 history.back()，否则走 href 兜底 ──
+    document.querySelectorAll('[data-back]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+            if (window.history.length > 1) {
+                e.preventDefault();
+                history.back();
+            }
+        });
+    });
 });
