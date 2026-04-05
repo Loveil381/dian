@@ -107,6 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once __DIR__ . '/setting_actions.php';
             $result = handle_save_consult();
             break;
+        case 'save_notification':
+            require_once __DIR__ . '/setting_actions.php';
+            $result = handle_save_notification();
+            break;
 
         // ── 优惠券 ──
         case 'save_coupon':

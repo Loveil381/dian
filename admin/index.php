@@ -127,6 +127,14 @@ $wechatQr = '';
 $alipayQr = '';
 $requireAddress = '0';
 
+// 通知设置默认变量
+$notifyAdminCreated = '0';
+$notifyAdminPaid = '0';
+$notifyCustomerCreated = '0';
+$notifyCustomerShipped = '0';
+$notifyCustomerCompleted = '0';
+$notifyAdminEmail = '';
+
 $consultEnabled = '0';
 $consultTitle = '';
 $consultGreeting = '';

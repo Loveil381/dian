@@ -115,6 +115,61 @@
             </div>
         </form>
 
+        <!-- 订单通知设置 -->
+        <form method="post" class="admin-settings-card">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+            <input type="hidden" name="admin_action" value="save_notification">
+
+            <h3 class="admin-settings-card-title">
+                <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
+                订单通知
+            </h3>
+
+            <div class="admin-settings-desc">订单状态变更时自动发送邮件通知。需要先配置 SMTP 环境变量才能正常发送。</div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <span class="label">管理员接收邮箱</span>
+                    <input class="input" type="email" name="notify_admin_email"
+                           value="<?php echo shop_e($notifyAdminEmail); ?>"
+                           placeholder="admin@example.com">
+                </div>
+
+                <div class="field">
+                    <span class="label">管理员通知</span>
+                    <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;margin-bottom:var(--space-xs)">
+                        <input type="checkbox" name="notify_admin_created" value="1" <?php echo $notifyAdminCreated === '1' ? 'checked' : ''; ?>>
+                        新订单提醒
+                    </label>
+                    <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer">
+                        <input type="checkbox" name="notify_admin_paid" value="1" <?php echo $notifyAdminPaid === '1' ? 'checked' : ''; ?>>
+                        收款提醒
+                    </label>
+                </div>
+
+                <div class="field">
+                    <span class="label">客户通知</span>
+                    <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;margin-bottom:var(--space-xs)">
+                        <input type="checkbox" name="notify_customer_created" value="1" <?php echo $notifyCustomerCreated === '1' ? 'checked' : ''; ?>>
+                        下单确认
+                    </label>
+                    <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;margin-bottom:var(--space-xs)">
+                        <input type="checkbox" name="notify_customer_shipped" value="1" <?php echo $notifyCustomerShipped === '1' ? 'checked' : ''; ?>>
+                        发货通知
+                    </label>
+                    <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer">
+                        <input type="checkbox" name="notify_customer_completed" value="1" <?php echo $notifyCustomerCompleted === '1' ? 'checked' : ''; ?>>
+                        完成通知
+                    </label>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary btn-sm" type="submit">保存通知设置</button>
+            </div>
+        </form>
+
         <form method="post" class="admin-settings-card">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">

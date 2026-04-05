@@ -20,4 +20,22 @@ if ($pdo) {
             if ($row['key'] === 'consult_notice') $consultNotice = $row['value'];
         }
     } catch (PDOException $e) {}
+
+    // 通知设置
+    try {
+        $notifyStmt = $pdo->query("SELECT `key`, `value` FROM `{$prefix}settings` WHERE `key` IN ('notify_admin_created', 'notify_admin_paid', 'notify_customer_created', 'notify_customer_shipped', 'notify_customer_completed', 'notify_admin_email')");
+        while ($row = $notifyStmt->fetch()) {
+            $varName = 'notify' . str_replace('notify', '', str_replace('_', '', ucwords(str_replace('_', ' ', $row['key']))));
+            // 简单映射到变量
+            $$row['key'] = $row['value'];
+        }
+    } catch (PDOException $e) {}
 }
+
+// 通知设置默认值（使用 settings key 同名变量）
+$notifyAdminCreated = ${'notify_admin_created'} ?? '0';
+$notifyAdminPaid = ${'notify_admin_paid'} ?? '0';
+$notifyCustomerCreated = ${'notify_customer_created'} ?? '0';
+$notifyCustomerShipped = ${'notify_customer_shipped'} ?? '0';
+$notifyCustomerCompleted = ${'notify_customer_completed'} ?? '0';
+$notifyAdminEmail = ${'notify_admin_email'} ?? '';

@@ -283,6 +283,19 @@ try {
     $_SESSION['my_orders'][] = $order_no;
     $_SESSION['flash_message'] = '订单已提交，请等待商家确认收款。';
 
+    // 触发下单通知
+    try {
+        require_once __DIR__ . '/../includes/notification.php';
+        $notifyOrder = [
+            'order_no' => $order_no, 'total' => $total, 'customer' => $customer_name,
+            'phone' => $customer_phone, 'address' => $customer_address,
+            'user_id' => $user_id, 'items_data' => $order_items,
+        ];
+        shop_notify_order_event('created', $notifyOrder);
+    } catch (\Throwable $e) {
+        shop_log('warning', '下单通知触发失败', ['order_no' => $order_no]);
+    }
+
     header('Location: index.php?page=orders');
     exit;
 } catch (Throwable $exception) {

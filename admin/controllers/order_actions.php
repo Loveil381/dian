@@ -107,6 +107,21 @@ function handle_update_order_status(): array
         $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET status = ? WHERE id = ?");
         $stmt->execute([$status, $id]);
         shop_admin_log('update_order_status', 'order', $id, '状态变更为 ' . $status);
+
+        // 触发通知
+        try {
+            require_once __DIR__ . '/../../includes/notification.php';
+            $orderStmt = $pdo->prepare("SELECT * FROM `{$prefix}orders` WHERE id = ? LIMIT 1");
+            $orderStmt->execute([$id]);
+            $updatedOrder = $orderStmt->fetch(PDO::FETCH_ASSOC);
+            if (is_array($updatedOrder)) {
+                $updatedOrder = shop_normalize_order($updatedOrder);
+                shop_notify_order_event($status, $updatedOrder);
+            }
+        } catch (\Throwable $e) {
+            shop_log('warning', '订单通知触发失败', ['order_id' => $id, 'event' => $status]);
+        }
+
         return ['订单状态已更新。', 'success'];
     } catch (PDOException $e) {
         return ['订单状态更新失败: ' . $e->getMessage(), 'error'];

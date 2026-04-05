@@ -106,3 +106,35 @@ function handle_save_consult(): array
         return ['在线咨询设置保存失败: ' . $e->getMessage(), 'error'];
     }
 }
+
+/**
+ * 保存订单通知设置。
+ */
+function handle_save_notification(): array
+{
+    $pdo = get_db_connection();
+    $prefix = get_db_prefix();
+
+    if (!$pdo) {
+        return ['数据库连接失败', 'error'];
+    }
+
+    $keys = [
+        'notify_admin_created'      => shop_admin_post_checked('notify_admin_created') ? '1' : '0',
+        'notify_admin_paid'         => shop_admin_post_checked('notify_admin_paid') ? '1' : '0',
+        'notify_customer_created'   => shop_admin_post_checked('notify_customer_created') ? '1' : '0',
+        'notify_customer_shipped'   => shop_admin_post_checked('notify_customer_shipped') ? '1' : '0',
+        'notify_customer_completed' => shop_admin_post_checked('notify_customer_completed') ? '1' : '0',
+        'notify_admin_email'        => shop_admin_post_string('notify_admin_email'),
+    ];
+
+    try {
+        foreach ($keys as $key => $value) {
+            shop_set_setting($key, $value);
+        }
+        shop_admin_log('save_notification', 'settings', 0, '更新订单通知设置');
+        return ['通知设置已更新。', 'success'];
+    } catch (\Throwable $e) {
+        return ['通知设置保存失败: ' . $e->getMessage(), 'error'];
+    }
+}
