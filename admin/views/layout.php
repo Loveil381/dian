@@ -60,9 +60,8 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
 
     <aside class="admin-sidebar" id="sidebar" aria-label="后台导航">
         <div class="admin-sidebar-head">
-            <p class="admin-sidebar-eyebrow">Phase 3 Ready</p>
-            <h1 class="admin-sidebar-title">运营中枢</h1>
-            <p class="admin-sidebar-note">商品、分类、订单、用户与支付配置在此统一管理，后台样式从本轮起仅写入 admin.css。</p>
+            <h1 class="admin-sidebar-title">魔女小店</h1>
+            <p class="admin-sidebar-note">后台管理</p>
         </div>
 
         <nav class="admin-sidebar-nav">
