@@ -86,6 +86,13 @@ if ($checkout_action === 'quick_buy') {
 
 // ── 应用优惠券 ──
 if ($checkout_action === 'apply_coupon') {
+    // 速率限制：防止暴力枚举券码（每分钟最多 5 次）
+    if (!shop_rate_limit('apply_coupon', 5, 60)) {
+        $_SESSION['flash_message'] = '操作过于频繁，请稍后再试。';
+        header('Location: index.php?page=checkout');
+        exit;
+    }
+
     require_once __DIR__ . '/../data/coupons.php';
     $coupon_code = strtoupper(trim((string) ($_POST['coupon_code'] ?? '')));
     $cart = $_SESSION['cart'] ?? [];

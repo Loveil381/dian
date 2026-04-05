@@ -159,6 +159,17 @@ include __DIR__ . '/header.php';
                     <span class="order-detail-info-label">支付方式</span>
                     <span class="order-detail-info-value"><?php echo shop_e($pay_method_label); ?></span>
                 </div>
+                <?php if (!empty($order['coupon_code'])): ?>
+                <div class="order-detail-info-row">
+                    <span class="order-detail-info-label">优惠券</span>
+                    <span class="order-detail-info-value">
+                        <span style="font-family:monospace;font-weight:700;color:var(--color-primary)"><?php echo shop_e((string) $order['coupon_code']); ?></span>
+                        <?php if ((float) ($order['coupon_discount'] ?? 0) > 0): ?>
+                            <span style="color:var(--color-success);margin-left:var(--space-sm)">-<?php echo shop_format_price((float) $order['coupon_discount']); ?></span>
+                        <?php endif; ?>
+                    </span>
+                </div>
+                <?php endif; ?>
                 <div class="order-detail-info-row">
                     <span class="order-detail-info-label">总金额</span>
                     <span class="order-detail-info-value text-price"><?php echo shop_format_price((float) $order['total']); ?></span>
