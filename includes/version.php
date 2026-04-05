@@ -8,7 +8,7 @@ declare(strict_types=1);
  * 更新中心依赖此值与 GitHub Releases 比对。
  */
 
-const SHOP_APP_VERSION = '1.2.0';
+const SHOP_APP_VERSION = '1.3.0';
 
 function shop_app_version(): string
 {
