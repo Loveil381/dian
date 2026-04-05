@@ -12,11 +12,15 @@ $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
 $canonicalParams = [];
 $pageParam = trim((string) ($_GET['page'] ?? ''));
 $idParam = trim((string) ($_GET['id'] ?? ''));
+$slugParam = trim((string) ($_GET['slug'] ?? ''));
 if ($pageParam !== '') {
     $canonicalParams['page'] = $pageParam;
 }
 if ($idParam !== '') {
     $canonicalParams['id'] = $idParam;
+}
+if ($slugParam !== '') {
+    $canonicalParams['slug'] = $slugParam;
 }
 $canonicalPath = '/index.php';
 $canonicalQuery = $canonicalParams === [] ? '' : '?' . http_build_query($canonicalParams);
