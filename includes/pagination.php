@@ -30,19 +30,20 @@ function shop_render_pagination(array $pagination, string $baseUrl): string
 
     $start_page = max(1, $current_page - 2);
     $end_page = min($total_pages, $current_page + 2);
-    $html = '<nav class="shop-pagination" aria-label="分页导航" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; margin-top:16px;">';
+    $html = '<nav class="shop-pagination" aria-label="分页导航">';
 
     if (!empty($pagination['has_prev'])) {
-        $html .= '<a href="' . shop_e($baseUrl . ($current_page - 1)) . '" style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; text-decoration:none; color:#334155; background:#ffffff;">上一页</a>';
+        $html .= '<a href="' . shop_e($baseUrl . ($current_page - 1)) . '" class="shop-pagination-link">上一页</a>';
     }
 
     for ($page = $start_page; $page <= $end_page; $page++) {
         $is_current = $page === $current_page;
-        $html .= '<a href="' . shop_e($baseUrl . $page) . '" style="padding:8px 12px; border:1px solid ' . ($is_current ? '#2563eb' : '#cbd5e1') . '; border-radius:8px; text-decoration:none; color:' . ($is_current ? '#ffffff' : '#334155') . '; background:' . ($is_current ? '#2563eb' : '#ffffff') . ';">' . $page . '</a>';
+        $cls = 'shop-pagination-link' . ($is_current ? ' shop-pagination-link--active' : '');
+        $html .= '<a href="' . shop_e($baseUrl . $page) . '" class="' . $cls . '">' . $page . '</a>';
     }
 
     if (!empty($pagination['has_next'])) {
-        $html .= '<a href="' . shop_e($baseUrl . ($current_page + 1)) . '" style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; text-decoration:none; color:#334155; background:#ffffff;">下一页</a>';
+        $html .= '<a href="' . shop_e($baseUrl . ($current_page + 1)) . '" class="shop-pagination-link">下一页</a>';
     }
 
     $html .= '</nav>';

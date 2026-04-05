@@ -61,7 +61,7 @@ require_once __DIR__ . '/controllers/actions.php';
 $pdo = get_db_connection();
 $prefix = get_db_prefix();
 $categoryOptions = shop_category_names();
-$perPage = 20;
+$perPage = (int) shop_get_setting('items_per_page', '20');
 
 // ── 仅在需要的 tab 加载全量商品（dashboard / products / categories / inventory）──
 $needsProducts = in_array($currentTab, ['dashboard', 'products', 'categories', 'inventory'], true);

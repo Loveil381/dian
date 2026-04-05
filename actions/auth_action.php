@@ -37,8 +37,8 @@ if ($action === 'register') {
         $error = '请输入完整必填注册信息。';
     } elseif (!preg_match('/^[a-zA-Z][a-zA-Z0-9_\-]{2,19}$/', $username)) {
         $error = '用户名需以英文字母开头，仅允许字母、数字、下划线和连字符，长度 3-20 位。';
-    } elseif (strlen($password) < 8) {
-        $error = '密码至少需要 8 位。';
+    } elseif (strlen($password) < ($minPwdLen = (int) shop_get_setting('min_password_length', '8'))) {
+        $error = '密码至少需要 ' . $minPwdLen . ' 位。';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = '请输入正确的邮箱地址。';
     } elseif ($password !== $password_confirm) {

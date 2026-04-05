@@ -26,7 +26,8 @@ if ($selectedInventoryPublishedAtInput === '') {
 $inventoryRows = $products;
 usort($inventoryRows, static fn (array $a, array $b): int => ((int) ($a['stock'] ?? 0)) <=> ((int) ($b['stock'] ?? 0)) ?: (((int) ($b['sales'] ?? 0)) <=> ((int) ($a['sales'] ?? 0))));
 
-$lowStockProducts = array_values(array_filter($products, static fn (array $p): bool => (int) ($p['stock'] ?? 0) <= 50));
+$lowStockThreshold = (int) shop_get_setting('low_stock_threshold', '50');
+$lowStockProducts = array_values(array_filter($products, static fn (array $p): bool => (int) ($p['stock'] ?? 0) <= $lowStockThreshold));
 usort($lowStockProducts, static fn (array $a, array $b): int => ((int) ($a['stock'] ?? 0)) <=> ((int) ($b['stock'] ?? 0)) ?: (((int) ($b['sales'] ?? 0)) <=> ((int) ($a['sales'] ?? 0))));
 
 $inventoryStats = [

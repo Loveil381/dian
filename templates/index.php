@@ -27,7 +27,7 @@ $showPhone = ($consultPhone !== '');
 
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $homePage = max(1, (int) ($_GET['p'] ?? 1));
-$perPage = 20;
+$perPage = (int) shop_get_setting('items_per_page', '20');
 
 $metrics = ['count' => 0, 'category_count' => 0, 'sales' => 0, 'home_priority_count' => 0];
 $sortedProducts = [];
