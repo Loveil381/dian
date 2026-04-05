@@ -62,7 +62,7 @@ include __DIR__ . '/header.php';
                     <p class="profile-hero-meta">ID: <?php echo shop_e($userId); ?> | 用户名：<?php echo shop_e($userUsername); ?></p>
                 </div>
             <?php else: ?>
-                <a href="index.php?page=auth&action=register" class="profile-guest-entry">
+                <a href="index.php?page=auth&action=login" class="profile-guest-entry">
                     <div class="profile-hero-avatar profile-hero-avatar--guest">
                         <span class="material-symbols-outlined" aria-hidden="true">person</span>
                     </div>

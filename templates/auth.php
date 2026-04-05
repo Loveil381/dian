@@ -117,7 +117,7 @@ include __DIR__ . '/header.php';
                         <label class="font-label auth-label" for="username">用户名</label>
                         <div class="auth-field-control">
                             <span class="material-symbols-outlined auth-field-icon" aria-hidden="true">person</span>
-                            <input class="input auth-input" id="username" type="text" name="username" required placeholder="请输入用户名">
+                            <input class="input auth-input" id="username" type="text" name="username" required placeholder="请输入用户名（英文字母开头，3-20位）" pattern="[a-zA-Z][a-zA-Z0-9_\-]{2,19}" title="用户名仅允许英文字母、数字、下划线和连字符，需以字母开头，长度3-20位" minlength="3" maxlength="20">
                         </div>
                     </div>
 
