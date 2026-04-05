@@ -119,13 +119,13 @@
                 <span class="material-symbols-outlined" style="color: var(--color-secondary);">cloud_download</span>
                 备份管理
             </h3>
-            <form method="post" style="margin: 0;">
+            <form method="post" style="margin: 0;" onsubmit="this.querySelector('button').disabled=true;this.querySelector('.updates-backup-btn-text').textContent='备份创建中...';">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" name="tab" value="<?php echo shop_e($currentTab); ?>">
                 <input type="hidden" name="admin_action" value="create_backup">
                 <button type="submit" class="updates-backup-btn">
                     <span class="material-symbols-outlined" style="font-size: 1.25rem;">add_circle</span>
-                    创建手动备份
+                    <span class="updates-backup-btn-text">创建手动备份</span>
                 </button>
             </form>
         </div>

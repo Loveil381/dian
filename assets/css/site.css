@@ -566,6 +566,64 @@ header {
     line-height: 1.7;
 }
 
+/* ── 商品详情：数量选择器 ── */
+.product-detail-qty {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+}
+.product-detail-qty-title {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-on-surface);
+}
+.product-detail-qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-full);
+    padding: var(--space-xs);
+}
+.qty-stepper-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+.qty-stepper-btn:hover {
+    background: var(--color-primary-container);
+    color: var(--color-primary);
+}
+.qty-stepper-btn:active {
+    transform: scale(0.9);
+}
+.qty-stepper-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+.qty-stepper-btn--disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+.qty-stepper-display {
+    min-width: 36px;
+    text-align: center;
+    font-weight: 700;
+    font-size: var(--text-h2);
+    font-family: var(--font-headline);
+    color: var(--color-on-surface);
+    user-select: none;
+}
+
 .product-detail-title {
     margin: 0;
     color: var(--color-on-surface);
@@ -4240,6 +4298,241 @@ body.has-fixed-header {
     font-size: 1.5rem;
 }
 
+/* ══ 在线咨询气泡组件 ══ */
+.consult-widget {
+    position: fixed;
+    bottom: calc(5rem + var(--space-md));
+    right: var(--space-lg);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-sm);
+}
+
+/* FAB 按钮（在 widget 内部，覆盖原先的 fixed 定位） */
+.consult-widget .home-consult-fab {
+    position: static;
+}
+
+/* FAB 图标切换 */
+.consult-fab-icon--close { display: none; }
+.consult-widget--open .consult-fab-icon--chat { display: none; }
+.consult-widget--open .consult-fab-icon--close { display: block; }
+.consult-widget--open .home-consult-fab {
+    background: var(--color-surface-container);
+    color: var(--color-on-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 弹出卡片 */
+.consult-card {
+    width: min(340px, calc(100vw - var(--space-xl) * 2));
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transform-origin: bottom right;
+    animation: consultCardIn var(--transition-normal) ease-out;
+}
+
+.consult-card--hidden {
+    display: none;
+}
+
+@keyframes consultCardIn {
+    from { opacity: 0; transform: scale(0.9) translateY(var(--space-sm)); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 卡片头部 */
+.consult-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+}
+
+.consult-card-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.2);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.consult-card-avatar .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
+.consult-card-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.consult-card-title {
+    margin: 0;
+    font-family: var(--font-headline);
+    font-size: var(--text-body);
+    font-weight: 700;
+}
+
+.consult-card-greeting {
+    margin: var(--space-xs) 0 0;
+    font-size: var(--text-caption);
+    opacity: 0.85;
+    line-height: 1.4;
+}
+
+.consult-card-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.consult-card-close:hover {
+    color: #fff;
+}
+
+.consult-card-close .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
+/* 卡片内容 */
+.consult-card-body {
+    display: grid;
+    gap: 1px;
+    background: var(--color-surface-container-low);
+}
+
+.consult-card-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface-container-lowest);
+    text-decoration: none;
+    color: inherit;
+}
+
+.consult-card-item--link {
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.consult-card-item--link:hover {
+    background: var(--color-surface-container-low);
+}
+
+.consult-card-item-icon {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.consult-card-item-content {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: var(--space-xs);
+}
+
+.consult-card-item-label {
+    font-size: var(--text-caption);
+    color: var(--color-on-surface-variant);
+    font-weight: 500;
+}
+
+.consult-card-item-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-body);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.consult-card-item-arrow {
+    font-size: 1.25rem;
+    color: var(--color-outline);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* 微信二维码 */
+.consult-qr-wrap {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-sm);
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+}
+
+.consult-qr-image {
+    width: min(160px, 100%);
+    height: auto;
+    border-radius: var(--radius-sm);
+}
+
+/* 微信号复制 */
+.consult-wechat-id {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.consult-copyable {
+    font-weight: 600;
+    font-size: var(--text-body);
+    color: var(--color-on-surface);
+    user-select: all;
+}
+
+.consult-copy-btn {
+    display: inline-grid;
+    place-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-primary);
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+.consult-copy-btn:hover {
+    background: var(--color-primary-container);
+}
+
+.consult-copy-btn .material-symbols-outlined {
+    font-size: 1rem;
+}
+
+/* 底部提示 */
+.consult-card-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-surface-container-low);
+    font-size: var(--text-caption);
+    color: var(--color-on-surface-variant);
+}
+
+.consult-card-footer .material-symbols-outlined {
+    font-size: 1rem;
+    flex-shrink: 0;
+    color: var(--color-primary);
+}
+
 
 /* ══ 首页 UI 改版 ══ */
 .home-hero-wrap {
@@ -4372,27 +4665,6 @@ body.has-fixed-header {
     background: var(--color-surface-container-low);
 }
 
-.home-card-v2-fav-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: var(--glass-blur);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-secondary);
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-}
-
-.home-card-v2-fav-btn .material-symbols-outlined {
-    font-size: 14px;
-}
 
 .home-card-v2-body {
     display: flex;

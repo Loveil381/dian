@@ -401,6 +401,73 @@ function shopBindProductGallery() {
     });
 }
 
+function shopUpdateQtyDisplay(qty) {
+    var display = document.getElementById('qtyDisplay');
+    var cartQtyInput = document.getElementById('cartQtyInput');
+    var buyQtyInput = document.getElementById('buyQtyInput');
+    var decBtn = document.getElementById('qtyDec');
+
+    if (display) {
+        display.textContent = String(qty);
+    }
+    if (cartQtyInput) {
+        cartQtyInput.value = String(qty);
+    }
+    if (buyQtyInput) {
+        buyQtyInput.value = String(qty);
+    }
+    if (decBtn) {
+        if (qty <= 1) {
+            decBtn.classList.add('qty-stepper-btn--disabled');
+        } else {
+            decBtn.classList.remove('qty-stepper-btn--disabled');
+        }
+    }
+}
+
+function shopGetCurrentStock() {
+    var stockDisplay = document.getElementById('stockDisplay');
+    if (!stockDisplay) {
+        return 999;
+    }
+    return parseInt(stockDisplay.textContent.replace(/,/g, ''), 10) || 0;
+}
+
+function shopBindQtyStepper() {
+    var decBtn = document.getElementById('qtyDec');
+    var incBtn = document.getElementById('qtyInc');
+
+    if (!decBtn || !incBtn) {
+        return;
+    }
+
+    // 初始状态：数量为 1 时禁用减少按钮
+    decBtn.classList.add('qty-stepper-btn--disabled');
+
+    decBtn.addEventListener('click', function() {
+        var display = document.getElementById('qtyDisplay');
+        if (!display) {
+            return;
+        }
+        var current = parseInt(display.textContent, 10) || 1;
+        if (current > 1) {
+            shopUpdateQtyDisplay(current - 1);
+        }
+    });
+
+    incBtn.addEventListener('click', function() {
+        var display = document.getElementById('qtyDisplay');
+        if (!display) {
+            return;
+        }
+        var current = parseInt(display.textContent, 10) || 1;
+        var maxStock = shopGetCurrentStock();
+        if (current < maxStock) {
+            shopUpdateQtyDisplay(current + 1);
+        }
+    });
+}
+
 function shopBindProductDetailActions() {
     document.addEventListener('click', (event) => {
         const target = event.target;
@@ -416,6 +483,8 @@ function shopBindProductDetailActions() {
                 Number(skuButton.dataset.skuPrice || '0'),
                 Number(skuButton.dataset.skuStock || '0')
             );
+            // 切换规格后重置数量为 1
+            shopUpdateQtyDisplay(1);
             return;
         }
 
@@ -438,6 +507,25 @@ function shopBindProductDetailActions() {
             selectPayment(method, actionButton);
         } else if (action === 'submit-order') {
             submitOrder();
+        } else if (action === 'toggle-consult') {
+            var consultCard = document.getElementById('consultCard');
+            var widget = consultCard ? consultCard.closest('.consult-widget') : null;
+            if (consultCard && widget) {
+                var isOpen = !consultCard.classList.contains('consult-card--hidden');
+                consultCard.classList.toggle('consult-card--hidden', isOpen);
+                widget.classList.toggle('consult-widget--open', !isOpen);
+            }
+        } else if (action === 'copy-consult-wechat') {
+            var wechatIdEl = document.getElementById('consultWechatId');
+            if (wechatIdEl && navigator.clipboard) {
+                navigator.clipboard.writeText(wechatIdEl.textContent.trim()).then(function() {
+                    var icon = actionButton.querySelector('.material-symbols-outlined');
+                    if (icon) {
+                        icon.textContent = 'check';
+                        setTimeout(function() { icon.textContent = 'content_copy'; }, 1500);
+                    }
+                });
+            }
         }
     });
 }
@@ -446,6 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shopBindFooterEvents();
     shopBindProductGallery();
     shopBindProductDetailActions();
+    shopBindQtyStepper();
 
     const buyBtn = document.getElementById('buyBtn');
     const cartBtn = document.getElementById('cartBtnSubmit');

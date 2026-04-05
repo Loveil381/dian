@@ -24,6 +24,7 @@ if ($checkout_action === 'quick_buy') {
     $product_id = (int) ($_POST['product_id'] ?? 0);
     $sku_name = trim((string) ($_POST['sku_name'] ?? ''));
     $pay_method = trim((string) ($_POST['pay_method'] ?? ''));
+    $buy_quantity = max(1, (int) ($_POST['quantity'] ?? 1));
 
     $product = shop_get_product_by_id($product_id);
     if ($product === null) {
@@ -55,7 +56,7 @@ if ($checkout_action === 'quick_buy') {
     $found = false;
     foreach ($_SESSION['cart'] as &$item) {
         if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
-            $item['quantity'] = 1;
+            $item['quantity'] = $buy_quantity;
             $item['price'] = $verified_price;
             $item['sku_price'] = $verified_price;
             $item['cover_image'] = $cover_image;
@@ -73,7 +74,7 @@ if ($checkout_action === 'quick_buy') {
             'price' => $verified_price,
             'sku_name' => $sku_name,
             'sku_price' => $verified_price,
-            'quantity' => 1,
+            'quantity' => $buy_quantity,
             'cover_image' => $cover_image,
         ];
     }

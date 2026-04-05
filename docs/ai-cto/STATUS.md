@@ -52,6 +52,32 @@
 - [x] order_detail.php 5 处 null 合并修复
 - [x] settings.php autocomplete 属性修正
 
+## 待提交 — 下次 PR（improve/ux-polish）
+
+### 改动
+- [x] 商品详情页新增数量选择器（`- 1 +` 步进器），支持加入购物车和立即购买时选数量
+  - `templates/product_detail.php` — 数量步进器 HTML + hidden inputs
+  - `assets/js/site.js` — 步进器交互逻辑（增减、库存上限、切换 SKU 重置）
+  - `assets/css/site.css` — 步进器样式（Ethereal 设计体系）
+  - `actions/cart_action.php` — add action 接受 quantity 参数
+  - `actions/checkout_action.php` — quick_buy action 接受 quantity 参数
+- [x] 在线咨询聊天气泡功能（SPEC: docs/ai-cto/SPEC-online-consult.md）
+  - `admin/data_loaders/settings.php` — 新建，加载 consult_* 设置
+  - `admin/index.php` — 默认变量 + loaderMap 注册
+  - `admin/views/settings.php` — 新增"在线咨询"设置卡片（含二维码上传）
+  - `admin/controllers/setting_actions.php` — handle_save_consult()
+  - `admin/controllers/actions.php` — save_consult dispatcher
+  - `templates/index.php` — 条件渲染气泡+药师区块+弹窗
+  - `assets/js/site.js` — 弹窗开关 + 遮罩关闭 + 复制微信号
+  - `assets/css/site.css` — 弹窗样式（Ethereal 设计体系）
+
+### 评估后不做
+- **封禁用户全局实时踢出**：评估后决定不加。理由：
+  1. 现有两道拦截（登录时 + 下单时）已封死关键操作路径
+  2. 被封禁用户能做的只有只读浏览（看商品、看历史订单），游客也能做，无安全风险
+  3. 全局检查需要每个已登录用户每次页面加载多一次 DB 查询，性能代价不值
+  4. 封禁是极低频管理操作，不值得让全体用户为此买单
+
 ## 待办 — 部署后
 - [ ] Ops-1: 生产 SMTP 集成
 - [ ] Ops-2: 日志监控搭建

@@ -50,6 +50,74 @@
         <form method="post" class="admin-settings-card">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
+            <input type="hidden" name="admin_action" value="save_consult">
+
+            <div class="section-head">
+                <div>
+                    <h3 class="section-title">在线咨询</h3>
+                    <p class="section-note">配置首页聊天气泡弹窗中展示的联系方式。关闭后首页将隐藏咨询按钮和药师区块。</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <label class="field field-full" style="display: flex; align-items: center; gap: var(--space-sm); flex-direction: row;">
+                    <input type="checkbox" name="consult_enabled" value="1" <?php echo $consultEnabled === '1' ? 'checked' : ''; ?>>
+                    <span class="label" style="margin: 0;">启用在线咨询按钮</span>
+                </label>
+
+                <label class="field field-full">
+                    <span class="label">弹窗标题</span>
+                    <input type="text" name="consult_title" value="<?php echo shop_e($consultTitle); ?>" placeholder="默认：在线咨询">
+                </label>
+
+                <label class="field field-full">
+                    <span class="label">欢迎语</span>
+                    <input type="text" name="consult_greeting" value="<?php echo shop_e($consultGreeting); ?>" placeholder="默认：您好！有什么可以帮您的吗？">
+                </label>
+
+                <div class="field field-full">
+                    <span class="label">微信二维码图片</span>
+                    <div class="admin-payment-input-row">
+                        <input type="text" id="consult_wechat_qr" data-qr-input="consult_wechat" name="consult_wechat_qr" value="<?php echo shop_e($consultWechatQr); ?>" placeholder="图片地址或上传">
+                        <button type="button" class="btn btn-secondary" data-trigger-click="consult_wechat_upload">上传二维码</button>
+                        <input type="file" id="consult_wechat_upload" data-payment-upload="consult_wechat" accept="image/*" class="admin-hidden-file">
+                    </div>
+                    <div class="admin-payment-preview" id="consult_wechat_preview">
+                        <?php if ($consultWechatQr !== ''): ?>
+                            <img class="admin-payment-preview-image" src="<?php echo shop_e($consultWechatQr); ?>" alt="微信二维码">
+                            <div class="admin-payment-preview-overlay">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </div>
+                        <?php else: ?>
+                            <span class="admin-payment-placeholder">暂未设置微信二维码</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <label class="field field-full">
+                    <span class="label">微信号</span>
+                    <input type="text" name="consult_wechat_id" value="<?php echo shop_e($consultWechatId); ?>" placeholder="例如：mofang_shop">
+                </label>
+
+                <label class="field field-full">
+                    <span class="label">联系电话</span>
+                    <input type="text" name="consult_phone" value="<?php echo shop_e($consultPhone); ?>" placeholder="例如：400-123-4567">
+                </label>
+
+                <label class="field field-full">
+                    <span class="label">咨询提示语</span>
+                    <input type="text" name="consult_notice" value="<?php echo shop_e($consultNotice); ?>" placeholder="例如：工作日 9:00-18:00 回复">
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary btn-sm" type="submit">保存咨询设置</button>
+            </div>
+        </form>
+
+        <form method="post" class="admin-settings-card">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="tab" value="<?php echo htmlspecialchars($currentTab); ?>">
             <input type="hidden" name="admin_action" value="change_password">
 
             <div class="section-head">

@@ -72,3 +72,34 @@ function handle_save_role(): array
 {
     return ['权限管理功能开发中，敬请期待。', 'info'];
 }
+
+/**
+ * 保存在线咨询设置。
+ */
+function handle_save_consult(): array
+{
+    $pdo = get_db_connection();
+    $prefix = get_db_prefix();
+
+    if (!$pdo) {
+        return ['数据库连接失败', 'error'];
+    }
+
+    $enabled = shop_admin_post_checked('consult_enabled') ? '1' : '0';
+    $title = shop_admin_post_string('consult_title');
+    $greeting = shop_admin_post_string('consult_greeting');
+    $wechat_qr = shop_admin_post_string('consult_wechat_qr');
+    $wechat_id = shop_admin_post_string('consult_wechat_id');
+    $phone = shop_admin_post_string('consult_phone');
+    $notice = shop_admin_post_string('consult_notice');
+
+    try {
+        $stmt = $pdo->prepare(
+            "REPLACE INTO `{$prefix}settings` (`key`, `value`) VALUES ('consult_enabled', ?), ('consult_title', ?), ('consult_greeting', ?), ('consult_wechat_qr', ?), ('consult_wechat_id', ?), ('consult_phone', ?), ('consult_notice', ?)"
+        );
+        $stmt->execute([$enabled, $title, $greeting, $wechat_qr, $wechat_id, $phone, $notice]);
+        return ['在线咨询设置已更新。', 'success'];
+    } catch (PDOException $e) {
+        return ['在线咨询设置保存失败: ' . $e->getMessage(), 'error'];
+    }
+}
