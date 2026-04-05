@@ -48,10 +48,12 @@ if ($action === 'add') {
         $cover_image = (string) ($product['images'][0] ?? '');
     }
 
+    $add_quantity = max(1, (int) ($_POST['quantity'] ?? 1));
+
     $found = false;
     foreach ($_SESSION['cart'] as &$item) {
         if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
-            $item['quantity'] = max(1, (int) ($item['quantity'] ?? 0) + 1);
+            $item['quantity'] = max(1, (int) ($item['quantity'] ?? 0) + $add_quantity);
             $item['price'] = $verified_price;
             $item['sku_price'] = $verified_price;
             $item['name'] = (string) ($product['name'] ?? '');
@@ -69,7 +71,7 @@ if ($action === 'add') {
             'price' => $verified_price,
             'sku_name' => $sku_name,
             'sku_price' => $verified_price,
-            'quantity' => 1,
+            'quantity' => $add_quantity,
             'cover_image' => $cover_image,
         ];
     }

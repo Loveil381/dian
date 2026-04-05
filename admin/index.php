@@ -120,6 +120,14 @@ $wechatQr = '';
 $alipayQr = '';
 $requireAddress = '0';
 
+$consultEnabled = '0';
+$consultTitle = '';
+$consultGreeting = '';
+$consultWechatQr = '';
+$consultWechatId = '';
+$consultPhone = '';
+$consultNotice = '';
+
 $updateInfo = ['current_version' => shop_app_version(), 'latest_version' => '', 'has_update' => false, 'release_notes' => '', 'release_url' => '', 'published_at' => '', 'last_checked' => '', 'check_error' => ''];
 $backupList = [];
 $updateHistory = [];
@@ -144,6 +152,7 @@ $loaderMap = [
     'orders'     => __DIR__ . '/data_loaders/orders.php',
     'users'      => __DIR__ . '/data_loaders/users.php',
     'payment'    => __DIR__ . '/data_loaders/payment.php',
+    'settings'   => __DIR__ . '/data_loaders/settings.php',
     'updates'    => __DIR__ . '/data_loaders/updates.php',
 ];
 if (isset($loaderMap[$currentTab])) {

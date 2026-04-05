@@ -141,7 +141,7 @@ ob_start();
                             <h3 class="products-card-v2-title" title="<?php echo shop_e($product_name); ?>"><?php echo shop_e($product_name); ?></h3>
                             <div class="products-card-v2-footer">
                                 <span class="products-card-v2-price"><?php echo shop_format_price($product_price); ?></span>
-                                <button class="products-card-v2-cart-btn" aria-label="加入购物车" onclick="event.preventDefault();">
+                                <button class="products-card-v2-cart-btn" aria-label="查看并购买">
                                     <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
                                 </button>
                             </div>

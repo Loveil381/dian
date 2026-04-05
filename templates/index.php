@@ -9,6 +9,22 @@ $pageTitle = '魔女小店 - 首页';
 $currentPage = 'home';
 $showFooter = false;
 
+// 读取在线咨询设置
+$consultSettings = shop_get_settings([
+    'consult_enabled', 'consult_title', 'consult_greeting',
+    'consult_wechat_qr', 'consult_wechat_id',
+    'consult_phone', 'consult_notice',
+]);
+$consultEnabled = ($consultSettings['consult_enabled'] ?? '0') === '1';
+$consultTitle = (string) ($consultSettings['consult_title'] ?? '');
+$consultGreeting = (string) ($consultSettings['consult_greeting'] ?? '');
+$consultWechatQr = (string) ($consultSettings['consult_wechat_qr'] ?? '');
+$consultWechatId = (string) ($consultSettings['consult_wechat_id'] ?? '');
+$consultPhone = (string) ($consultSettings['consult_phone'] ?? '');
+$consultNotice = (string) ($consultSettings['consult_notice'] ?? '');
+$showWechat = ($consultWechatQr !== '' || $consultWechatId !== '');
+$showPhone = ($consultPhone !== '');
+
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $homePage = max(1, (int) ($_GET['p'] ?? 1));
 $perPage = 20;
@@ -134,16 +150,13 @@ include __DIR__ . '/header.php';
                                 <?php else: ?>
                                     <div class="home-card-v2-img-placeholder"></div>
                                 <?php endif; ?>
-                                <button class="home-card-v2-fav-btn" aria-label="收藏" onclick="event.preventDefault();">
-                                    <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">favorite</span>
-                                </button>
                             </div>
                             <div class="home-card-v2-body">
                                 <h4 class="home-card-v2-title" title="<?php echo shop_e((string) ($product['name'] ?? '')); ?>"><?php echo shop_e((string) ($product['name'] ?? '')); ?></h4>
                                 <p class="home-card-v2-cat"><?php echo shop_e((string) ($product['category'] ?? '未分类')); ?></p>
                                 <div class="home-card-v2-footer">
                                     <span class="home-card-v2-price"><?php echo shop_format_price((float) ($product['price'] ?? 0)); ?></span>
-                                    <button class="home-card-v2-cart-btn" aria-label="加入购物车" onclick="event.preventDefault();">
+                                    <button class="home-card-v2-cart-btn" aria-label="查看并购买">
                                         <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
                                     </button>
                                 </div>
@@ -156,6 +169,7 @@ include __DIR__ . '/header.php';
         <?php endif; ?>
     </section>
 
+    <?php if ($consultEnabled): ?>
     <section class="home-pharmacist-card" aria-label="药师在线小课堂">
         <div class="home-pharmacist-copy">
             <h5 class="home-pharmacist-title">药师在线小课堂</h5>
@@ -165,10 +179,73 @@ include __DIR__ . '/header.php';
             <span class="material-symbols-outlined">medical_services</span>
         </div>
     </section>
+    <?php endif; ?>
 </main>
 
-<a href="#" class="home-consult-fab" aria-label="在线咨询" title="联系药师">
-    <span class="material-symbols-outlined" aria-hidden="true">chat_bubble</span>
-</a>
+<?php if ($consultEnabled): ?>
+<div class="consult-widget">
+    <div id="consultCard" class="consult-card consult-card--hidden">
+        <div class="consult-card-header">
+            <div class="consult-card-avatar">
+                <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
+            </div>
+            <div class="consult-card-header-text">
+                <h3 class="consult-card-title"><?php echo shop_e($consultTitle !== '' ? $consultTitle : '在线咨询'); ?></h3>
+                <p class="consult-card-greeting"><?php echo shop_e($consultGreeting !== '' ? $consultGreeting : '您好！有什么可以帮您的吗？'); ?></p>
+            </div>
+            <button type="button" data-action="toggle-consult" class="consult-card-close" aria-label="关闭">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+        </div>
+
+        <div class="consult-card-body">
+            <?php if ($showWechat): ?>
+            <div class="consult-card-item">
+                <span class="material-symbols-outlined consult-card-item-icon" aria-hidden="true">qr_code_2</span>
+                <div class="consult-card-item-content">
+                    <span class="consult-card-item-label">微信咨询</span>
+                    <?php if ($consultWechatQr !== ''): ?>
+                    <div class="consult-qr-wrap">
+                        <img class="consult-qr-image" src="<?php echo shop_e($consultWechatQr); ?>" alt="微信二维码">
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($consultWechatId !== ''): ?>
+                    <div class="consult-wechat-id">
+                        <span class="consult-copyable" id="consultWechatId"><?php echo shop_e($consultWechatId); ?></span>
+                        <button type="button" class="consult-copy-btn" data-action="copy-consult-wechat" aria-label="复制微信号">
+                            <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+                        </button>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if ($showPhone): ?>
+            <a href="tel:<?php echo shop_e($consultPhone); ?>" class="consult-card-item consult-card-item--link">
+                <span class="material-symbols-outlined consult-card-item-icon" aria-hidden="true">call</span>
+                <div class="consult-card-item-content">
+                    <span class="consult-card-item-label">电话咨询</span>
+                    <span class="consult-card-item-value"><?php echo shop_e($consultPhone); ?></span>
+                </div>
+                <span class="material-symbols-outlined consult-card-item-arrow" aria-hidden="true">chevron_right</span>
+            </a>
+            <?php endif; ?>
+        </div>
+
+        <?php if ($consultNotice !== ''): ?>
+        <div class="consult-card-footer">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <?php echo shop_e($consultNotice); ?>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <button type="button" class="home-consult-fab" data-action="toggle-consult" aria-label="在线咨询" title="联系药师">
+        <span class="material-symbols-outlined consult-fab-icon--chat" aria-hidden="true">chat_bubble</span>
+        <span class="material-symbols-outlined consult-fab-icon--close" aria-hidden="true">close</span>
+    </button>
+</div>
+<?php endif; ?>
 
 <?php include __DIR__ . '/footer.php'; ?>

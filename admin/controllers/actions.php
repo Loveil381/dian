@@ -102,6 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once __DIR__ . '/setting_actions.php';
             $result = handle_save_role();
             break;
+        case 'save_consult':
+            require_once __DIR__ . '/setting_actions.php';
+            $result = handle_save_consult();
+            break;
 
         // ── 更新中心 ──
         case 'check_update':

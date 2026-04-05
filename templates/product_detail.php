@@ -195,6 +195,19 @@ include __DIR__ . '/header.php';
 
             <div class="product-detail-stock text-muted">库存：<span id="stockDisplay"><?php echo shop_format_sales((int) ($default_sku['stock'] ?? 0)); ?></span> 件</div>
 
+            <section class="product-detail-qty" aria-label="数量选择">
+                <strong class="product-detail-qty-title">购买数量</strong>
+                <div class="product-detail-qty-stepper">
+                    <button type="button" class="qty-stepper-btn qty-stepper-dec" id="qtyDec" aria-label="减少数量">
+                        <span class="material-symbols-outlined" aria-hidden="true">remove</span>
+                    </button>
+                    <span class="qty-stepper-display" id="qtyDisplay">1</span>
+                    <button type="button" class="qty-stepper-btn qty-stepper-inc" id="qtyInc" aria-label="增加数量">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                    </button>
+                </div>
+            </section>
+
             <section class="product-detail-desc">
                 <div class="product-detail-section-heading">
                     <span class="material-symbols-outlined" aria-hidden="true">description</span>
@@ -232,6 +245,7 @@ include __DIR__ . '/header.php';
             <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
             <input type="hidden" name="sku_name" id="cartSkuName" value="<?php echo shop_e($default_sku_name); ?>">
             <input type="hidden" name="sku_price" id="cartSkuPrice" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
+            <input type="hidden" name="quantity" id="cartQtyInput" value="1">
             <button id="cartBtnSubmit" type="submit" class="product-detail-bar-add-btn">加入购物车</button>
         </form>
         <button type="button" class="product-detail-bar-buy-btn" id="buyBtn" data-action="show-payment-popup">
@@ -297,6 +311,7 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
                 <input type="hidden" name="sku_name" id="selectedSkuInput" value="<?php echo shop_e($default_sku_name); ?>">
                 <input type="hidden" name="sku_price" id="selectedPriceInput" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
+                <input type="hidden" name="quantity" id="buyQtyInput" value="1">
                 <input type="hidden" name="pay_method" id="payMethodInput" value="">
                 <button type="submit" class="popup-submit-btn btn-primary">确认已支付并提交订单</button>
             </form>
