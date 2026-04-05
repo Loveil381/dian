@@ -119,13 +119,18 @@ function handle_save_notification(): array
         return ['数据库连接失败', 'error'];
     }
 
+    $adminEmail = shop_admin_post_string('notify_admin_email');
+    if ($adminEmail !== '' && !filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+        return ['请输入有效的邮箱地址。', 'error'];
+    }
+
     $keys = [
         'notify_admin_created'      => shop_admin_post_checked('notify_admin_created') ? '1' : '0',
         'notify_admin_paid'         => shop_admin_post_checked('notify_admin_paid') ? '1' : '0',
         'notify_customer_created'   => shop_admin_post_checked('notify_customer_created') ? '1' : '0',
         'notify_customer_shipped'   => shop_admin_post_checked('notify_customer_shipped') ? '1' : '0',
         'notify_customer_completed' => shop_admin_post_checked('notify_customer_completed') ? '1' : '0',
-        'notify_admin_email'        => shop_admin_post_string('notify_admin_email'),
+        'notify_admin_email'        => $adminEmail,
     ];
 
     try {

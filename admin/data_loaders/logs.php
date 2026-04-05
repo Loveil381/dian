@@ -31,8 +31,13 @@ $logAdminOptions = [];
 if ($pdo) {
     try {
         // 获取筛选下拉选项
-        $logActionOptions = $pdo->query("SELECT DISTINCT `action` FROM `{$prefix}admin_logs` ORDER BY `action` ASC")->fetchAll(PDO::FETCH_COLUMN);
-        $logAdminOptions = $pdo->query("SELECT DISTINCT `admin_name` FROM `{$prefix}admin_logs` WHERE `admin_name` != '' ORDER BY `admin_name` ASC")->fetchAll(PDO::FETCH_COLUMN);
+        $actStmt = $pdo->prepare("SELECT DISTINCT `action` FROM `{$prefix}admin_logs` ORDER BY `action` ASC");
+        $actStmt->execute();
+        $logActionOptions = $actStmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $admStmt = $pdo->prepare("SELECT DISTINCT `admin_name` FROM `{$prefix}admin_logs` WHERE `admin_name` != '' ORDER BY `admin_name` ASC");
+        $admStmt->execute();
+        $logAdminOptions = $admStmt->fetchAll(PDO::FETCH_COLUMN);
 
         // 构建 WHERE 条件
         $logWhere = [];

@@ -15,6 +15,9 @@ if ($editCouponId > 0) {
     $editingCoupon = shop_get_coupon_by_id($editCouponId);
     if ($editingCoupon !== null) {
         $selectedCoupon = $editingCoupon;
+    } else {
+        // 优惠券不存在或已删除，提示用户
+        shop_admin_flash('未找到 ID 为 ' . $editCouponId . ' 的优惠券。', 'error');
     }
 }
 
