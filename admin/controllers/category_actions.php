@@ -48,6 +48,7 @@ function handle_save_category(): array
         }
     }
 
+    shop_admin_log('save_category', 'category', $id, $id > 0 ? '更新分类' : '新建分类');
     return [$id > 0 ? '分类已更新。' : '分类已新增。', 'success'];
 }
 
@@ -57,5 +58,6 @@ function handle_delete_category(): array
     if (!shop_delete_category($id)) {
         return ['未找到要删除的分类。', 'error'];
     }
+    shop_admin_log('delete_category', 'category', $id, '删除分类');
     return ['分类已删除。', 'success'];
 }

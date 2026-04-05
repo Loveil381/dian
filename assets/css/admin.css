@@ -2008,3 +2008,408 @@ body.sidebar-open .admin-overlay {
         gap: var(--space-sm);
     }
 }
+
+/* ══ 操作日志 ══ */
+.admin-log-shell {
+    display: grid;
+    gap: var(--space-lg);
+}
+
+/* 卡片容器：过滤栏与表格共用 */
+.admin-log-card {
+    padding: var(--space-lg);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 过滤栏 */
+.admin-log-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: flex-end;
+}
+
+/* 页头标题行（图标 + 文字内联对齐） */
+.admin-log-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* 管理员头像行 */
+.admin-log-avatar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* 圆形首字母头像 */
+.admin-log-avatar-circle {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: var(--color-primary);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+/* 操作类型徽章：status-pill 的 primary 变体（info/success/warning/danger/muted 已存在） */
+.status-pill.primary {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+}
+
+/* 详情列：单行截断，鼠标悬浮 title 显示完整内容 */
+.admin-log-detail {
+    display: block;
+    max-width: 20rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-on-surface-variant);
+    font-size: var(--text-caption);
+    line-height: 1.6;
+    cursor: default;
+}
+
+/* IP 地址等宽字体 */
+.admin-log-ip {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: var(--text-caption);
+    color: var(--color-outline);
+    letter-spacing: 0.02em;
+}
+
+/* 空状态：居中图标 + 文字 */
+.admin-log-empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-sm);
+    padding: calc(var(--space-xl) + var(--space-sm));
+    text-align: center;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-container-low);
+    color: var(--color-on-surface-variant);
+    font-size: var(--text-body);
+}
+
+.admin-log-empty .material-symbols-outlined {
+    color: var(--color-primary);
+    font-size: calc(var(--space-xl) + var(--space-md));
+}
+
+.admin-log-empty p {
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    /* 窄屏下压缩详情截断宽度 */
+    .admin-log-detail {
+        max-width: 10rem;
+    }
+}
+
+/* ══ 销售看板 ══ */
+
+.admin-dash-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.admin-dash-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: background var(--transition-fast);
+}
+
+.admin-dash-kpi-card:hover {
+    background: var(--color-surface);
+}
+
+.admin-dash-kpi-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.admin-dash-kpi-icon .material-symbols-outlined {
+    font-size: 1.75rem;
+}
+
+.admin-dash-kpi-icon--primary {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+}
+
+.admin-dash-kpi-icon--secondary {
+    background: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    color: var(--color-secondary);
+}
+
+.admin-dash-kpi-icon--success {
+    background: color-mix(in srgb, var(--color-success) 10%, transparent);
+    color: var(--color-success);
+}
+
+.admin-dash-kpi-icon--info {
+    background: color-mix(in srgb, var(--color-info) 10%, transparent);
+    color: var(--color-info);
+}
+
+.admin-dash-kpi-label {
+    font-size: var(--text-caption);
+    color: var(--color-outline);
+    display: block;
+}
+
+.admin-dash-kpi-value {
+    font-size: var(--text-h1);
+    font-family: var(--font-headline);
+    font-weight: 700;
+    color: var(--color-on-surface);
+    display: block;
+    line-height: 1.2;
+}
+
+.admin-dash-section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--color-on-surface);
+    margin: 0 0 var(--space-lg);
+}
+
+.admin-dash-section-title .material-symbols-outlined {
+    color: var(--color-primary);
+}
+
+.admin-dash-empty {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--color-outline);
+    font-size: var(--text-body);
+}
+
+/* 柱状图 */
+.admin-dash-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 220px;
+    padding: var(--space-md) 0;
+    gap: var(--space-sm);
+}
+
+.admin-dash-chart-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 0;
+}
+
+.admin-dash-chart-val {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.admin-dash-chart-bar {
+    width: 100%;
+    max-width: 40px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: linear-gradient(180deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 40%, transparent));
+    transition: height var(--transition-normal);
+}
+
+.admin-dash-chart-label {
+    font-size: 0.6875rem;
+    color: var(--color-outline);
+}
+
+/* 双列布局 */
+.admin-dash-two-col {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+}
+
+/* 排名徽章 */
+.admin-dash-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    color: var(--color-outline);
+}
+
+.admin-dash-rank--1 { background: #fef3c7; color: #92400e; }
+.admin-dash-rank--2 { background: #e5e7eb; color: #374151; }
+.admin-dash-rank--3 { background: #fed7aa; color: #9a3412; }
+
+/* 状态栈 */
+.admin-dash-status-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.admin-dash-status-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--status-color, var(--color-outline));
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast);
+}
+
+.admin-dash-status-card:hover {
+    transform: translateX(4px);
+}
+
+.admin-dash-status-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-weight: 500;
+}
+
+.admin-dash-status-count {
+    font-size: var(--text-h2);
+    color: var(--color-on-surface);
+}
+
+/* 底部状态栏 */
+.admin-dash-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface-container);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-lg);
+    font-size: var(--text-caption);
+    color: var(--color-outline);
+}
+
+.admin-dash-footer-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.admin-dash-footer-item .material-symbols-outlined {
+    font-size: 1rem;
+}
+
+.admin-dash-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+}
+
+.admin-dash-dot--ok  { background: var(--color-success); }
+.admin-dash-dot--err { background: var(--color-error); }
+
+@media (max-width: 1024px) {
+    .admin-dash-two-col { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .admin-dash-kpi-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+    .admin-dash-kpi-grid { grid-template-columns: 1fr; }
+}
+
+/* ══ 优惠券管理 ══ */
+
+.admin-coupon-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.admin-coupon-code {
+    font-family: 'Courier New', Consolas, monospace;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+    font-size: var(--text-body);
+}
+
+.admin-coupon-type {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--text-caption);
+    font-weight: 600;
+}
+
+.admin-coupon-type--fixed {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+}
+
+.admin-coupon-type--percent {
+    background: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+    color: var(--color-secondary);
+}
+
+.admin-coupon-usage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.admin-coupon-progress {
+    height: 4px;
+    width: 6rem;
+    border-radius: var(--radius-full);
+    background: var(--color-surface-container);
+}
+
+.admin-coupon-progress-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    transition: width var(--transition-normal);
+}

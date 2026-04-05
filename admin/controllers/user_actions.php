@@ -72,11 +72,13 @@ function handle_save_user(string $adminUrl): array
         if ($id > 0) {
             $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET username=?, name=?, email=?, phone=?, level=?, address=?, note=? WHERE id=?");
             $stmt->execute([$user['username'], $user['name'], $user['email'] === '' ? null : $user['email'], $user['phone'], $user['level'], $user['address'], $user['note'], $id]);
+            shop_admin_log('save_user', 'user', $id, '更新用户');
             return ['用户已更新。', 'success'];
         }
 
         $stmt = $pdo->prepare("INSERT INTO `{$prefix}users` (username, name, email, phone, level, address, last_login, note) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->execute([$user['username'], $user['name'], $user['email'] === '' ? null : $user['email'], $user['phone'], $user['level'], $user['address'], $user['note']]);
+        shop_admin_log('save_user', 'user', 0, '新建用户');
         return ['用户已新增。', 'success'];
     } catch (PDOException $e) {
         return ['用户保存失败: ' . $e->getMessage(), 'error'];
@@ -109,6 +111,7 @@ function handle_toggle_user_status(): array
     try {
         $stmt = $pdo->prepare("UPDATE `{$prefix}users` SET status = ? WHERE id = ?");
         $stmt->execute([$status, $id]);
+        shop_admin_log('toggle_user_status', 'user', $id, '状态切换为 ' . $status);
         return ['用户状态已更新。', 'success'];
     } catch (PDOException $e) {
         return ['用户状态更新失败: ' . $e->getMessage(), 'error'];

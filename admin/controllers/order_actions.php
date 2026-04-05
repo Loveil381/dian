@@ -52,6 +52,7 @@ function handle_delete_order(): array
     try {
         $stmt = $pdo->prepare("DELETE FROM `{$prefix}orders` WHERE id = ?");
         $stmt->execute([$id]);
+        shop_admin_log('delete_order', 'order', $id, '删除订单');
         return ['订单已删除。', 'success'];
     } catch (PDOException $e) {
         return ['订单删除失败: ' . $e->getMessage(), 'error'];
@@ -79,6 +80,7 @@ function handle_update_order(): array
 
         $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET tracking_numbers = ?, express_company = ?, status = ? WHERE id = ?");
         $stmt->execute([$tracking, $expressCompany, $status, $id]);
+        shop_admin_log('update_order', 'order', $id, '更新订单信息');
         return ['订单已更新。', 'success'];
     } catch (PDOException $e) {
         return ['订单更新失败: ' . $e->getMessage(), 'error'];
@@ -104,6 +106,7 @@ function handle_update_order_status(): array
 
         $stmt = $pdo->prepare("UPDATE `{$prefix}orders` SET status = ? WHERE id = ?");
         $stmt->execute([$status, $id]);
+        shop_admin_log('update_order_status', 'order', $id, '状态变更为 ' . $status);
         return ['订单状态已更新。', 'success'];
     } catch (PDOException $e) {
         return ['订单状态更新失败: ' . $e->getMessage(), 'error'];

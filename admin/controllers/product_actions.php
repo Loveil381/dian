@@ -65,6 +65,7 @@ function handle_save_product(): array
     if (!shop_upsert_product($product)) {
         return ['商品保存失败。', 'error'];
     }
+    shop_admin_log('save_product', 'product', $id, $id > 0 ? '更新商品' : '新建商品');
     return [$id > 0 ? '商品已更新，首页/商品页排序已保存。' : '商品已新增，首页/商品页排序已保存。', 'success'];
 }
 
@@ -84,6 +85,7 @@ function handle_update_sort(): array
         $stmt = $pdo->prepare("UPDATE `{$prefix}products` SET home_sort = ?, page_sort = ? WHERE id = ?");
         $stmt->execute([$homeSort, $pageSort, $id]);
         if ($stmt->rowCount() > 0) {
+            shop_admin_log('save_product', 'product', $id, '更新排序');
             return ['排序已保存：0 = 按销量，非 0 = 固定排序，数字越小越靠前。', 'success'];
         }
         return ['未找到要更新的商品。', 'error'];
@@ -98,6 +100,7 @@ function handle_delete_product(): array
     if (!shop_delete_product($id)) {
         return ['未找到要删除的商品。', 'error'];
     }
+    shop_admin_log('delete_product', 'product', $id, '删除商品');
     return ['商品已删除。', 'success'];
 }
 
@@ -126,11 +129,13 @@ function handle_batch_product_action(): array
         if ($batchAction === 'delete') {
             $stmt = $pdo->prepare("DELETE FROM `{$prefix}products` WHERE id IN ($placeholders)");
             $stmt->execute($ids);
+            shop_admin_log('batch_product_action', 'product', 0, '批量删除 ' . count($ids) . ' 件商品');
             return ['已批量删除选中商品。', 'success'];
         }
 
         $stmt = $pdo->prepare("UPDATE `{$prefix}products` SET status = ? WHERE id IN ($placeholders)");
         $stmt->execute(array_merge([$batchAction], $ids));
+        shop_admin_log('batch_product_action', 'product', 0, ($batchAction === 'on_sale' ? '批量上架 ' : '批量下架 ') . count($ids) . ' 件商品');
         return [$batchAction === 'on_sale' ? '已批量上架选中商品。' : '已批量下架选中商品。', 'success'];
     } catch (PDOException $e) {
         return ['批量操作失败: ' . $e->getMessage(), 'error'];

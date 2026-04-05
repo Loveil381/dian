@@ -30,5 +30,6 @@ function handle_save_page(): array
         return ['页面保存失败。', 'error'];
     }
 
+    shop_admin_log('save_page', 'page', $id, '更新页面');
     return ['页面已更新。', 'success'];
 }

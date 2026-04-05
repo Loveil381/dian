@@ -8,8 +8,10 @@ $tabLabels = [
     'orders' => '订单管理',
     'users' => '用户管理',
     'pages' => '页面管理',
+    'coupons' => '优惠券',
     'payment' => '支付设置',
     'settings' => '系统设置',
+    'logs' => '操作日志',
     'updates' => '更新中心',
 ];
 $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
@@ -116,6 +118,13 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
                         <small>Users</small>
                     </span>
                 </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'coupons' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=coupons" <?php echo $currentTab === 'coupons' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">confirmation_number</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>优惠券</strong>
+                        <small>Coupons</small>
+                    </span>
+                </a>
             </div>
 
             <div class="admin-nav-group">
@@ -139,6 +148,13 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
                     <span class="admin-sidebar-link-copy">
                         <strong>系统设置</strong>
                         <small>Settings</small>
+                    </span>
+                </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'logs' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=logs" <?php echo $currentTab === 'logs' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">policy</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>操作日志</strong>
+                        <small>Audit Log</small>
                     </span>
                 </a>
                 <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'updates' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=updates" <?php echo $currentTab === 'updates' ? 'aria-current="page"' : ''; ?>>

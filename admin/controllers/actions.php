@@ -14,6 +14,7 @@ declare(strict_types=1);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../../includes/csrf.php';
     require_once __DIR__ . '/../../includes/order_status.php';
+    require_once __DIR__ . '/../../includes/admin_log.php';
     csrf_verify();
 
     $reqTab = $_POST['tab'] ?? '';
@@ -107,6 +108,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = handle_save_consult();
             break;
 
+        // ── 优惠券 ──
+        case 'save_coupon':
+            require_once __DIR__ . '/coupon_actions.php';
+            $result = handle_save_coupon();
+            break;
+        case 'delete_coupon':
+            require_once __DIR__ . '/coupon_actions.php';
+            $result = handle_delete_coupon();
+            break;
+        case 'toggle_coupon':
+            require_once __DIR__ . '/coupon_actions.php';
+            $result = handle_toggle_coupon();
+            break;
+
         // ── 页面 ──
         case 'save_page':
             require_once __DIR__ . '/page_actions.php';
@@ -159,6 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($reqTab === 'users') {
         $redirectUrl .= '&users_page=' . $reqUsersPage;
+    } elseif ($reqTab === 'coupons') {
+        $reqCouponsPage = max(1, (int) ($_POST['coupons_page'] ?? 1));
+        $redirectUrl .= '&coupons_page=' . $reqCouponsPage;
     }
     header('Location: ' . $redirectUrl);
     exit;

@@ -25,6 +25,7 @@ function handle_save_payment(): array
     try {
         $stmt = $pdo->prepare("REPLACE INTO `{$prefix}settings` (`key`, `value`) VALUES ('wechat_qr', ?), ('alipay_qr', ?), ('require_address', ?)");
         $stmt->execute([$wechatQr, $alipayQr, $requireAddress]);
+        shop_admin_log('save_payment', 'settings', 0, '更新支付设置');
         return ['支付配置已更新。', 'success'];
     } catch (PDOException $e) {
         return ['支付配置保存失败: ' . $e->getMessage(), 'error'];
@@ -58,6 +59,7 @@ function handle_change_password(): array
             $stmt = $pdo->prepare("UPDATE `{$prefix}admin_users` SET password_hash = ? WHERE id = ?");
             $stmt->execute([$password_hash, $admin_id]);
         }
+        shop_admin_log('change_password', 'settings', 0, '修改管理员密码');
         session_destroy();
         session_start();
         shop_admin_flash('密码已更新，请用新密码重新登录。', 'success');
@@ -98,6 +100,7 @@ function handle_save_consult(): array
             "REPLACE INTO `{$prefix}settings` (`key`, `value`) VALUES ('consult_enabled', ?), ('consult_title', ?), ('consult_greeting', ?), ('consult_wechat_qr', ?), ('consult_wechat_id', ?), ('consult_phone', ?), ('consult_notice', ?)"
         );
         $stmt->execute([$enabled, $title, $greeting, $wechat_qr, $wechat_id, $phone, $notice]);
+        shop_admin_log('save_consult', 'settings', 0, '更新在线咨询设置');
         return ['在线咨询设置已更新。', 'success'];
     } catch (PDOException $e) {
         return ['在线咨询设置保存失败: ' . $e->getMessage(), 'error'];

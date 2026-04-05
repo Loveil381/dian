@@ -135,6 +135,31 @@ $consultWechatId = '';
 $consultPhone = '';
 $consultNotice = '';
 
+// 优惠券默认变量
+$selectedCoupon = ['id' => 0, 'code' => '', 'type' => 'fixed', 'value' => 0, 'min_order_amount' => 0, 'usage_limit' => 0, 'used_count' => 0, 'starts_at' => '', 'expires_at' => '', 'status' => 'active'];
+$couponRows = [];
+$couponPagination = shop_paginate(0, $perPage, 1);
+$couponPaginationUrl = '';
+$couponStatusFilter = '';
+
+// 操作日志默认变量
+$logRows = [];
+$logPagination = shop_paginate(0, $perPage, 1);
+$logPaginationUrl = '';
+$logActionFilter = '';
+$logAdminFilter = '';
+$logActionOptions = [];
+$logAdminOptions = [];
+
+// 销售看板默认变量
+$todayRevenue = 0.0;
+$todayOrders = 0;
+$weekRevenue = 0.0;
+$monthRevenue = 0.0;
+$weekTrend = [];
+$topProducts = [];
+$statusDistribution = [];
+
 $updateInfo = ['current_version' => shop_app_version(), 'latest_version' => '', 'has_update' => false, 'release_notes' => '', 'release_url' => '', 'published_at' => '', 'last_checked' => '', 'check_error' => ''];
 $backupList = [];
 $updateHistory = [];
@@ -160,6 +185,8 @@ $loaderMap = [
     'users'      => __DIR__ . '/data_loaders/users.php',
     'payment'    => __DIR__ . '/data_loaders/payment.php',
     'settings'   => __DIR__ . '/data_loaders/settings.php',
+    'coupons'    => __DIR__ . '/data_loaders/coupons.php',
+    'logs'       => __DIR__ . '/data_loaders/logs.php',
     'updates'    => __DIR__ . '/data_loaders/updates.php',
     'pages'      => __DIR__ . '/data_loaders/pages.php',
 ];
