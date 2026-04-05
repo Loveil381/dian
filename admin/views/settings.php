@@ -128,15 +128,15 @@
 
             <div class="admin-settings-desc">订单状态变更时自动发送邮件通知。需要先配置 SMTP 环境变量才能正常发送。</div>
 
-            <div class="form-grid">
-                <div class="field">
-                    <span class="label">管理员接收邮箱</span>
-                    <input class="input" type="email" name="notify_admin_email"
-                           value="<?php echo shop_e($notifyAdminEmail); ?>"
-                           placeholder="admin@example.com">
-                </div>
+            <div class="field" style="margin-bottom:var(--space-md)">
+                <span class="label">管理员接收邮箱</span>
+                <input class="input" type="email" name="notify_admin_email"
+                       value="<?php echo shop_e($notifyAdminEmail); ?>"
+                       placeholder="admin@example.com" style="max-width:24rem">
+            </div>
 
-                <div class="field">
+            <div style="display:flex;flex-wrap:wrap;gap:var(--space-xl)">
+                <div class="field" style="min-width:10rem">
                     <span class="label">管理员通知</span>
                     <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;margin-bottom:var(--space-xs)">
                         <input type="checkbox" name="notify_admin_created" value="1" <?php echo $notifyAdminCreated === '1' ? 'checked' : ''; ?>>
@@ -148,7 +148,7 @@
                     </label>
                 </div>
 
-                <div class="field">
+                <div class="field" style="min-width:10rem">
                     <span class="label">客户通知</span>
                     <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;margin-bottom:var(--space-xs)">
                         <input type="checkbox" name="notify_customer_created" value="1" <?php echo $notifyCustomerCreated === '1' ? 'checked' : ''; ?>>
