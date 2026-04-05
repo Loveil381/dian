@@ -181,7 +181,7 @@
                                 </td>
                                 <td class="meta"><?php echo shop_e((string) ($product['category'] ?? '')); ?></td>
                                 <td>
-                                    <div class="name <?php echo $stockValue <= 50 ? 'admin-stock-low' : ''; ?>">
+                                    <div class="name <?php echo $stockValue <= ($lowStockThreshold ?? 50) ? 'admin-stock-low' : ''; ?>">
                                         <?php echo shop_format_sales($stockValue); ?>
                                     </div>
                                 </td>
