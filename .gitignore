@@ -37,3 +37,7 @@ git_init.ps1
 __compare_v11/
 *.7z
 *.zip
+
+# Claude Code 工具目录
+.claude/
+.agents/
