@@ -7,6 +7,7 @@ $tabLabels = [
     'inventory' => '库存管理',
     'orders' => '订单管理',
     'users' => '用户管理',
+    'pages' => '页面管理',
     'payment' => '支付设置',
     'settings' => '系统设置',
     'updates' => '更新中心',
@@ -119,6 +120,13 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
 
             <div class="admin-nav-group">
                 <p class="admin-nav-group-title">配置</p>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'pages' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=pages" <?php echo $currentTab === 'pages' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">description</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>页面管理</strong>
+                        <small>Pages</small>
+                    </span>
+                </a>
                 <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'payment' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=payment" <?php echo $currentTab === 'payment' ? 'aria-current="page"' : ''; ?>>
                     <span class="material-symbols-outlined" aria-hidden="true">payments</span>
                     <span class="admin-sidebar-link-copy">

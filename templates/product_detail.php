@@ -232,10 +232,17 @@ include __DIR__ . '/header.php';
 </main>
 
 <footer class="product-detail-bottom-bar">
-    <a href="index.php?page=cart" class="product-detail-bar-cart-link">
-        <span class="material-symbols-outlined">shopping_cart</span>
-        <span class="product-detail-bar-cart-label">购物车</span>
-    </a>
+    <nav class="product-detail-bar-nav" aria-label="快速导航">
+        <a href="index.php?page=home" class="product-detail-bar-nav-link" aria-label="首页">
+            <span class="material-symbols-outlined" aria-hidden="true">home</span>
+        </a>
+        <a href="index.php?page=cart" class="product-detail-bar-nav-link" aria-label="购物车">
+            <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
+        </a>
+        <a href="index.php?page=profile" class="product-detail-bar-nav-link" aria-label="我的">
+            <span class="material-symbols-outlined" aria-hidden="true">person</span>
+        </a>
+    </nav>
     <div class="product-detail-bar-actions">
         <form method="post" action="index.php?page=cart" class="product-detail-cart-form">
             <?php echo csrf_field(); ?>

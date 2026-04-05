@@ -27,6 +27,7 @@ $routes = [
     'admin_setup' => __DIR__ . '/admin/setup.php',
     'cart' => __DIR__ . '/templates/cart.php',
     'checkout' => __DIR__ . '/templates/checkout.php',
+    'page' => __DIR__ . '/templates/page.php',
 ];
 
 if (isset($routes[$page])) {

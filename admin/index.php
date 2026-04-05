@@ -34,6 +34,7 @@ $editingProduct = null;
 $editingCategory = null;
 $editingInventory = null;
 $editingUser = null;
+$editingPage = null;
 
 if ($currentTab === 'products') {
     $editId = (int) ($_GET['edit'] ?? 0);
@@ -47,6 +48,10 @@ if ($currentTab === 'products') {
 } elseif ($currentTab === 'users') {
     $userEditId = (int) ($_GET['edit_user'] ?? 0);
     $editingUser = $userEditId > 0 ? shop_get_user_by_id($userEditId) : null;
+} elseif ($currentTab === 'pages') {
+    require_once __DIR__ . '/../data/pages.php';
+    $pageEditId = (int) ($_GET['edit_page'] ?? 0);
+    $editingPage = $pageEditId > 0 ? shop_get_page_by_id($pageEditId) : null;
 }
 
 require_once __DIR__ . '/controllers/actions.php';
@@ -116,6 +121,8 @@ $selectedUserForm = [
     'last_login' => date('Y-m-d H:i:s'), 'note' => '',
 ];
 
+$pageRows = [];
+
 $wechatQr = '';
 $alipayQr = '';
 $requireAddress = '0';
@@ -154,6 +161,7 @@ $loaderMap = [
     'payment'    => __DIR__ . '/data_loaders/payment.php',
     'settings'   => __DIR__ . '/data_loaders/settings.php',
     'updates'    => __DIR__ . '/data_loaders/updates.php',
+    'pages'      => __DIR__ . '/data_loaders/pages.php',
 ];
 if (isset($loaderMap[$currentTab])) {
     require $loaderMap[$currentTab];

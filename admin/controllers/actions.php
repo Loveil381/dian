@@ -107,6 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = handle_save_consult();
             break;
 
+        // ── 页面 ──
+        case 'save_page':
+            require_once __DIR__ . '/page_actions.php';
+            $result = handle_save_page();
+            break;
+
         // ── 更新中心 ──
         case 'check_update':
             require_once __DIR__ . '/update_actions.php';
