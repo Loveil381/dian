@@ -160,10 +160,10 @@ include __DIR__ . '/header.php';
                 <?php if (is_array($appliedCoupon)): ?>
                     <div class="checkout-coupon-applied">
                         <div class="checkout-coupon-info">
-                            <span class="material-symbols-outlined" aria-hidden="true" style="color:var(--color-success)">check_circle</span>
+                            <span class="material-symbols-outlined coupon-icon-check" aria-hidden="true">check_circle</span>
                             <span>优惠券 <strong><?php echo shop_e((string) ($appliedCoupon['code'] ?? '')); ?></strong> 已应用，优惠 <strong class="text-price"><?php echo shop_format_price($couponDiscount); ?></strong></span>
                         </div>
-                        <form method="post" style="display:inline">
+                        <form method="post" class="coupon-remove-form">
                             <?php echo csrf_field(); ?>
                             <input type="hidden" name="checkout_action" value="remove_coupon">
                             <button class="btn btn-sm btn-ghost" type="submit">移除</button>
@@ -178,8 +178,8 @@ include __DIR__ . '/header.php';
                         <?php echo csrf_field(); ?>
                         <input type="hidden" name="checkout_action" value="apply_coupon">
                         <div class="checkout-coupon-input-row">
-                            <span class="material-symbols-outlined" aria-hidden="true" style="color:var(--color-primary)">confirmation_number</span>
-                            <input class="input" type="text" name="coupon_code" placeholder="输入优惠券码" style="flex:1;font-family:monospace;font-weight:600;letter-spacing:0.05em">
+                            <span class="material-symbols-outlined coupon-icon-ticket" aria-hidden="true">confirmation_number</span>
+                            <input class="input coupon-code-input" type="text" name="coupon_code" placeholder="输入优惠券码">
                             <button class="btn btn-primary btn-sm" type="submit">使用</button>
                         </div>
                     </form>

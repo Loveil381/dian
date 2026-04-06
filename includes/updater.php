@@ -606,7 +606,7 @@ function shop_update_staged_deploy(string $srcDir, string $rootDir, array $skipD
     }
 
     // 阶段二：从 staging 覆盖到根目录
-    shop_update_copy_dir($stagingDir, $rootDir, $skipDirs);
+    shop_update_sync_dir($stagingDir, $rootDir, $skipDirs);
 
     // 清理 staging
     shop_update_rmdir_recursive($stagingDir);
@@ -653,6 +653,89 @@ function shop_update_copy_dir(string $src, string $dst, array $skipDirs): void
             }
         }
     }
+}
+
+/**
+ * 同步受管文件：将源目录文件复制到目标目录，同时删除目标中不再存在于源的文件。
+ * 跳过 skipDirs 中指定的路径。
+ */
+function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
+{
+    $src = rtrim(str_replace('\\', '/', $src), '/') . '/';
+    $dst = rtrim(str_replace('\\', '/', $dst), '/') . '/';
+
+    $sourcePaths = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($src, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        $relativePath = str_replace($src, '', str_replace('\\', '/', $item->getPathname()));
+        if ($relativePath === '') {
+            continue;
+        }
+
+        $skip = false;
+        foreach ($skipDirs as $skipDir) {
+            if (str_starts_with($relativePath, $skipDir . '/') || $relativePath === $skipDir) {
+                $skip = true;
+                break;
+            }
+        }
+        if ($skip) {
+            continue;
+        }
+
+        // 记录路径类型：'d' = 目录, 'f' = 文件
+        $sourcePaths[$relativePath] = $item->isDir() ? 'd' : 'f';
+    }
+
+    if (is_dir($dst)) {
+        $destIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dst, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($destIterator as $item) {
+            $relativePath = str_replace($dst, '', str_replace('\\', '/', $item->getPathname()));
+            if ($relativePath === '') {
+                continue;
+            }
+
+            $skip = false;
+            foreach ($skipDirs as $skipDir) {
+                if (str_starts_with($relativePath, $skipDir . '/') || $relativePath === $skipDir) {
+                    $skip = true;
+                    break;
+                }
+            }
+            if ($skip) {
+                continue;
+            }
+
+            // 路径存在于源且类型一致 → 保留；类型冲突（file↔dir）→ 也需删除
+            if (isset($sourcePaths[$relativePath])) {
+                $destType = $item->isDir() ? 'd' : 'f';
+                if ($sourcePaths[$relativePath] === $destType) {
+                    continue;
+                }
+            }
+
+            $realPath = $item->getRealPath();
+            if ($item->isDir()) {
+                if (!@rmdir($realPath)) {
+                    shop_log('warning', '同步清理：无法删除目录', ['path' => $relativePath]);
+                }
+            } else {
+                if (!@unlink($realPath)) {
+                    throw new \RuntimeException("同步清理失败：无法删除文件 {$relativePath}");
+                }
+            }
+        }
+    }
+
+    shop_update_copy_dir($src, $dst, $skipDirs);
 }
 
 /**

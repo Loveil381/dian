@@ -158,3 +158,4 @@ function shop_get_settings(array $keys): array
         return [];
     }
 }
+
