@@ -80,7 +80,9 @@ include __DIR__ . '/header.php';
                             <div class="checkout-item-title"><?php echo shop_e((string) $item['name']); ?></div>
                             <div class="checkout-item-meta-row">
                                 <span class="badge"><?php echo shop_e((string) (($item['sku_name'] ?? '') !== '' ? $item['sku_name'] : '默认规格')); ?></span>
-                                <span class="text-muted">商品 ID: <?php echo (int) $item['product_id']; ?></span>
+                                <?php if (!empty($item['fulfillment_type'])): ?>
+                                    <span class="badge" style="background: var(--color-warning); color: var(--color-on-surface);"><?php echo shop_e((string) $item['fulfillment_type']); ?></span>
+                                <?php endif; ?>
                                 <span class="text-muted">数量 × <?php echo (int) $item['quantity']; ?></span>
                             </div>
                         </div>
@@ -137,6 +139,58 @@ include __DIR__ . '/header.php';
                 </div>
             </div>
         </section>
+
+        <?php
+        // 物流追踪信息
+        $express_company = trim((string) ($order['express_company'] ?? ''));
+        $tracking_raw = trim((string) ($order['tracking_numbers'] ?? ''));
+        $tracking_list = $tracking_raw !== '' ? array_filter(array_map('trim', explode("\n", $tracking_raw))) : [];
+        $show_tracking = $express_company !== '' || !empty($tracking_list);
+        $is_shipped = in_array($status_key, ['shipped', 'completed'], true);
+        ?>
+        <?php if ($show_tracking || $is_shipped): ?>
+        <section class="card checkout-section order-detail-section">
+            <div class="checkout-section-heading">
+                <div class="checkout-section-title-wrap">
+                    <span class="material-symbols-outlined checkout-section-icon" aria-hidden="true">local_shipping</span>
+                    <h2 class="checkout-section-title">物流追踪</h2>
+                </div>
+            </div>
+
+            <?php if ($show_tracking): ?>
+                <div class="order-detail-info-card">
+                    <?php if ($express_company !== ''): ?>
+                    <div class="order-detail-info-row">
+                        <span class="order-detail-info-label">快递公司</span>
+                        <span class="order-detail-info-value"><?php echo shop_e($express_company); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    <?php foreach ($tracking_list as $tIndex => $tNo): ?>
+                    <div class="order-detail-info-row">
+                        <span class="order-detail-info-label">快递单号<?php echo count($tracking_list) > 1 ? ' ' . ($tIndex + 1) : ''; ?></span>
+                        <span class="order-detail-info-value order-tracking-number">
+                            <code><?php echo shop_e($tNo); ?></code>
+                            <a href="https://www.kuaidi100.com/chaxun?nu=<?php echo urlencode($tNo); ?>" target="_blank" rel="noopener" class="btn-ghost order-tracking-query-link" title="查询物流">
+                                <span class="material-symbols-outlined" style="font-size: 1rem;">open_in_new</span>
+                                查询
+                            </a>
+                        </span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="order-detail-tracking-pending">
+                    <?php if ($status_key === 'shipped' || $status_key === 'completed'): ?>
+                        <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 2rem; color: var(--color-primary);">local_shipping</span>
+                        <p class="text-muted">商品已发出，物流单号待更新。</p>
+                    <?php else: ?>
+                        <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 2rem; color: var(--color-outline);">hourglass_top</span>
+                        <p class="text-muted">商家正在准备发货，请耐心等待。</p>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+        <?php endif; ?>
 
         <section class="card checkout-section order-detail-section">
             <div class="checkout-section-heading">

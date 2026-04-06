@@ -126,6 +126,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = handle_toggle_coupon();
             break;
 
+        // ── 发货方式 ──
+        case 'save_fulfillment_type':
+            require_once __DIR__ . '/fulfillment_actions.php';
+            $result = handle_save_fulfillment_type();
+            break;
+        case 'delete_fulfillment_type':
+            require_once __DIR__ . '/fulfillment_actions.php';
+            $result = handle_delete_fulfillment_type();
+            break;
+
         // ── 页面 ──
         case 'save_page':
             require_once __DIR__ . '/page_actions.php';

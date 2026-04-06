@@ -18,6 +18,7 @@ function shop_normalize_order_item(array $item): array
         'price' => max(0, (float) ($item['price'] ?? 0)),
         'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
         'cover_image' => trim((string) ($item['cover_image'] ?? '')),
+        'fulfillment_type' => trim((string) ($item['fulfillment_type'] ?? '')),
     ];
 }
 

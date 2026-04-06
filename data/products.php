@@ -13,6 +13,7 @@ require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/categories.php';
 require_once __DIR__ . '/users.php';
 require_once __DIR__ . '/orders.php';
+require_once __DIR__ . '/fulfillment.php';
 
 function shop_normalize_product(array $product, int $fallbackId = 0): array
 {
@@ -49,6 +50,7 @@ function shop_normalize_product(array $product, int $fallbackId = 0): array
         'cover_image' => trim((string) ($product['cover_image'] ?? '')),
         'images' => $images,
         'description' => trim((string) ($product['description'] ?? '')),
+        'fulfillment_options' => trim((string) ($product['fulfillment_options'] ?? '')),
         'status' => $status,
     ];
 }
@@ -124,19 +126,20 @@ function shop_upsert_product(array $product): bool
 
     try {
         $prefix = get_db_prefix();
+        $fulfillmentJson = $p['fulfillment_options'] !== '' ? $p['fulfillment_options'] : null;
         if ($p['id'] > 0) {
-            $stmt = $pdo->prepare("UPDATE `{$prefix}products` SET name=?, category=?, sales=?, price=?, stock=?, tag=?, home_sort=?, page_sort=?, sku=?, cover_image=?, images=?, description=?, status=?, published_at=? WHERE id=?");
+            $stmt = $pdo->prepare("UPDATE `{$prefix}products` SET name=?, category=?, sales=?, price=?, stock=?, tag=?, home_sort=?, page_sort=?, sku=?, cover_image=?, images=?, description=?, fulfillment_options=?, status=?, published_at=? WHERE id=?");
             $stmt->execute([
                 $p['name'], $p['category'], $p['sales'], $p['price'], $p['stock'], $p['tag'],
                 $p['home_sort'], $p['page_sort'], $p['sku'], $p['cover_image'], json_encode($p['images']),
-                $p['description'], $p['status'], $p['published_at'], $p['id']
+                $p['description'], $fulfillmentJson, $p['status'], $p['published_at'], $p['id']
             ]);
         } else {
-            $stmt = $pdo->prepare("INSERT INTO `{$prefix}products` (name, category, sales, price, stock, tag, home_sort, page_sort, sku, cover_image, images, description, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO `{$prefix}products` (name, category, sales, price, stock, tag, home_sort, page_sort, sku, cover_image, images, description, fulfillment_options, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 $p['name'], $p['category'], $p['sales'], $p['price'], $p['stock'], $p['tag'],
                 $p['home_sort'], $p['page_sort'], $p['sku'], $p['cover_image'], json_encode($p['images']),
-                $p['description'], $p['status'], $p['published_at']
+                $p['description'], $fulfillmentJson, $p['status'], $p['published_at']
             ]);
         }
         return true;

@@ -32,6 +32,28 @@ function handle_save_product(): array
     }
     $skuJson = !empty($skuData) ? json_encode($skuData, JSON_UNESCAPED_UNICODE) : '';
 
+    // 处理发货方式选项
+    $fulfillmentInput = $_POST['fulfillment'] ?? [];
+    $fulfillmentOptions = [];
+    if (is_array($fulfillmentInput)) {
+        foreach ($fulfillmentInput as $typeId => $fields) {
+            if (!is_array($fields)) {
+                continue;
+            }
+            if (empty($fields['enabled'])) {
+                continue;
+            }
+            $fulfillmentOptions[] = [
+                'type_id'      => (int) $typeId,
+                'price_adjust' => (float) ($fields['price_adjust'] ?? 0),
+                'note'         => trim((string) ($fields['note'] ?? '')),
+            ];
+        }
+    }
+    $fulfillmentJson = !empty($fulfillmentOptions)
+        ? json_encode($fulfillmentOptions, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        : '';
+
     $product = [
         'id' => $id,
         'name' => shop_admin_post_string('name'),
@@ -44,6 +66,7 @@ function handle_save_product(): array
         'home_sort' => shop_admin_post_int('home_sort'),
         'page_sort' => shop_admin_post_int('page_sort'),
         'sku' => $skuJson,
+        'fulfillment_options' => $fulfillmentJson,
         'cover_image' => shop_admin_post_string('cover_image'),
         'images' => array_values($imagesArr),
         'description' => shop_admin_post_string('description'),

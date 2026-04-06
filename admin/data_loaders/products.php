@@ -9,6 +9,10 @@ declare(strict_types=1);
  *           $productStatusFilter, $homePreview, $pagePreview
  */
 
+// 加载发货方式列表供商品编辑表单使用
+require_once __DIR__ . '/../../data/fulfillment.php';
+$allFulfillmentTypes = shop_get_active_fulfillment_types();
+
 if ($editingProduct !== null) {
     $selectedProduct = shop_normalize_product($editingProduct, (int) ($editingProduct['id'] ?? 0));
 }

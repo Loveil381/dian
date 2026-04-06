@@ -100,6 +100,12 @@ if ($skus === []) {
 }
 
 $default_sku = $skus[0];
+
+// 加载该商品可用的发货方式
+require_once __DIR__ . '/../data/fulfillment.php';
+$fulfillmentChoices = shop_get_product_fulfillment_choices($product);
+$hasFulfillment = count($fulfillmentChoices) > 0;
+$defaultFulfillment = $hasFulfillment ? $fulfillmentChoices[0] : null;
 $default_sku_name = (string) ($default_sku['name'] ?? (string) ($product['name'] ?? '默认规格'));
 $show_sku_selector = count($skus) > 1 || (count($skus) === 1 && $default_sku_name !== (string) ($product['name'] ?? ''));
 
@@ -199,6 +205,49 @@ include __DIR__ . '/header.php';
                 </section>
             <?php endif; ?>
 
+            <?php if ($hasFulfillment): ?>
+            <section class="product-detail-fulfillment" aria-label="发货方式选择">
+                <div class="product-detail-sku-title-row">
+                    <strong class="product-detail-sku-title">发货方式</strong>
+                    <span id="fulfillmentNote" class="product-detail-sku-tip text-muted"><?php echo shop_e((string) ($defaultFulfillment['note'] ?? '')); ?></span>
+                </div>
+                <div id="fulfillmentOptions" class="product-detail-fulfillment-options">
+                    <?php foreach ($fulfillmentChoices as $fIndex => $fc): ?>
+                        <?php
+                        $fcClasses = 'fulfillment-btn';
+                        if ($fIndex === 0) {
+                            $fcClasses .= ' fulfillment-btn--selected';
+                        }
+                        $adjustLabel = '';
+                        $adj = (float) $fc['price_adjust'];
+                        if ($adj > 0) {
+                            $adjustLabel = '+' . shop_format_price($adj);
+                        } elseif ($adj < 0) {
+                            $adjustLabel = '-' . shop_format_price(abs($adj));
+                        }
+                        ?>
+                        <button
+                            type="button"
+                            class="<?php echo $fcClasses; ?>"
+                            data-fulfillment-id="<?php echo (int) $fc['id']; ?>"
+                            data-fulfillment-name="<?php echo shop_e((string) $fc['name']); ?>"
+                            data-fulfillment-slug="<?php echo shop_e((string) $fc['slug']); ?>"
+                            data-fulfillment-adjust="<?php echo $adj; ?>"
+                            data-fulfillment-note="<?php echo shop_e((string) ($fc['note'] ?? '')); ?>"
+                            data-fulfillment-allow-zero="<?php echo (int) $fc['allow_zero_stock']; ?>"
+                            style="--fulfillment-color: <?php echo shop_e((string) $fc['badge_color']); ?>;"
+                        >
+                            <span class="material-symbols-outlined fulfillment-btn-icon" aria-hidden="true"><?php echo shop_e((string) $fc['icon']); ?></span>
+                            <span class="fulfillment-btn-label"><?php echo shop_e((string) $fc['name']); ?></span>
+                            <?php if ($adjustLabel !== ''): ?>
+                                <span class="fulfillment-btn-adjust"><?php echo shop_e($adjustLabel); ?></span>
+                            <?php endif; ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <?php endif; ?>
+
             <div class="product-detail-stock text-muted">库存：<span id="stockDisplay"><?php echo shop_format_sales((int) ($default_sku['stock'] ?? 0)); ?></span> 件</div>
 
             <section class="product-detail-qty" aria-label="数量选择">
@@ -232,6 +281,8 @@ include __DIR__ . '/header.php';
             let hasPayment = <?php echo json_encode($has_payment); ?>;
             let hasUserInfo = <?php echo json_encode($user_name !== '' && $user_phone !== '' && $user_address !== ''); ?>;
             let initialPayMethod = '';
+            let currentFulfillmentAdjust = <?php echo $defaultFulfillment ? (float) $defaultFulfillment['price_adjust'] : 0; ?>;
+            let currentFulfillmentAllowZero = <?php echo $defaultFulfillment ? (int) $defaultFulfillment['allow_zero_stock'] : 0; ?>;
             </script>
         </section>
     </article>
@@ -258,6 +309,9 @@ include __DIR__ . '/header.php';
             <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
             <input type="hidden" name="sku_name" id="cartSkuName" value="<?php echo shop_e($default_sku_name); ?>">
             <input type="hidden" name="sku_price" id="cartSkuPrice" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
+            <input type="hidden" name="fulfillment_type_id" id="cartFulfillmentId" value="<?php echo $defaultFulfillment ? (int) $defaultFulfillment['id'] : 0; ?>">
+            <input type="hidden" name="fulfillment_name" id="cartFulfillmentName" value="<?php echo $defaultFulfillment ? shop_e((string) $defaultFulfillment['name']) : ''; ?>">
+            <input type="hidden" name="fulfillment_adjust" id="cartFulfillmentAdjust" value="<?php echo $defaultFulfillment ? (float) $defaultFulfillment['price_adjust'] : 0; ?>">
             <input type="hidden" name="quantity" id="cartQtyInput" value="1">
             <button id="cartBtnSubmit" type="submit" class="product-detail-bar-add-btn">加入购物车</button>
         </form>
@@ -324,6 +378,9 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="cover_image" value="<?php echo shop_e($display_image); ?>">
                 <input type="hidden" name="sku_name" id="selectedSkuInput" value="<?php echo shop_e($default_sku_name); ?>">
                 <input type="hidden" name="sku_price" id="selectedPriceInput" value="<?php echo (float) ($default_sku['price'] ?? 0); ?>">
+                <input type="hidden" name="fulfillment_type_id" id="buyFulfillmentId" value="<?php echo $defaultFulfillment ? (int) $defaultFulfillment['id'] : 0; ?>">
+                <input type="hidden" name="fulfillment_name" id="buyFulfillmentName" value="<?php echo $defaultFulfillment ? shop_e((string) $defaultFulfillment['name']) : ''; ?>">
+                <input type="hidden" name="fulfillment_adjust" id="buyFulfillmentAdjust" value="<?php echo $defaultFulfillment ? (float) $defaultFulfillment['price_adjust'] : 0; ?>">
                 <input type="hidden" name="quantity" id="buyQtyInput" value="1">
                 <input type="hidden" name="pay_method" id="payMethodInput" value="">
                 <button type="submit" class="popup-submit-btn btn-primary">确认已支付并提交订单</button>

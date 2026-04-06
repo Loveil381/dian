@@ -12,6 +12,13 @@ if (empty($skus)) {
     $skus = [['name' => '', 'stock' => 0, 'price' => 0]];
 }
 $skuCount = count($skus);
+
+// 解析当前商品的发货方式选项
+$currentFulfillmentOptions = [];
+$fulfillmentOptionsRaw = shop_decode_fulfillment_options((string) ($selectedProduct['fulfillment_options'] ?? ''));
+foreach ($fulfillmentOptionsRaw as $fo) {
+    $currentFulfillmentOptions[(int) $fo['type_id']] = $fo;
+}
 ?>
 
 <section class="admin-products-shell">
@@ -120,6 +127,44 @@ $skuCount = count($skus);
                             <button type="button" class="btn btn-secondary btn-sm" data-add-sku>+ 新增 SKU</button>
                         </div>
                     </div>
+
+                    <?php if (!empty($allFulfillmentTypes)): ?>
+                    <div class="field field-full">
+                        <span class="label">发货方式</span>
+                        <span class="help">勾选后，客户在购买时可选择对应发货方式。价格调整为在 SKU 基础价上的增减。</span>
+                        <div class="admin-fulfillment-options">
+                            <?php foreach ($allFulfillmentTypes as $ft):
+                                $ftId = (int) $ft['id'];
+                                $isChecked = isset($currentFulfillmentOptions[$ftId]);
+                                $priceAdj = $isChecked ? (float) $currentFulfillmentOptions[$ftId]['price_adjust'] : 0;
+                                $note = $isChecked ? (string) $currentFulfillmentOptions[$ftId]['note'] : '';
+                            ?>
+                            <div class="admin-fulfillment-item">
+                                <label class="admin-checkbox-label">
+                                    <input type="checkbox" name="fulfillment[<?php echo $ftId; ?>][enabled]" value="1" <?php echo $isChecked ? 'checked' : ''; ?>>
+                                    <span class="badge" style="background: <?php echo shop_e((string) $ft['badge_color']); ?>; color: #fff;">
+                                        <span class="material-symbols-outlined" style="font-size:0.875rem; vertical-align: middle;"><?php echo shop_e((string) $ft['icon']); ?></span>
+                                        <?php echo shop_e((string) $ft['name']); ?>
+                                    </span>
+                                    <?php if ((int) $ft['allow_zero_stock'] === 1): ?>
+                                        <span class="badge badge-muted" style="font-size:0.75rem;">允许零库存</span>
+                                    <?php endif; ?>
+                                </label>
+                                <div class="admin-fulfillment-fields">
+                                    <label class="field">
+                                        <span class="label">价格调整</span>
+                                        <input type="number" name="fulfillment[<?php echo $ftId; ?>][price_adjust]" value="<?php echo $priceAdj; ?>" step="0.01" placeholder="0 = 不调整">
+                                    </label>
+                                    <label class="field">
+                                        <span class="label">备注</span>
+                                        <input type="text" name="fulfillment[<?php echo $ftId; ?>][note]" value="<?php echo shop_e($note); ?>" placeholder="<?php echo shop_e((string) $ft['description']); ?>">
+                                    </label>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                     <label class="field field-full">
                         <span class="label">商品图片</span>

@@ -29,7 +29,8 @@ $total_price = 0;
 $total_quantity = 0;
 foreach ($cart as $item) {
     $qty = max(1, (int) ($item['quantity'] ?? 1));
-    $total_price += (float) ($item['price'] ?? 0) * $qty;
+    $item_unit = (float) ($item['price'] ?? 0) + (float) ($item['fulfillment_adjust'] ?? 0);
+    $total_price += max(0.01, $item_unit) * $qty;
     $total_quantity += $qty;
 }
 
@@ -108,9 +109,19 @@ include __DIR__ . '/header.php';
                                         </button>
                                     </form>
                                 </div>
-                                <span class="badge cart-item-sku"><?php echo shop_e((string) ($item['sku_name'] ?? '默认规格')); ?></span>
+                                <div class="cart-item-badges">
+                                    <span class="badge cart-item-sku"><?php echo shop_e((string) ($item['sku_name'] ?? '默认规格')); ?></span>
+                                    <?php if (!empty($item['fulfillment_name'])): ?>
+                                        <span class="badge cart-item-fulfillment"><?php echo shop_e((string) $item['fulfillment_name']); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php
+                                $cart_unit_price = (float) ($item['price'] ?? 0) + (float) ($item['fulfillment_adjust'] ?? 0);
+                                $cart_unit_price = max(0.01, $cart_unit_price);
+                                $cart_item_subtotal = $cart_unit_price * $item_qty;
+                                ?>
                                 <div class="cart-item-bottom-row">
-                                    <span class="cart-item-price text-price"><?php echo shop_format_price($item_price); ?></span>
+                                    <span class="cart-item-price text-price"><?php echo shop_format_price($cart_unit_price); ?></span>
                                     <div class="cart-qty-stepper">
                                         <form method="post" class="cart-qty-form">
                                             <?php echo csrf_field(); ?>
@@ -126,7 +137,7 @@ include __DIR__ . '/header.php';
                                             </button>
                                         </form>
                                     </div>
-                                    <span class="cart-item-subtotal text-price"><?php echo shop_format_price($item_subtotal); ?></span>
+                                    <span class="cart-item-subtotal text-price"><?php echo shop_format_price($cart_item_subtotal); ?></span>
                                 </div>
                             </div>
                         </div>
