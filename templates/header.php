@@ -4,8 +4,8 @@ declare(strict_types=1);
 $currentPage = $currentPage ?? 'home';
 $currentKeyword = (string) ($_GET['keyword'] ?? '');
 $cartCount = isset($_SESSION['cart']) ? array_reduce($_SESSION['cart'], fn ($sum, $item) => $sum + ($item['quantity'] ?? 0), 0) : 0;
-$pageTitle = $pageTitle ?? '魔女小店';
-$pageDescription = $pageDescription ?? '魔女小店，发现喜欢的商品并轻松下单。';
+$pageTitle = $pageTitle ?? '魔女的小店';
+$pageDescription = $pageDescription ?? '魔女的小店，发现喜欢的商品并轻松下单。';
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');

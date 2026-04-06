@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/pagination.php';
 require_once __DIR__ . '/../data/products.php';
 
-$pageTitle = '魔女小店 - 首页';
+$pageTitle = '魔女的小店 - 首页';
 $currentPage = 'home';
 $showFooter = false;
 

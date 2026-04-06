@@ -22,7 +22,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 
 require_once __DIR__ . '/includes/helpers.php';
 
-$pageTitle = '魔女小店 - 管理后台';
+$pageTitle = '魔女的小店 - 管理后台';
 $adminUrl = 'index.php?page=admin';
 $currentTab = $_GET['tab'] ?? 'dashboard';
 

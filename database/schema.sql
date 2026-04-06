@@ -1,4 +1,4 @@
--- 魔女小店数据库结构
+-- 魔女的小店数据库结构
 -- 安装程序会在执行前将 {prefix} 替换为实际表前缀
 
 CREATE TABLE IF NOT EXISTS {prefix}admin_users (

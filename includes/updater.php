@@ -421,7 +421,7 @@ function shop_update_dump_database(): string|false
     }
 
     try {
-        $sql = "-- 魔女小店数据库备份\n";
+        $sql = "-- 魔女的小店数据库备份\n";
         $sql .= "-- 时间: " . date('Y-m-d H:i:s') . "\n";
         $sql .= "-- 版本: " . shop_app_version() . "\n";
         $sql .= "SET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS = 0;\n\n";

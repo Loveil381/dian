@@ -68,7 +68,7 @@ function shop_notify_order_event(string $event, array $order): void
  */
 function shop_notification_subject(string $event, string $audience, string $orderNo): string
 {
-    $storeName = shop_get_setting('store_name', '魔女小店');
+    $storeName = shop_get_setting('store_name', '魔女的小店');
 
     if ($audience === 'admin') {
         $map = [
@@ -96,7 +96,7 @@ function shop_notification_body(string $event, string $audience, array $order): 
     $customer = (string) ($order['customer'] ?? '顾客');
     $phone = (string) ($order['phone'] ?? '');
     $address = (string) ($order['address'] ?? '');
-    $storeName = shop_get_setting('store_name', '魔女小店');
+    $storeName = shop_get_setting('store_name', '魔女的小店');
 
     // 商品摘要
     $itemsSummary = '';

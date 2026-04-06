@@ -40,7 +40,7 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
         <div class="admin-topbar-brand">
             <span class="badge badge-primary">管理后台</span>
             <div class="admin-topbar-copy">
-                <strong class="admin-topbar-title">魔女小店后台</strong>
+                <strong class="admin-topbar-title">魔女的小店后台</strong>
                 <span class="admin-topbar-subtitle"><?php echo shop_e($currentTabLabel); ?></span>
             </div>
         </div>
@@ -60,7 +60,7 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
 
     <aside class="admin-sidebar" id="sidebar" aria-label="后台导航">
         <div class="admin-sidebar-head">
-            <h1 class="admin-sidebar-title">魔女小店</h1>
+            <h1 class="admin-sidebar-title">魔女的小店</h1>
             <p class="admin-sidebar-note">后台管理</p>
         </div>
 

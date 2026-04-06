@@ -110,7 +110,7 @@
             </div>
             <div>
                 <h4 class="admin-payment-tip-title">需要帮助 💬</h4>
-                <p class="admin-payment-tip-desc">如果在配置过程中遇到困难，请联系魔女小店的技术支持团队。</p>
+                <p class="admin-payment-tip-desc">如果在配置过程中遇到困难，请联系魔女的小店的技术支持团队。</p>
             </div>
         </div>
     </div>

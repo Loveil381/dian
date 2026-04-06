@@ -58,7 +58,7 @@ try {
         $base_path = $script_dir === '' ? '' : '/' . $script_dir;
         $reset_link = $scheme . '://' . $host . $base_path . '/index.php?page=reset_password&token=' . urlencode($token);
 
-        $mail_subject = '魔女小店 - 密码重置';
+        $mail_subject = '魔女的小店 - 密码重置';
         $mail_body = "你好，\n\n";
         $mail_body .= "请在 1 小时内使用下面的链接重置密码：\n";
         $mail_body .= $reset_link . "\n\n";

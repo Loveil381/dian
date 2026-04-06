@@ -8,7 +8,7 @@ require_once __DIR__ . '/../data/products.php';
 
 $currentPage = 'products';
 $pageTitle = '全部商品';
-$pageDescription = '浏览魔女小店的全部上架商品，支持关键字和分类筛选。';
+$pageDescription = '浏览魔女的小店的全部上架商品，支持关键字和分类筛选。';
 
 $keyword = trim((string) ($_GET['keyword'] ?? ''));
 $selected_category = trim((string) ($_GET['category'] ?? ''));

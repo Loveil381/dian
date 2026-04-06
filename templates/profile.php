@@ -9,7 +9,7 @@ require_once __DIR__ . '/../data/products.php';
 require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/logger.php';
 
-$pageTitle = '个人中心 - 魔女小店';
+$pageTitle = '个人中心 - 魔女的小店';
 $currentPage = 'profile';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['action'] ?? '') === 'save_profile') {

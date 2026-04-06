@@ -13,7 +13,7 @@ if ($pageData === null) {
     exit;
 }
 
-$pageTitle = (string) $pageData['title'] . ' - 魔女小店';
+$pageTitle = (string) $pageData['title'] . ' - 魔女的小店';
 $pageDescription = strip_tags(mb_substr((string) $pageData['content'], 0, 120)) . '...';
 $currentPage = 'page';
 $allPages = shop_get_page_slugs();

@@ -35,7 +35,7 @@ if ($action !== 'register') {
     $action = 'login';
 }
 
-$pageTitle = $action === 'login' ? '用户登录 - 魔女小店' : '用户注册 - 魔女小店';
+$pageTitle = $action === 'login' ? '用户登录 - 魔女的小店' : '用户注册 - 魔女的小店';
 $currentPage = 'profile';
 
 include __DIR__ . '/header.php';
@@ -48,7 +48,7 @@ include __DIR__ . '/header.php';
                 <div class="auth-brand-mark">
                     <span class="material-symbols-outlined auth-brand-icon" aria-hidden="true">auto_awesome</span>
                 </div>
-                <p class="auth-brand-note">欢迎来到魔女小店</p>
+                <p class="auth-brand-note">欢迎来到魔女的小店</p>
                 <h1 class="auth-title"><?php echo $action === 'login' ? '欢迎回来' : '创建你的购物账号'; ?></h1>
                 <p class="auth-description"><?php echo $action === 'login' ? '登录后即可查看购物车、订单记录并保存收货信息。' : '注册账号后可同步订单状态、保存配送信息，并获得更稳定的购物体验。'; ?></p>
             </div>

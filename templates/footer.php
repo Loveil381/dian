@@ -18,7 +18,7 @@ $footerPages = shop_get_page_slugs();
         <?php endforeach; ?>
     </nav>
     <?php endif; ?>
-    <p>&copy; 2026 魔女小店，愿你轻松挑到喜欢的商品</p>
+    <p>&copy; 2026 魔女的小店，愿你轻松挑到喜欢的商品</p>
 </footer>
 <?php endif; ?>
 

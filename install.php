@@ -15,7 +15,7 @@ if (file_exists($lock_path) || file_exists($config_path)) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>魔女小店已安装</title>
+        <title>魔女的小店已安装</title>
         <link rel="stylesheet" href="assets/css/site.css">
     </head>
     <body class="auth-page">
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔女小店安装向导</title>
+    <title>魔女的小店安装向导</title>
     <link rel="stylesheet" href="assets/css/site.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 </head>
@@ -155,8 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="install-brand-icon">
             <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
         </div>
-        <h1 class="install-brand-title">魔女小店 · 安装向导</h1>
-        <p class="install-brand-note">欢迎来到现代化的魔女小店管理系统，请按照以下步骤完成环境配置与初始化。</p>
+        <h1 class="install-brand-title">魔女的小店 · 安装向导</h1>
+        <p class="install-brand-note">欢迎来到现代化的魔女的小店管理系统，请按照以下步骤完成环境配置与初始化。</p>
     </header>
 
     <nav class="install-stepper" aria-label="安装步骤">
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <section class="auth-card auth-card--wide">
         <h2 class="auth-title"><?php echo $success !== '' ? '安装成功' : '填写配置信息'; ?></h2>
-        <p class="auth-description"><?php echo $success !== '' ? '数据库和管理员账号已创建完成，可以开始使用魔女小店了。' : '填写数据库连接信息和管理员账号，提交后系统会自动完成初始化。'; ?></p>
+        <p class="auth-description"><?php echo $success !== '' ? '数据库和管理员账号已创建完成，可以开始使用魔女的小店了。' : '填写数据库连接信息和管理员账号，提交后系统会自动完成初始化。'; ?></p>
 
         <?php if ($error !== ''): ?>
             <div class="auth-alert auth-alert--error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>

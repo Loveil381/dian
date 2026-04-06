@@ -10,7 +10,7 @@ function shop_error_page(int $code, string $message): void
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $code; ?> - 魔女小店</title>
+    <title><?php echo $code; ?> - 魔女的小店</title>
     <style>
         body {
             margin: 0;
