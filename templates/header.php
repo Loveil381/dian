@@ -64,11 +64,22 @@ $ogImage = $ogImage ?? $defaultOgImage;
 
 <header class="glass-nav site-header">
     <div class="header-bar">
+        <!-- 左侧：移动端汉堡菜单 / PC 端品牌名 -->
         <div class="nav-left">
-            <button class="btn-ghost header-icon-btn" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav" id="menuBtn" type="button">
+            <button class="btn-ghost header-icon-btn header-menu-btn" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav" id="menuBtn" type="button">
                 <span class="material-symbols-outlined" aria-hidden="true">menu</span>
             </button>
+            <a href="index.php?page=home" class="header-brand" aria-label="魔女的小店 - 返回首页">
+                <span class="header-brand-icon" aria-hidden="true">🔮</span>
+                <span class="header-brand-name">魔女的小店</span>
+            </a>
         </div>
+
+        <!-- 中间：PC 端主导航 + 搜索栏 -->
+        <nav class="header-main-nav" id="siteNav" aria-label="主导航">
+            <a class="nav-link page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>
+            <a class="nav-link page-link <?php echo $currentPage === 'products' ? 'active' : ''; ?>" href="index.php?page=products">商品</a>
+        </nav>
 
         <form class="search-form header-search" id="searchForm" method="get" action="index.php" role="search">
             <label class="sr-only" for="searchInput">搜索商品</label>
@@ -82,6 +93,7 @@ $ogImage = $ogImage ?? $defaultOgImage;
             </div>
         </form>
 
+        <!-- 右侧：购物车 + 用户入口 -->
         <div class="nav-right">
             <a href="index.php?page=cart" class="cart-link header-cart-link" aria-label="购物车" id="cartBtn">
                 <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
@@ -89,10 +101,14 @@ $ogImage = $ogImage ?? $defaultOgImage;
                     <span class="badge badge-cart"><?php echo $cartCount; ?></span>
                 <?php endif; ?>
             </a>
+            <a href="index.php?page=<?php echo isset($_SESSION['user_id']) ? 'profile' : 'auth'; ?>" class="header-user-link" aria-label="<?php echo isset($_SESSION['user_id']) ? '个人中心' : '登录'; ?>">
+                <span class="material-symbols-outlined" aria-hidden="true"><?php echo isset($_SESSION['user_id']) ? 'person' : 'login'; ?></span>
+            </a>
         </div>
     </div>
 
-    <nav class="page-nav" id="siteNav" aria-label="主导航">
+    <!-- 移动端展开导航（汉堡菜单） -->
+    <nav class="mobile-expand-nav" id="mobileExpandNav" aria-label="移动端导航">
         <a class="nav-link page-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="index.php?page=home">首页</a>
         <a class="nav-link page-link <?php echo $currentPage === 'products' ? 'active' : ''; ?>" href="index.php?page=products">商品</a>
         <a class="nav-link page-link <?php echo $currentPage === 'orders' ? 'active' : ''; ?>" href="index.php?page=orders">订单</a>
