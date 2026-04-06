@@ -777,8 +777,8 @@ function shop_update_run_migrations(): string
                 } catch (PDOException $stmtEx) {
                     // 容错：列/表已存在属于幂等情况，跳过而非中断
                     $code = (int) $stmtEx->errorInfo[1];
-                    if ($code === 1060 || $code === 1050) {
-                        // 1060 = Duplicate column name, 1050 = Table already exists
+                    if ($code === 1060 || $code === 1050 || $code === 1061) {
+                        // 1060 = Duplicate column name, 1050 = Table already exists, 1061 = Duplicate key name
                         shop_log('info', '迁移语句跳过（目标已存在）', [
                             'migration' => $name,
                             'code'      => $code,
