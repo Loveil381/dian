@@ -158,3 +158,46 @@ function shop_get_settings(array $keys): array
         return [];
     }
 }
+
+/**
+ * Ensure legacy orders tables have coupon columns before coupon-aware inserts run.
+ */
+function shop_ensure_order_coupon_columns(): bool
+{
+    static $checked = false;
+
+    if ($checked) {
+        return true;
+    }
+
+    $pdo = get_db_connection();
+    $prefix = get_db_prefix();
+    if (!$pdo instanceof PDO) {
+        return false;
+    }
+
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM `{$prefix}orders`");
+        $columns = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $field = (string) ($row['Field'] ?? '');
+            if ($field !== '') {
+                $columns[$field] = true;
+            }
+        }
+
+        if (!isset($columns['coupon_code'])) {
+            $pdo->exec("ALTER TABLE `{$prefix}orders` ADD COLUMN `coupon_code` VARCHAR(50) DEFAULT NULL AFTER `items`");
+        }
+
+        if (!isset($columns['coupon_discount'])) {
+            $pdo->exec("ALTER TABLE `{$prefix}orders` ADD COLUMN `coupon_discount` DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER `coupon_code`");
+        }
+
+        $checked = true;
+        return true;
+    } catch (PDOException $e) {
+        shop_log('error', '确保订单优惠券字段失败', ['message' => $e->getMessage()]);
+        return false;
+    }
+}
