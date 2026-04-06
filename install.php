@@ -106,6 +106,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $admin_stmt->execute([$form['admin_user'], $form['admin_user'], $admin_hash]);
             $pdo->commit();
 
+            // 新装站：创建迁移跟踪表并将当前所有迁移标记为已执行，
+            // 避免首次升级时重跑全量历史迁移（schema.sql 已包含完整结构）
+            $pdo->exec("CREATE TABLE IF NOT EXISTS `{$form['prefix']}migrations` (
+                `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `migration`  VARCHAR(255) NOT NULL UNIQUE,
+                `applied_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            $migrationDir = __DIR__ . '/database/migrations';
+            $migrationFiles = glob($migrationDir . '/*.sql');
+            if (is_array($migrationFiles) && $migrationFiles !== []) {
+                $seedStmt = $pdo->prepare("INSERT IGNORE INTO `{$form['prefix']}migrations` (`migration`) VALUES (?)");
+                foreach ($migrationFiles as $mf) {
+                    $seedStmt->execute([basename($mf)]);
+                }
+            }
+
             $config = [
                 'driver' => 'mysql',
                 'host' => $host,
