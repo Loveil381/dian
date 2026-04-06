@@ -347,6 +347,6 @@ function shop_update_rollback_from_backup(string $zipPath, string $rootDir): voi
     $zip->close();
 
     // 备份 zip 没有包装层，直接就是应用文件
-    shop_update_copy_dir($extractDir, $rootDir, SHOP_UPDATE_SKIP_DIRS);
+    shop_update_sync_dir($extractDir, $rootDir, SHOP_UPDATE_SKIP_DIRS);
     shop_update_rmdir_recursive($extractDir);
 }

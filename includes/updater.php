@@ -606,7 +606,7 @@ function shop_update_staged_deploy(string $srcDir, string $rootDir, array $skipD
     }
 
     // 阶段二：从 staging 覆盖到根目录
-    shop_update_copy_dir($stagingDir, $rootDir, $skipDirs);
+    shop_update_sync_dir($stagingDir, $rootDir, $skipDirs);
 
     // 清理 staging
     shop_update_rmdir_recursive($stagingDir);
@@ -653,6 +653,74 @@ function shop_update_copy_dir(string $src, string $dst, array $skipDirs): void
             }
         }
     }
+}
+
+/**
+ * Sync managed files from source to destination while preserving skipped paths.
+ */
+function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
+{
+    $src = rtrim(str_replace('\\', '/', $src), '/') . '/';
+    $dst = rtrim(str_replace('\\', '/', $dst), '/') . '/';
+
+    $sourcePaths = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($src, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        $relativePath = str_replace($src, '', str_replace('\\', '/', $item->getPathname()));
+        if ($relativePath === '') {
+            continue;
+        }
+
+        $skip = false;
+        foreach ($skipDirs as $skipDir) {
+            if (str_starts_with($relativePath, $skipDir . '/') || $relativePath === $skipDir) {
+                $skip = true;
+                break;
+            }
+        }
+        if ($skip) {
+            continue;
+        }
+
+        $sourcePaths[$relativePath] = true;
+    }
+
+    if (is_dir($dst)) {
+        $destIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dst, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($destIterator as $item) {
+            $relativePath = str_replace($dst, '', str_replace('\\', '/', $item->getPathname()));
+            if ($relativePath === '') {
+                continue;
+            }
+
+            $skip = false;
+            foreach ($skipDirs as $skipDir) {
+                if (str_starts_with($relativePath, $skipDir . '/') || $relativePath === $skipDir) {
+                    $skip = true;
+                    break;
+                }
+            }
+            if ($skip || isset($sourcePaths[$relativePath])) {
+                continue;
+            }
+
+            if ($item->isDir()) {
+                @rmdir($item->getRealPath());
+            } else {
+                @unlink($item->getRealPath());
+            }
+        }
+    }
+
+    shop_update_copy_dir($src, $dst, $skipDirs);
 }
 
 /**
