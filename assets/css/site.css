@@ -1,14 +1,14 @@
 /* 站点头部与导航 */
 :root {
-    --nav-bg: #ffffff;
-    --icon-color: #333333;
-    --icon-hover: #000000;
-    --divider-color: rgba(230, 233, 238, 0.9);
-    --badge-bg: #ff4d4f;
-    --badge-text: #ffffff;
-    --link-color: #666666;
-    --link-active-bg: #f0f2f5;
-    --link-hover-bg: #f5f6f8;
+    --nav-bg: var(--color-surface-container-lowest);
+    --icon-color: var(--color-on-surface);
+    --icon-hover: var(--color-on-surface);
+    --divider-color: color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+    --badge-bg: var(--color-error-container);
+    --badge-text: var(--color-surface-container-lowest);
+    --link-color: var(--color-on-surface-variant);
+    --link-active-bg: var(--color-surface-container-low);
+    --link-hover-bg: var(--color-surface-container-low);
 }
 
 * {
@@ -29,7 +29,7 @@ a {
 }
 
 .btn--disabled {
-    background: #94a3b8 !important;
+    background: var(--color-outline) !important;
     cursor: not-allowed;
 }
 
@@ -45,8 +45,8 @@ a {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: var(--badge-bg, #ff4d4f);
-    color: #ffffff;
+    background: var(--badge-bg);
+    color: var(--badge-text);
     border-radius: 10px;
     padding: 2px 6px;
     font-size: 10px;
@@ -378,7 +378,7 @@ header {
 }
 
 .product-price {
-    color: #ef4444;
+    color: var(--color-price);
     font-size: 19px;
     font-weight: 700;
     line-height: 1.2;
@@ -386,7 +386,7 @@ header {
 
 .product-stock {
     margin-top: 6px;
-    color: #94a3b8;
+    color: var(--color-outline);
     font-size: 12px;
     line-height: 1.6;
 }
@@ -1249,7 +1249,7 @@ header {
 
 .link-list a::after {
     content: '›';
-    color: #94a3b8;
+    color: var(--color-outline);
     font-size: 18px;
     line-height: 1;
 }
@@ -2398,11 +2398,6 @@ body.has-fixed-header {
     font-family: var(--font-headline);
 }
 
-.text-h1 {
-    font-size: var(--text-h1);
-    line-height: 1.15;
-}
-
 /* ── 购物车：Flash ── */
 .cart-flash {
     max-width: 52rem;
@@ -2794,10 +2789,7 @@ body.has-fixed-header {
 }
 
 /* ══ 结算 ══ */
-.font-label {
-    font-family: var(--font-label);
-}
-
+/* .font-label 已由 components.css 定义，此处不重复 */
 .text-h1 {
     font-family: var(--font-headline);
     font-size: var(--text-h1);
@@ -3006,6 +2998,38 @@ body.has-fixed-header {
     align-items: center;
     gap: var(--space-sm);
     font-size: var(--text-caption);
+}
+
+/* 优惠券图标和输入框 */
+.coupon-icon-check {
+    color: var(--color-success);
+}
+
+.coupon-icon-ticket {
+    color: var(--color-primary);
+}
+
+.coupon-remove-form {
+    display: inline;
+}
+
+.coupon-code-input {
+    flex: 1;
+    font-family: monospace;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* 优惠券码标签（订单详情页） */
+.coupon-code-tag {
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.coupon-discount-tag {
+    color: var(--color-success);
+    margin-left: var(--space-sm);
 }
 
 .checkout-total-label {

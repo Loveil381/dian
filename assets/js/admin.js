@@ -325,8 +325,7 @@ function updateQrPreview(type) {
     }
 
     const emptyText = document.createElement('span');
-    emptyText.style.color = '#94a3b8';
-    emptyText.style.fontSize = '12px';
+    emptyText.className = 'text-muted';
     emptyText.innerText = '暂未设置二维码';
     preview.appendChild(emptyText);
 }
