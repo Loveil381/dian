@@ -5,6 +5,12 @@ function shopFormatSitePrice(price) {
     });
 }
 
+function shopGetCurrentQty() {
+    var display = document.getElementById('qtyDisplay');
+    if (!display) return 1;
+    return parseInt(display.textContent, 10) || 1;
+}
+
 function shopUpdateProductActionState(stock, price) {
     const buyBtn = document.getElementById('buyBtn');
     const cartBtn = document.getElementById('cartBtnSubmit');
@@ -35,7 +41,8 @@ function shopUpdateProductActionState(stock, price) {
         buyBtn.disabled = false;
         buyBtn.classList.remove('btn--disabled');
         buyBtn.classList.add('btn--active');
-        buyBtn.textContent = '立即购买 ' + shopFormatSitePrice(price);
+        var qty = shopGetCurrentQty();
+        buyBtn.textContent = '立即购买 ' + shopFormatSitePrice(price * qty);
     }
 
     if (cartBtn) {
@@ -228,7 +235,8 @@ function showPaymentPopup() {
     }
 
     if (popupPriceDisplay && typeof currentPrice !== 'undefined') {
-        popupPriceDisplay.textContent = shopFormatSitePrice(currentPrice);
+        var qty = shopGetCurrentQty();
+        popupPriceDisplay.textContent = shopFormatSitePrice(shopGetDisplayPrice() * qty);
     }
 }
 
@@ -274,7 +282,8 @@ function showQR(method) {
     }
 
     if (popupPriceDisplay && typeof currentPrice !== 'undefined') {
-        popupPriceDisplay.textContent = shopFormatSitePrice(currentPrice);
+        var qty = shopGetCurrentQty();
+        popupPriceDisplay.textContent = shopFormatSitePrice(shopGetDisplayPrice() * qty);
     }
 
     if (wechatQR) {
@@ -495,6 +504,18 @@ function shopUpdateQtyDisplay(qty) {
             decBtn.classList.add('qty-stepper-btn--disabled');
         } else {
             decBtn.classList.remove('qty-stepper-btn--disabled');
+        }
+    }
+
+
+    // 数量变化后刷新价格显示（立即购买按钮、弹窗价格）
+    if (typeof currentPrice !== 'undefined' && typeof initialStock !== 'undefined') {
+        var displayPrice = typeof shopGetDisplayPrice === 'function' ? shopGetDisplayPrice() : currentPrice;
+        shopUpdateProductActionState(initialStock, displayPrice);
+
+        var popupPriceDisplay = document.getElementById('popupPriceDisplay');
+        if (popupPriceDisplay) {
+            popupPriceDisplay.textContent = shopFormatSitePrice(displayPrice * qty);
         }
     }
 }
