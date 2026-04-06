@@ -710,17 +710,7 @@ function shop_update_ensure_migrations_table(): void
             `applied_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-        // 将所有已有迁移文件 seed 为已应用
-        $migrationDir = shop_update_root_path() . '/database/migrations';
-        $files = glob($migrationDir . '/*.sql');
-        if (is_array($files)) {
-            $insertStmt = $pdo->prepare("INSERT IGNORE INTO `{$prefix}migrations` (`migration`) VALUES (?)");
-            foreach ($files as $file) {
-                $insertStmt->execute([basename($file)]);
-            }
-        }
-
-        shop_log('info', '迁移跟踪表已创建并初始化');
+        shop_log('info', '迁移跟踪表已创建');
     } catch (PDOException $e) {
         shop_log('error', '创建迁移跟踪表失败', ['message' => $e->getMessage()]);
     }
@@ -782,7 +772,21 @@ function shop_update_run_migrations(): string
                 if ($statement === '') {
                     continue;
                 }
-                $pdo->exec($statement);
+                try {
+                    $pdo->exec($statement);
+                } catch (PDOException $stmtEx) {
+                    // 容错：列/表已存在属于幂等情况，跳过而非中断
+                    $code = (int) $stmtEx->errorInfo[1];
+                    if ($code === 1060 || $code === 1050) {
+                        // 1060 = Duplicate column name, 1050 = Table already exists
+                        shop_log('info', '迁移语句跳过（目标已存在）', [
+                            'migration' => $name,
+                            'code'      => $code,
+                        ]);
+                        continue;
+                    }
+                    throw $stmtEx;
+                }
             }
 
             // 记录为已应用

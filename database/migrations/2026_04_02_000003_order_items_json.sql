@@ -3,5 +3,5 @@
 -- JSON 结构示例：
 -- [{"product_id":1,"name":"魔法茶杯","sku_name":"标准款","price":99.00,"quantity":2}]
 
-ALTER TABLE `{PREFIX}orders`
+ALTER TABLE `{prefix}orders`
     MODIFY `items` TEXT NULL COMMENT '订单商品 JSON 数组';
