@@ -212,6 +212,35 @@ foreach ($_SESSION['cart'] as &$item) {
         $price_changed = true;
     }
 
+    // 重校验发货方式：检查类型是否仍属于该商品、调整金额是否变化、预售资格是否仍有效
+    $cart_ft_id = (int) ($item['fulfillment_type_id'] ?? 0);
+    if ($cart_ft_id > 0) {
+        require_once __DIR__ . '/../data/fulfillment.php';
+        $db_choices = shop_get_product_fulfillment_choices($db_product);
+        $ft_still_valid = false;
+        foreach ($db_choices as $fc) {
+            if ((int) $fc['id'] === $cart_ft_id) {
+                // 类型仍有效，校验价格调整
+                $db_adjust = (float) $fc['price_adjust'];
+                $cart_adjust = (float) ($item['fulfillment_adjust'] ?? 0);
+                if (abs($cart_adjust - $db_adjust) > 0.00001) {
+                    $price_changed = true;
+                }
+                $item['fulfillment_adjust'] = $db_adjust;
+                $item['fulfillment_name'] = (string) $fc['name'];
+                $ft_still_valid = true;
+                break;
+            }
+        }
+        if (!$ft_still_valid) {
+            // 发货方式已被移除或停用，清除并提示
+            $item['fulfillment_type_id'] = 0;
+            $item['fulfillment_name'] = '';
+            $item['fulfillment_adjust'] = 0;
+            $price_changed = true;
+        }
+    }
+
     $item['name'] = (string) ($db_product['name'] ?? ($item['name'] ?? ''));
     $item['price'] = $verified_price;
     $item['sku_price'] = $verified_price;

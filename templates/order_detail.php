@@ -180,8 +180,13 @@ include __DIR__ . '/header.php';
                 </div>
             <?php else: ?>
                 <div class="order-detail-tracking-pending">
-                    <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 2rem; color: var(--color-outline);">hourglass_top</span>
-                    <p class="text-muted">商家正在准备发货，请耐心等待。</p>
+                    <?php if ($status_key === 'shipped' || $status_key === 'completed'): ?>
+                        <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 2rem; color: var(--color-primary);">local_shipping</span>
+                        <p class="text-muted">商品已发出，物流单号待更新。</p>
+                    <?php else: ?>
+                        <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 2rem; color: var(--color-outline);">hourglass_top</span>
+                        <p class="text-muted">商家正在准备发货，请耐心等待。</p>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </section>
