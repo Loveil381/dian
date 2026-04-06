@@ -168,6 +168,11 @@ $weekTrend = [];
 $topProducts = [];
 $statusDistribution = [];
 
+// 发货方式默认变量
+$fulfillmentTypes = [];
+$editingFulfillment = null;
+$selectedFulfillment = ['id' => 0, 'slug' => '', 'name' => '', 'description' => '', 'icon' => 'local_shipping', 'badge_color' => '#6a37d4', 'allow_zero_stock' => 0, 'sort' => 0, 'status' => 'active'];
+
 $updateInfo = ['current_version' => shop_app_version(), 'latest_version' => '', 'has_update' => false, 'release_notes' => '', 'release_url' => '', 'published_at' => '', 'last_checked' => '', 'check_error' => ''];
 $backupList = [];
 $updateHistory = [];
@@ -189,6 +194,7 @@ $loaderMap = [
     'products'   => __DIR__ . '/data_loaders/products.php',
     'categories' => __DIR__ . '/data_loaders/categories.php',
     'inventory'  => __DIR__ . '/data_loaders/inventory.php',
+    'fulfillment' => __DIR__ . '/data_loaders/fulfillment.php',
     'orders'     => __DIR__ . '/data_loaders/orders.php',
     'users'      => __DIR__ . '/data_loaders/users.php',
     'payment'    => __DIR__ . '/data_loaders/payment.php',

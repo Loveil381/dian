@@ -99,6 +99,13 @@ $currentTabLabel = $tabLabels[$currentTab] ?? '后台';
                         <small>Inventory</small>
                     </span>
                 </a>
+                <a class="nav-link admin-sidebar-link <?php echo $currentTab === 'fulfillment' ? 'is-active active' : ''; ?>" href="index.php?page=admin&tab=fulfillment" <?php echo $currentTab === 'fulfillment' ? 'aria-current="page"' : ''; ?>>
+                    <span class="material-symbols-outlined" aria-hidden="true">local_shipping</span>
+                    <span class="admin-sidebar-link-copy">
+                        <strong>发货方式</strong>
+                        <small>Fulfillment</small>
+                    </span>
+                </a>
             </div>
 
             <div class="admin-nav-group">

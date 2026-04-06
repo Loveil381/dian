@@ -177,6 +177,21 @@ include __DIR__ . '/header.php';
                             </div>
                         </div>
 
+                        <?php
+                        $o_express = trim((string) ($order['express_company'] ?? ''));
+                        $o_tracking = trim((string) ($order['tracking_numbers'] ?? ''));
+                        if ($o_express !== '' || $o_tracking !== ''):
+                            $o_first_tracking = $o_tracking !== '' ? explode("\n", $o_tracking)[0] : '';
+                        ?>
+                        <div class="orders-item-tracking">
+                            <span class="material-symbols-outlined" style="font-size: 1rem; color: var(--color-primary);" aria-hidden="true">local_shipping</span>
+                            <span class="text-muted"><?php echo shop_e($o_express); ?></span>
+                            <?php if ($o_first_tracking !== ''): ?>
+                                <code style="font-size: var(--text-caption);"><?php echo shop_e(trim($o_first_tracking)); ?></code>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+
                         <div class="orders-item-footer">
                             <p class="text-price orders-item-total">合计: <?php echo shop_format_price((float) $order['total']); ?></p>
                             <div class="orders-item-actions">

@@ -9,7 +9,11 @@ function shopUpdateProductActionState(stock, price) {
     const buyBtn = document.getElementById('buyBtn');
     const cartBtn = document.getElementById('cartBtnSubmit');
 
-    if (stock <= 0) {
+    // 如果当前发货方式允许零库存购买，则不视为缺货
+    var allowZero = typeof currentFulfillmentAllowZero !== 'undefined' && currentFulfillmentAllowZero === 1;
+    var effectivelyOutOfStock = stock <= 0 && !allowZero;
+
+    if (effectivelyOutOfStock) {
         if (buyBtn) {
             buyBtn.disabled = true;
             buyBtn.classList.add('btn--disabled');
@@ -38,8 +42,74 @@ function shopUpdateProductActionState(stock, price) {
         cartBtn.disabled = false;
         cartBtn.classList.remove('btn--disabled');
         cartBtn.classList.remove('btn--active');
-        cartBtn.textContent = '加入购物车';
+        cartBtn.textContent = allowZero && stock <= 0 ? '预售下单' : '加入购物车';
     }
+}
+
+/**
+ * 计算含发货方式调整的最终显示价格。
+ */
+function shopGetDisplayPrice() {
+    var adjust = typeof currentFulfillmentAdjust !== 'undefined' ? currentFulfillmentAdjust : 0;
+    return Math.max(0.01, currentPrice + adjust);
+}
+
+/**
+ * 刷新所有价格显示（SKU 基础价 + 发货方式调整）。
+ */
+function shopRefreshPriceDisplay() {
+    var displayPrice = shopGetDisplayPrice();
+    var mainPriceDisplay = document.getElementById('mainPriceDisplay');
+    if (mainPriceDisplay) {
+        mainPriceDisplay.textContent = shopFormatSitePrice(displayPrice);
+    }
+    var popupPriceDisplay = document.getElementById('popupPriceDisplay');
+    if (popupPriceDisplay) {
+        popupPriceDisplay.textContent = shopFormatSitePrice(displayPrice);
+    }
+    shopUpdateProductActionState(initialStock, displayPrice);
+}
+
+/**
+ * 选择发货方式。
+ */
+function selectFulfillment(btn) {
+    document.querySelectorAll('.fulfillment-btn').forEach(function (b) {
+        b.classList.remove('fulfillment-btn--selected');
+    });
+    btn.classList.add('fulfillment-btn--selected');
+
+    var id = Number(btn.dataset.fulfillmentId || '0');
+    var name = btn.dataset.fulfillmentName || '';
+    var adjust = Number(btn.dataset.fulfillmentAdjust || '0');
+    var note = btn.dataset.fulfillmentNote || '';
+    var allowZero = Number(btn.dataset.fulfillmentAllowZero || '0');
+
+    currentFulfillmentAdjust = adjust;
+    currentFulfillmentAllowZero = allowZero;
+
+    // 更新隐藏字段 — 购物车表单
+    var el;
+    el = document.getElementById('cartFulfillmentId');
+    if (el) { el.value = id; }
+    el = document.getElementById('cartFulfillmentName');
+    if (el) { el.value = name; }
+    el = document.getElementById('cartFulfillmentAdjust');
+    if (el) { el.value = adjust; }
+
+    // 更新隐藏字段 — 快速购买表单
+    el = document.getElementById('buyFulfillmentId');
+    if (el) { el.value = id; }
+    el = document.getElementById('buyFulfillmentName');
+    if (el) { el.value = name; }
+    el = document.getElementById('buyFulfillmentAdjust');
+    if (el) { el.value = adjust; }
+
+    // 更新备注
+    var noteEl = document.getElementById('fulfillmentNote');
+    if (noteEl) { noteEl.textContent = note; }
+
+    shopRefreshPriceDisplay();
 }
 
 function selectSku(index, name, price, stock) {
@@ -49,15 +119,19 @@ function selectSku(index, name, price, stock) {
 
     currentPrice = price;
     currentSkuName = name;
+    initialStock = stock;
+
+    var displayPrice = shopGetDisplayPrice();
 
     const mainPriceDisplay = document.getElementById('mainPriceDisplay');
     if (mainPriceDisplay) {
-        mainPriceDisplay.textContent = shopFormatSitePrice(price);
+        mainPriceDisplay.textContent = shopFormatSitePrice(displayPrice);
     }
 
+    var allowZero = typeof currentFulfillmentAllowZero !== 'undefined' && currentFulfillmentAllowZero === 1;
     const soldOutBadge = document.getElementById('soldOutBadge');
     if (soldOutBadge) {
-        soldOutBadge.style.display = stock <= 0 ? 'inline-flex' : 'none';
+        soldOutBadge.style.display = (stock <= 0 && !allowZero) ? 'inline-flex' : 'none';
     }
 
     const stockDisplay = document.getElementById('stockDisplay');
@@ -65,7 +139,7 @@ function selectSku(index, name, price, stock) {
         stockDisplay.textContent = stock.toLocaleString('zh-CN');
     }
 
-    shopUpdateProductActionState(stock, price);
+    shopUpdateProductActionState(stock, displayPrice);
 
     const selectedSkuInput = document.getElementById('selectedSkuInput');
     if (selectedSkuInput) {
@@ -79,7 +153,7 @@ function selectSku(index, name, price, stock) {
 
     const popupPriceDisplay = document.getElementById('popupPriceDisplay');
     if (popupPriceDisplay) {
-        popupPriceDisplay.textContent = shopFormatSitePrice(price);
+        popupPriceDisplay.textContent = shopFormatSitePrice(displayPrice);
     }
 
     const cartSkuName = document.getElementById('cartSkuName');
@@ -485,6 +559,13 @@ function shopBindProductDetailActions() {
             );
             // 切换规格后重置数量为 1
             shopUpdateQtyDisplay(1);
+            return;
+        }
+
+        // 发货方式选择
+        const fulfillmentButton = target.closest('[data-fulfillment-id]');
+        if (fulfillmentButton instanceof HTMLElement) {
+            selectFulfillment(fulfillmentButton);
             return;
         }
 

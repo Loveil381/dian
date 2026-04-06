@@ -79,7 +79,8 @@ unset($_SESSION['flash_message']);
 
 $total_price = 0;
 foreach ($cart as $item) {
-    $total_price += (float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0);
+    $unit = (float) ($item['price'] ?? 0) + (float) ($item['fulfillment_adjust'] ?? 0);
+    $total_price += max(0.01, $unit) * (int) ($item['quantity'] ?? 0);
 }
 
 include __DIR__ . '/header.php';
@@ -132,12 +133,19 @@ include __DIR__ . '/header.php';
                                 <div class="checkout-item-title"><?php echo shop_e((string) ($item['name'] ?? '')); ?></div>
                                 <div class="checkout-item-meta-row">
                                     <span class="badge badge-primary">规格：<?php echo shop_e((string) ($item['sku_name'] ?? '')); ?></span>
+                                    <?php if (!empty($item['fulfillment_name'])): ?>
+                                        <span class="badge" style="background: var(--color-warning); color: var(--color-on-surface);"><?php echo shop_e((string) $item['fulfillment_name']); ?></span>
+                                    <?php endif; ?>
                                     <span class="badge badge-success">× <?php echo (int) ($item['quantity'] ?? 0); ?></span>
                                 </div>
                             </div>
 
+                            <?php
+                            $checkout_unit = (float) ($item['price'] ?? 0) + (float) ($item['fulfillment_adjust'] ?? 0);
+                            $checkout_unit = max(0.01, $checkout_unit);
+                            ?>
                             <div class="checkout-item-price text-price">
-                                <?php echo shop_format_price((float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0)); ?>
+                                <?php echo shop_format_price($checkout_unit * (int) ($item['quantity'] ?? 0)); ?>
                             </div>
                         </article>
                     <?php endforeach; ?>

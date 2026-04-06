@@ -20,6 +20,9 @@ $action = trim((string) ($_POST['cart_action'] ?? ''));
 if ($action === 'add') {
     $product_id = (int) ($_POST['product_id'] ?? 0);
     $sku_name = trim((string) ($_POST['sku_name'] ?? ''));
+    $fulfillment_type_id = (int) ($_POST['fulfillment_type_id'] ?? 0);
+    $fulfillment_name = trim((string) ($_POST['fulfillment_name'] ?? ''));
+    $fulfillment_adjust = (float) ($_POST['fulfillment_adjust'] ?? 0);
     $product = shop_get_product_by_id($product_id);
 
     if ($product === null) {
@@ -50,14 +53,39 @@ if ($action === 'add') {
 
     $add_quantity = max(1, (int) ($_POST['quantity'] ?? 1));
 
+    // 验证发货方式价格调整
+    require_once __DIR__ . '/../data/fulfillment.php';
+    if ($fulfillment_type_id > 0) {
+        $choices = shop_get_product_fulfillment_choices($product);
+        $validFulfillment = false;
+        foreach ($choices as $fc) {
+            if ((int) $fc['id'] === $fulfillment_type_id) {
+                $fulfillment_adjust = (float) $fc['price_adjust'];
+                $fulfillment_name = (string) $fc['name'];
+                $validFulfillment = true;
+                break;
+            }
+        }
+        if (!$validFulfillment) {
+            $fulfillment_type_id = 0;
+            $fulfillment_name = '';
+            $fulfillment_adjust = 0;
+        }
+    }
+
     $found = false;
     foreach ($_SESSION['cart'] as &$item) {
-        if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
+        if ((int) ($item['product_id'] ?? 0) === $product_id
+            && (string) ($item['sku_name'] ?? '') === $sku_name
+            && (int) ($item['fulfillment_type_id'] ?? 0) === $fulfillment_type_id) {
             $item['quantity'] = max(1, (int) ($item['quantity'] ?? 0) + $add_quantity);
             $item['price'] = $verified_price;
             $item['sku_price'] = $verified_price;
             $item['name'] = (string) ($product['name'] ?? '');
             $item['cover_image'] = $cover_image;
+            $item['fulfillment_type_id'] = $fulfillment_type_id;
+            $item['fulfillment_name'] = $fulfillment_name;
+            $item['fulfillment_adjust'] = $fulfillment_adjust;
             $found = true;
             break;
         }
@@ -73,6 +101,9 @@ if ($action === 'add') {
             'sku_price' => $verified_price,
             'quantity' => $add_quantity,
             'cover_image' => $cover_image,
+            'fulfillment_type_id' => $fulfillment_type_id,
+            'fulfillment_name' => $fulfillment_name,
+            'fulfillment_adjust' => $fulfillment_adjust,
         ];
     }
 

@@ -25,6 +25,9 @@ if ($checkout_action === 'quick_buy') {
     $sku_name = trim((string) ($_POST['sku_name'] ?? ''));
     $pay_method = trim((string) ($_POST['pay_method'] ?? ''));
     $buy_quantity = max(1, (int) ($_POST['quantity'] ?? 1));
+    $fulfillment_type_id = (int) ($_POST['fulfillment_type_id'] ?? 0);
+    $fulfillment_name = trim((string) ($_POST['fulfillment_name'] ?? ''));
+    $fulfillment_adjust = (float) ($_POST['fulfillment_adjust'] ?? 0);
 
     $product = shop_get_product_by_id($product_id);
     if ($product === null) {
@@ -53,14 +56,39 @@ if ($checkout_action === 'quick_buy') {
         $cover_image = (string) ($product['images'][0] ?? '');
     }
 
+    // 验证发货方式
+    require_once __DIR__ . '/../data/fulfillment.php';
+    if ($fulfillment_type_id > 0) {
+        $choices = shop_get_product_fulfillment_choices($product);
+        $validFulfillment = false;
+        foreach ($choices as $fc) {
+            if ((int) $fc['id'] === $fulfillment_type_id) {
+                $fulfillment_adjust = (float) $fc['price_adjust'];
+                $fulfillment_name = (string) $fc['name'];
+                $validFulfillment = true;
+                break;
+            }
+        }
+        if (!$validFulfillment) {
+            $fulfillment_type_id = 0;
+            $fulfillment_name = '';
+            $fulfillment_adjust = 0;
+        }
+    }
+
     $found = false;
     foreach ($_SESSION['cart'] as &$item) {
-        if ((int) ($item['product_id'] ?? 0) === $product_id && (string) ($item['sku_name'] ?? '') === $sku_name) {
+        if ((int) ($item['product_id'] ?? 0) === $product_id
+            && (string) ($item['sku_name'] ?? '') === $sku_name
+            && (int) ($item['fulfillment_type_id'] ?? 0) === $fulfillment_type_id) {
             $item['quantity'] = $buy_quantity;
             $item['price'] = $verified_price;
             $item['sku_price'] = $verified_price;
             $item['cover_image'] = $cover_image;
             $item['name'] = (string) ($product['name'] ?? '');
+            $item['fulfillment_type_id'] = $fulfillment_type_id;
+            $item['fulfillment_name'] = $fulfillment_name;
+            $item['fulfillment_adjust'] = $fulfillment_adjust;
             $found = true;
             break;
         }
@@ -76,6 +104,9 @@ if ($checkout_action === 'quick_buy') {
             'sku_price' => $verified_price,
             'quantity' => $buy_quantity,
             'cover_image' => $cover_image,
+            'fulfillment_type_id' => $fulfillment_type_id,
+            'fulfillment_name' => $fulfillment_name,
+            'fulfillment_adjust' => $fulfillment_adjust,
         ];
     }
 
@@ -210,22 +241,31 @@ try {
     $total = 0;
     $order_items = [];
 
+    // 加载发货方式数据供库存判断
+    require_once __DIR__ . '/../data/fulfillment.php';
+
     foreach ($cart as $item) {
         $quantity = max(1, (int) ($item['quantity'] ?? 1));
-        $price = max(0, (float) ($item['sku_price'] ?? $item['price'] ?? 0));
+        $sku_price = max(0, (float) ($item['sku_price'] ?? $item['price'] ?? 0));
         $product_id = (int) ($item['product_id'] ?? 0);
         $name = trim((string) ($item['name'] ?? ''));
         $sku_name = trim((string) ($item['sku_name'] ?? ''));
+        $ft_type_id = (int) ($item['fulfillment_type_id'] ?? 0);
+        $ft_name = trim((string) ($item['fulfillment_name'] ?? ''));
+        $ft_adjust = (float) ($item['fulfillment_adjust'] ?? 0);
 
-        $total += $price * $quantity;
+        // 最终单价 = SKU 价格 + 发货方式调整
+        $unit_price = max(0.01, $sku_price + $ft_adjust);
+        $total += $unit_price * $quantity;
         $item_cover = trim((string) ($item['cover_image'] ?? ''));
         $order_items[] = [
             'product_id' => $product_id,
             'name' => $name,
             'sku_name' => $sku_name,
-            'price' => $price,
+            'price' => $unit_price,
             'quantity' => $quantity,
             'cover_image' => $item_cover,
+            'fulfillment_type' => $ft_name,
         ];
 
         // SELECT FOR UPDATE：在事务中锁定行，避免并发超卖
@@ -235,15 +275,35 @@ try {
         if (!is_array($locked)) {
             throw new RuntimeException('商品信息不存在，无法下单。');
         }
-        if ((int) ($locked['stock'] ?? 0) < $quantity) {
+
+        // 判断该发货方式是否允许零库存购买（预售）
+        $allow_zero = false;
+        if ($ft_type_id > 0) {
+            $ftRow = shop_get_fulfillment_type_by_id($ft_type_id);
+            if ($ftRow !== null && (int) ($ftRow['allow_zero_stock'] ?? 0) === 1) {
+                $allow_zero = true;
+            }
+        }
+
+        if (!$allow_zero && (int) ($locked['stock'] ?? 0) < $quantity) {
             throw new RuntimeException(sprintf(
                 '商品「%s」库存不足（剩余 %d 件），无法下单。',
                 (string) ($locked['name'] ?? ''),
                 (int) ($locked['stock'] ?? 0)
             ));
         }
-        $stmt_stock = $pdo->prepare("UPDATE `{$prefix}products` SET stock = stock - ?, sales = sales + ? WHERE id = ?");
-        $stmt_stock->execute([$quantity, $quantity, $product_id]);
+
+        // 有库存时正常扣减；预售零库存时仅增加销量
+        $current_stock = (int) ($locked['stock'] ?? 0);
+        $deduct = min($quantity, $current_stock);
+        if ($deduct > 0) {
+            $stmt_stock = $pdo->prepare("UPDATE `{$prefix}products` SET stock = stock - ?, sales = sales + ? WHERE id = ?");
+            $stmt_stock->execute([$deduct, $quantity, $product_id]);
+        } else {
+            // 纯预售：仅增加销量
+            $stmt_sales = $pdo->prepare("UPDATE `{$prefix}products` SET sales = sales + ? WHERE id = ?");
+            $stmt_sales->execute([$quantity, $product_id]);
+        }
     }
 
     // ── 优惠券二次验证（事务内，防过期/超限）──
