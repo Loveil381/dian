@@ -66,7 +66,7 @@ $ogImage = $ogImage ?? $defaultOgImage;
     <div class="header-bar">
         <!-- 左侧：移动端汉堡菜单 / PC 端品牌名 -->
         <div class="nav-left">
-            <button class="btn-ghost header-icon-btn header-menu-btn" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav" id="menuBtn" type="button">
+            <button class="btn-ghost header-icon-btn header-menu-btn" aria-label="打开导航" aria-expanded="false" aria-controls="mobileExpandNav" id="menuBtn" type="button">
                 <span class="material-symbols-outlined" aria-hidden="true">menu</span>
             </button>
             <a href="index.php?page=home" class="header-brand" aria-label="魔女的小店 - 返回首页">
