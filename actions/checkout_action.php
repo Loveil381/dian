@@ -203,12 +203,6 @@ if (!$pdo instanceof PDO) {
     exit;
 }
 
-if (!shop_ensure_order_coupon_columns()) {
-    $_SESSION['flash_message'] = '订单数据升级失败，请稍后重试。';
-    header('Location: index.php?page=cart');
-    exit;
-}
-
 try {
     $pdo->beginTransaction();
 

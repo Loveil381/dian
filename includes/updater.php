@@ -656,7 +656,8 @@ function shop_update_copy_dir(string $src, string $dst, array $skipDirs): void
 }
 
 /**
- * Sync managed files from source to destination while preserving skipped paths.
+ * 同步受管文件：将源目录文件复制到目标目录，同时删除目标中不再存在于源的文件。
+ * 跳过 skipDirs 中指定的路径。
  */
 function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
 {
@@ -712,10 +713,15 @@ function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
                 continue;
             }
 
+            $realPath = $item->getRealPath();
             if ($item->isDir()) {
-                @rmdir($item->getRealPath());
+                if (!@rmdir($realPath)) {
+                    shop_log('warning', '同步清理：无法删除目录', ['path' => $relativePath]);
+                }
             } else {
-                @unlink($item->getRealPath());
+                if (!@unlink($realPath)) {
+                    throw new \RuntimeException("同步清理失败：无法删除文件 {$relativePath}");
+                }
             }
         }
     }
