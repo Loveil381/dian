@@ -42,19 +42,12 @@
         min-width: 0;
     }
 
-    .page-nav {
-        display: none !important;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        padding: 0 12px 12px;
+    .mobile-expand-nav {
+        display: none;
     }
 
-    body.mobile-nav-open .page-nav {
-        display: grid !important;
-    }
-
-    .page-link {
-        text-align: left;
+    body.mobile-nav-open .mobile-expand-nav {
+        display: flex !important;
     }
 
     .product-grid {

@@ -361,7 +361,7 @@ function shopBindFooterEvents() {
 
     shopBindSearchAjax(searchForm, searchInput);
 
-    document.querySelectorAll('.page-nav .page-link').forEach((link) => {
+    document.querySelectorAll('.mobile-expand-nav .page-link').forEach((link) => {
         link.addEventListener('click', closeMobileNav);
     });
 

@@ -485,7 +485,7 @@ header {
     margin: 0 auto;
     padding: var(--space-lg);
     display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--space-xl);
     align-items: start;
     background: var(--color-surface-container-lowest);
@@ -1699,11 +1699,10 @@ body.has-fixed-header {
 .header-bar {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-md);
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
 }
 
 .header-icon-btn {
@@ -1713,6 +1712,140 @@ body.has-fixed-header {
     padding: 0;
     border-radius: var(--radius-full);
     color: var(--color-primary);
+}
+
+/* 品牌标识 */
+.header-brand {
+    display: none; /* 移动端隐藏，PC 端显示 */
+    align-items: center;
+    gap: var(--space-xs);
+    text-decoration: none;
+    color: var(--color-on-surface);
+    white-space: nowrap;
+}
+
+.header-brand-icon {
+    font-size: 1.5rem;
+}
+
+.header-brand-name {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* PC 端主导航（内联在 header-bar 中） */
+.header-main-nav {
+    display: none; /* 移动端隐藏 */
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.header-main-nav .page-link {
+    padding: var(--space-xs) 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-label);
+    font-size: var(--text-body);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+}
+
+.header-main-nav .page-link:hover {
+    color: var(--color-primary);
+}
+
+.header-main-nav .page-link.active {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* 用户入口图标 */
+.header-user-link {
+    display: none; /* 移动端隐藏，PC 端显示 */
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--space-xl) + var(--space-md));
+    height: calc(var(--space-xl) + var(--space-md));
+    border-radius: var(--radius-full);
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-container-lowest));
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-normal), background var(--transition-normal);
+}
+
+.header-user-link:hover {
+    transform: translateY(calc(var(--space-xs) * -1));
+    box-shadow: var(--shadow-md);
+    background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-container-lowest));
+}
+
+/* 移动端展开导航 */
+.mobile-expand-nav {
+    display: none; /* 默认隐藏 */
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-xs);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md) var(--space-md);
+}
+
+.mobile-expand-nav .page-link {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-label);
+    font-size: var(--text-body);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.mobile-expand-nav .page-link:hover {
+    background: var(--color-surface-container-low);
+    color: var(--color-primary);
+}
+
+.mobile-expand-nav .page-link.active {
+    color: var(--color-primary);
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+/* PC 端显示品牌名、主导航、用户图标；隐藏汉堡菜单 */
+@media (min-width: 769px) {
+    .header-menu-btn {
+        display: none;
+    }
+
+    .header-brand {
+        display: flex;
+    }
+
+    .header-main-nav {
+        display: flex;
+    }
+
+    .header-search {
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .header-user-link {
+        display: inline-flex;
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
 }
 
 .header-search {
@@ -1778,38 +1911,7 @@ body.has-fixed-header {
     transform: scale(0.98);
 }
 
-.site-header .page-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-md) var(--space-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-lg);
-    background: transparent;
-}
-
-.site-header .page-link {
-    padding: var(--space-xs) 0;
-    border-radius: 0;
-    background: transparent;
-    color: var(--color-on-surface-variant);
-    font-family: var(--font-label);
-    font-size: var(--text-body);
-    font-weight: 500;
-}
-
-.site-header .page-link:hover {
-    background: transparent;
-    color: var(--color-primary);
-}
-
-.site-header .page-link.active,
-.site-header .page-link.is-active {
-    background: transparent;
-    color: var(--color-primary);
-    font-weight: 600;
-}
+/* 旧 .page-nav 已替换为 .header-main-nav（PC）和 .mobile-expand-nav（移动端） */
 
 .search-ajax-results {
     position: relative;
@@ -1877,20 +1979,8 @@ body.has-fixed-header {
         padding: var(--space-sm) var(--space-md);
     }
 
-    .site-header .page-nav {
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--space-xs);
-        padding: 0 var(--space-md) var(--space-md);
-    }
-
-    body.mobile-nav-open .site-header .page-nav {
+    body.mobile-nav-open .mobile-expand-nav {
         display: flex !important;
-    }
-
-    .site-header .page-link {
-        justify-content: flex-start;
     }
 
     .app-bottom-nav {
@@ -2368,6 +2458,13 @@ body.has-fixed-header {
     display: none;
 }
 
+@media (min-width: 769px) {
+    .products-cat-pills {
+        flex-wrap: wrap;
+        overflow-x: visible;
+    }
+}
+
 .products-cat-pill {
     display: inline-block;
     padding: 0.375rem 1rem;
@@ -2406,7 +2503,7 @@ body.has-fixed-header {
 
 /* ── 购物车：容器 ── */
 .cart-shell {
-    max-width: 52rem;
+    max-width: 1000px;
     margin: 0 auto;
     display: grid;
     gap: var(--space-lg);
@@ -2719,17 +2816,19 @@ body.has-fixed-header {
     flex-shrink: 0;
 }
 
-@media (min-width: 900px) {
-    .home-metrics-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
+@media (min-width: 768px) {
     .home-product-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 900px) {
+    .home-metrics-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
     .home-product-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -2803,7 +2902,7 @@ body.has-fixed-header {
 .checkout-shell {
     display: grid;
     gap: var(--space-lg);
-    max-width: 860px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -3528,6 +3627,12 @@ body.has-fixed-header {
 .orders-list {
     display: grid;
     gap: var(--space-md);
+}
+
+@media (min-width: 1200px) {
+    .orders-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .orders-item {
