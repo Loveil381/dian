@@ -687,7 +687,8 @@ function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
             continue;
         }
 
-        $sourcePaths[$relativePath] = true;
+        // 记录路径类型：'d' = 目录, 'f' = 文件
+        $sourcePaths[$relativePath] = $item->isDir() ? 'd' : 'f';
     }
 
     if (is_dir($dst)) {
@@ -709,8 +710,16 @@ function shop_update_sync_dir(string $src, string $dst, array $skipDirs): void
                     break;
                 }
             }
-            if ($skip || isset($sourcePaths[$relativePath])) {
+            if ($skip) {
                 continue;
+            }
+
+            // 路径存在于源且类型一致 → 保留；类型冲突（file↔dir）→ 也需删除
+            if (isset($sourcePaths[$relativePath])) {
+                $destType = $item->isDir() ? 'd' : 'f';
+                if ($sourcePaths[$relativePath] === $destType) {
+                    continue;
+                }
             }
 
             $realPath = $item->getRealPath();
